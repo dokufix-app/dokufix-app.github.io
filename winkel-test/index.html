@@ -1,0 +1,343 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' blob:; worker-src 'self' blob:; img-src 'self' data: blob:; media-src 'self' blob: mediastream:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; connect-src 'self' blob: data:">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Nullpunkt"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Nullpunkt</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#f3f5f8">
+<style>
+/* Eine Spalte wie Doku-Fix: Gelenk → Bewegung → Methode → Messfläche → Ergebnis → Messungen. Apple-Stil, Tape-Blau. */
+/* Praxis-Optik wie in Doku-Fix: Anthrazit 1A1A1A, Karten 212121, Lindgrün DDF6A2, hell warmes Weiß F3F5EE mit Olivgrün 4F6D10, Schrift Outfit */
+@font-face{font-family:"Outfit";font-style:normal;font-display:swap;font-weight:100 900;src:url(fonts/outfit-latin-wght-normal.woff2) format("woff2")}
+:root{
+  --bg:#f3f5ee; --card:#ffffff; --fg:#1a1a1a; --muted:#5f6556; --line:#e1e4d8; --fill:#e9ece2;
+  --tape:#4f6d10; --tape-soft:#eef6d9; --on-tape:#ffffff; --hit:#ddf6a2; --on-hit:#1a1a1a;
+  --ok:#2f7d32; --ok-soft:#e3f2d9; --warn:#b25000; --warn-soft:#fcebd9; --bad:#c4001a; --bad-soft:#fbe1e4;
+  --stage:#141414; --figur:#c9cdbf; --gelenk:#9aa08e;
+  --font:"Outfit",-apple-system,system-ui,"Helvetica Neue",Arial,sans-serif;
+  --round:"Outfit",-apple-system,system-ui,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1a1a1a; --card:#212121; --fg:#f3f6ec; --muted:#a3a99a; --line:#333333; --fill:#2a2a2a;
+  --tape:#ddf6a2; --tape-soft:#2e3423; --on-tape:#1a1a1a; --hit:#ddf6a2; --on-hit:#1a1a1a;
+  --ok:#9be07a; --ok-soft:rgba(155,224,122,.16); --warn:#ffb340; --warn-soft:rgba(255,179,64,.16); --bad:#ff7a6e; --bad-soft:rgba(255,122,110,.16);
+  --stage:#0f0f0f; --figur:#3a3a3a; --gelenk:#5a5a5a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1a1a1a; --card:#212121; --fg:#f3f6ec; --muted:#a3a99a; --line:#333333; --fill:#2a2a2a;
+  --tape:#ddf6a2; --tape-soft:#2e3423; --on-tape:#1a1a1a; --hit:#ddf6a2; --on-hit:#1a1a1a;
+  --ok:#9be07a; --ok-soft:rgba(155,224,122,.16); --warn:#ffb340; --warn-soft:rgba(255,179,64,.16); --bad:#ff7a6e; --bad-soft:rgba(255,122,110,.16);
+  --stage:#0f0f0f; --figur:#3a3a3a; --gelenk:#5a5a5a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:15px;line-height:1.4;-webkit-tap-highlight-color:transparent;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:10px 48px}
+main{width:100%;max-width:none;margin:0;display:flex;flex-direction:column;gap:14px}
+h1{font-size:36px;font-weight:900;text-transform:uppercase;line-height:1;letter-spacing:-.01em;margin:6px 0 0;text-wrap:balance}
+h2{font-size:20px;font-weight:700;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.sub{color:var(--muted);margin:2px 0 0;font-size:14px;max-width:60ch}
+.lbl{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--tape);outline-offset:2px}
+
+/* Auswahl */
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 4px;margin:0 -2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;border:1.5px solid var(--line);background:var(--card);color:var(--fg);border-radius:12px;padding:8px 12px;font-weight:600;font-size:14px;cursor:pointer;text-align:left;transition:transform .15s,background .15s,border-color .15s}
+.chip small{display:block;font-weight:500;color:var(--muted);font-size:11.5px;margin-top:1px}
+.chip[aria-pressed="true"]{border-color:var(--tape);background:var(--tape-soft)}
+.chip:active{transform:scale(.97)}
+.seg{display:flex;background:var(--fill);border-radius:11px;padding:3px;gap:3px}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font-weight:600;font-size:14.5px;padding:8px 6px;border-radius:9px;cursor:pointer;position:relative}
+.seg button[aria-pressed="true"]{background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.14)}
+.seg button[hidden]{display:none}
+.rec{position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:var(--ok)}
+.pick{display:grid;gap:10px}
+.row2{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}
+.ev{font-size:13px;color:var(--muted);margin:0;display:flex;gap:6px;align-items:flex-start}
+.ev b{color:var(--fg);font-weight:600}
+
+/* Messfläche */
+.stage{position:relative;background:var(--stage);border-radius:18px;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
+.stage canvas{display:block;width:100%;height:auto;max-height:70vh;object-fit:contain;margin:0 auto}
+.stage video{position:absolute;width:2px;height:2px;opacity:0;pointer-events:none;left:0;top:0}
+.pill{position:absolute;left:10px;top:10px;display:flex;align-items:center;gap:7px;background:rgba(8,12,18,.72);color:#fff;font-size:12.5px;font-weight:600;padding:6px 10px;border-radius:10px;max-width:calc(100% - 96px);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.dot{width:9px;height:9px;border-radius:50%;background:#8a96a3;flex:0 0 auto}
+.dot.ok{background:#3cc47b}.dot.warn{background:#f0ad3e}.dot.bad{background:#f0675b}
+.level{position:absolute;right:10px;top:10px;width:64px;height:64px;border-radius:50%;background:rgba(8,12,18,.72);display:grid;place-items:center;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.level svg{width:56px;height:56px}
+.level span{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;color:#fff;background:rgba(8,12,18,.72);padding:1px 6px;border-radius:6px;white-space:nowrap}
+.hud{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:flex-end;justify-content:space-between;gap:10px;padding:28px 12px 10px;background:linear-gradient(transparent,rgba(5,9,13,.78));color:#fff;pointer-events:none}
+.live{font:700 46px/1 var(--round);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.live small{font-size:20px;opacity:.75;font-weight:600}
+.reps{display:flex;gap:6px;align-items:center;font-size:12.5px;font-weight:600}
+.reps i{width:12px;height:12px;border-radius:50%;border:2px solid rgba(255,255,255,.7);display:inline-block}
+.reps i.on{background:#fff;border-color:#fff}
+.say{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);background:rgba(8,12,18,.78);color:#fff;font-weight:700;font-size:17px;padding:10px 16px;border-radius:14px;text-align:center;max-width:80%;pointer-events:none;transition:opacity .25s}
+.say[hidden]{display:block!important;opacity:0}
+.spark{display:block;width:100%;height:56px;margin-top:8px}
+.tip{font-size:13.5px;color:var(--muted);margin:8px 2px 0}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{flex:1 1 auto;border:0;border-radius:12px;padding:12px 14px;font-weight:600;font-size:15px;cursor:pointer;background:var(--tape-soft);color:var(--tape);min-height:46px}
+.btn.main{background:var(--tape);color:var(--on-tape)}
+.btn.ghost{background:var(--fill);color:var(--fg)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn[hidden]{display:none}
+
+/* Sensor */
+.sensor{background:var(--card);border-radius:18px;padding:14px;display:grid;gap:12px}
+.steps{display:flex;gap:6px}
+.steps span{flex:1;height:4px;border-radius:2px;background:var(--line)}
+.steps span.on{background:var(--tape)}
+.steptxt{font-weight:600;font-size:16px;min-height:44px}
+.dialwrap{position:relative;display:grid;place-items:center;border-radius:16px;background:var(--fill);padding:10px;cursor:pointer;min-height:240px}
+.dialwrap svg{width:min(280px,72vw);height:auto}
+.tapnote{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:12px;color:var(--muted)}
+.lage{display:flex;gap:10px;align-items:flex-start;background:var(--tape-soft);border-radius:12px;padding:10px 12px;font-size:14px;margin:0}
+.lage svg{flex:0 0 auto;width:18px;height:28px;margin-top:1px}
+.lage b{display:block;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--tape);margin-bottom:1px}
+.howto{display:grid;gap:8px;background:var(--fill);border-radius:14px;padding:10px}
+.howto canvas{width:100%;height:auto;display:block}
+.aufbau{display:grid;gap:8px;background:var(--card);border-radius:18px;padding:12px;margin-bottom:12px}
+.aufsvg{--tape:#4f6d10;--on-tape:#fff;--fill:#E5E5EA;--line:#D1D1D6;--card:#FFFFFF;--muted:#6C6C70;--fg:#000;background:#F7F7FA;border-radius:12px;overflow:hidden}
+.aufsvg svg{display:block;width:100%;height:auto;max-height:42vh}
+.auftxt{margin:0;font-size:14.5px;font-weight:600;max-width:65ch}
+.paste{display:grid;gap:8px;margin-top:10px}
+.paste textarea{width:100%;min-height:72px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--fg);font:14px var(--font);padding:8px}
+.how3d{--tape:#4f6d10;--on-tape:#fff;--fill:#E5E5EA;--line:#D1D1D6;--card:#FFFFFF;--muted:#6C6C70;--fg:#000;background:#F7F7FA;border-radius:10px;overflow:hidden}
+.how3d svg{display:block;width:100%;height:auto;max-height:52vh}
+.howstep{font-weight:600;font-size:14.5px;min-height:42px;margin:0}
+.howkey{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.howkey span{display:inline-flex;align-items:center;gap:5px}
+.howkey i{display:inline-block;width:14px;height:4px;border-radius:2px;background:var(--tape)}
+.axis{display:flex;gap:8px;flex-wrap:wrap;font-size:12.5px}
+.tag{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:999px;background:var(--fill);color:var(--muted);font-weight:600}
+.tag.ok{background:var(--ok-soft);color:var(--ok)}.tag.warn{background:var(--warn-soft);color:var(--warn)}.tag.bad{background:var(--bad-soft);color:var(--bad)}
+
+/* Ergebnis */
+.card{background:var(--card);border-radius:18px;padding:16px}
+.res{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;align-items:center}
+.deg{font:700 60px/1 var(--round);font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.deg small{font-size:24px;color:var(--muted);font-weight:600}
+.what{font-weight:700;font-size:16px}
+.how{font-size:13px;color:var(--muted)}
+.norm{grid-column:1/-1;margin-top:10px}
+.bar{position:relative;height:10px;border-radius:5px;background:var(--fill);margin:6px 0 4px;overflow:visible}
+.bar .band{position:absolute;top:0;bottom:0;background:var(--ok-soft);border-radius:5px}
+.bar .fill{position:absolute;left:0;top:2px;bottom:2px;border-radius:4px;background:var(--tape);transition:width .3s}
+.small{font-size:12.5px;color:var(--muted)}
+.tags{grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.gon{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.gon label{font-weight:600;font-size:14px}
+.gon input{width:96px;font:600 18px var(--round);padding:8px 10px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--fg);font-variant-numeric:tabular-nums}
+.nnm{font:500 15px/1.5 var(--font);background:var(--fill);border-radius:10px;padding:10px 12px;margin-top:12px;white-space:pre-wrap;overflow-wrap:anywhere}
+
+/* Messungen */
+.list{display:flex;flex-direction:column}
+.item{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:10px 0;border-top:1px solid var(--line)}
+.item:first-child{border-top:0}
+.item .t{font-weight:600;min-width:0}
+.item .v{font:600 15px var(--round);font-variant-numeric:tabular-nums;text-align:right}
+.item .m{grid-column:1/-1;font-size:12.5px;color:var(--muted)}
+.ex{font-size:10.5px;font-weight:700;letter-spacing:.05em;color:var(--warn);text-transform:uppercase}
+.d-ok{color:var(--ok)}.d-mid{color:var(--warn)}.d-bad{color:var(--bad)}
+details{background:var(--card);border-radius:18px;padding:0 16px}
+details>summary{list-style:none;cursor:pointer;padding:14px 0;font-weight:700;font-size:16px;display:flex;justify-content:space-between;align-items:center}
+details>summary::-webkit-details-marker{display:none}
+details>summary::after{content:"";width:9px;height:9px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform .2s;margin-right:4px}
+details[open]>summary::after{transform:rotate(-135deg)}
+details .body{padding:0 0 16px;display:grid;gap:10px;font-size:14px}
+details .body p{margin:0;max-width:65ch}
+.set{display:grid;gap:6px}
+@keyframes blitz{0%{box-shadow:0 0 0 0 var(--ok);background-color:var(--ok-soft)}100%{box-shadow:0 0 0 14px transparent}}
+.blitz{animation:blitz .7s ease-out}
+@media (prefers-reduced-motion:reduce){.blitz{animation:none;outline:3px solid var(--ok)}}
+.doku{display:flex;gap:10px;align-items:center;justify-content:space-between;background:var(--tape);color:var(--on-tape);border-radius:14px;padding:10px 12px;font-weight:700;font-size:15px}
+.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:600;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:20;max-width:90vw}
+.toast.on{opacity:1}
+.review-note{font-size:13px;color:var(--muted);margin:8px 2px 0}
+@media (min-width:700px){ .chips{flex-wrap:wrap;overflow-x:visible} .chip{padding:10px 14px;font-size:15px} }
+@media (min-width:820px){ body{padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px))}
+  .wide{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(320px,1fr);gap:18px;align-items:start}
+  .stage canvas{max-height:78vh} .aufsvg svg{max-height:52vh} }
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* Praxis-Bedienelemente: Pillenform, Auswahl und Hauptknopf in Lindgrün */
+.chip{border-radius:999px;padding-inline:16px}
+.chip[aria-pressed="true"]{background:var(--hit);border-color:var(--hit);color:var(--on-hit)}
+.chip[aria-pressed="true"] small{color:#3d4a24}
+.seg{border-radius:999px}.seg button{border-radius:999px}
+.seg button[aria-pressed="true"]{background:var(--hit);color:var(--on-hit);box-shadow:none}
+.btn{border-radius:999px;font-weight:700}
+.btn.main{background:var(--hit);color:var(--on-hit);text-transform:uppercase;letter-spacing:.04em;font-weight:800}
+.lbl,details>summary{font-weight:800}
+.doku{background:var(--hit);color:var(--on-hit);border-radius:999px}
+.card,.sensor,.aufbau,details{border-radius:20px}
+::selection{background:#ddf6a2;color:#1a1a1a}
+/* Start/Ende-Signal über den ganzen Bildschirm */
+#signal{position:fixed;inset:0;z-index:50;display:grid;place-content:center;justify-items:center;gap:8px;text-align:center;pointer-events:none;opacity:0;transition:opacity .35s;padding:24px}
+#signal.on{opacity:1;transition:opacity .06s}
+#signal.start{background:rgba(221,246,162,.94);color:#1a1a1a}
+#signal.ende{background:rgba(26,26,26,.94);color:#ddf6a2}
+#signal b{font:900 clamp(64px,22vw,160px)/1 var(--font);letter-spacing:-.02em;text-transform:uppercase}
+#signal span{font:700 20px/1.3 var(--font)}
+
+
+</style>
+
+<main>
+  <header>
+    <h1>Nullpunkt</h1>
+    <p class="sub">Kamera, Handy-Sensor oder Foto. Gemessen wird erst, wenn die Endstellung ruhig gehalten wird.</p>
+  </header>
+
+  <div class="doku" id="dokubar" hidden><span id="dokutxt"></span><button class="btn ghost" id="dokuzu" style="flex:0 0 auto;min-height:36px;padding:8px 12px">Schließen</button></div>
+  <section class="pick" aria-label="Auswahl">
+    <div class="chips" id="gelenke" role="group" aria-label="Gelenk"></div>
+    <div class="chips" id="bewegungen" role="group" aria-label="Bewegung"></div>
+    <div class="row2">
+      <div class="seg" id="methode" role="group" aria-label="Messart">
+        <button id="m-cam" data-m="cam">Kamera</button>
+        <button id="m-sen" data-m="sen">Sensor</button>
+        <button id="m-foto" data-m="foto">Foto</button>
+      </div>
+      <div class="seg" id="seite" role="group" aria-label="Seite" style="min-width:132px">
+        <button data-s="r" aria-pressed="true">re.</button>
+        <button data-s="l" aria-pressed="false">li.</button>
+      </div>
+    </div>
+    <p class="ev" id="evidenz"></p>
+  </section>
+
+  <div class="wide">
+    <section id="v-cam" aria-label="Kameramessung">
+      <div class="aufbau" id="aufbau" hidden>
+        <div class="lbl" style="margin:0">So aufstellen</div>
+        <div class="aufsvg" id="aufsvg" role="img" aria-label="Aufbau: wo das Gerät steht"></div>
+        <p class="auftxt" id="auftxt"></p>
+        <p class="small" id="aufalt" style="margin:0"></p>
+      </div>
+      <div class="stage" id="stage">
+        <canvas id="cv" width="720" height="960" aria-label="Kamerabild mit erkannten Messpunkten"></canvas>
+        <video id="vid" playsinline muted></video>
+        <div class="pill"><span class="dot" id="qdot"></span><span id="qtxt">Bereit</span></div>
+        <div class="level" id="level" title="Ausrichtung des Handys"><svg viewBox="0 0 56 56" id="levelsvg"></svg><span id="leveltxt">–</span></div>
+        <div class="say" id="say" hidden></div>
+        <div class="hud"><div class="live" id="live">–<small>°</small></div><div class="reps" id="reps"></div></div>
+      </div>
+      <canvas class="spark" id="spark" width="700" height="112" aria-label="Winkelverlauf"></canvas>
+      <p class="tip" id="ctip"></p>
+      <div class="btns" style="margin-top:10px">
+        <button class="btn main" id="c-start">Kamera starten</button>
+        <button class="btn" id="c-flip" hidden>Kamera wechseln</button>
+        <button class="btn" id="c-done" hidden>Fertig</button>
+        <button class="btn ghost" id="c-demo">Vorführung</button>
+      </div>
+      <input type="file" id="file" accept="image/*" hidden>
+      <p class="review-note" id="rnote" hidden>Standbild der Endstellung. Liegt ein Punkt daneben, mit dem Finger auf die richtige Stelle ziehen. Der Wert rechnet sofort neu.</p>
+    </section>
+
+    <section id="v-sen" class="sensor" aria-label="Sensormessung" hidden>
+      <div class="steps" id="steps"><span></span><span></span><span></span></div>
+      <p class="lage" id="lagebox"><svg viewBox="0 0 18 28" aria-hidden="true"><rect x="1" y="1" width="16" height="26" rx="3.5" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--tape)"/><rect x="6" y="3.5" width="6" height="2" rx="1" fill="var(--tape)"/></svg><span><b>Auflegen</b><span id="lage"></span></span></p>
+      <div class="steptxt" id="steptxt">Sensor starten, dann das Handy anlegen.</div>
+      <div class="dialwrap" id="dialwrap" role="button" tabindex="0" aria-label="Tippen übernimmt den aktuellen Wert">
+        <svg viewBox="0 0 260 260" id="dial"></svg>
+        <span class="tapnote" id="tapnote">Tippen auf die Fläche übernimmt den Wert sofort</span>
+      </div>
+      <div class="axis" id="senstat"></div>
+      <div class="btns">
+        <button class="btn main" id="s-start">Sensor starten</button>
+        <button class="btn" id="s-reset" hidden>Neu beginnen</button>
+      </div>
+      <button class="btn ghost" id="s-howto" aria-expanded="false">So wird gemessen ▸</button>
+      <div class="howto" id="howto" hidden>
+        <div id="how3d" class="how3d" role="img" aria-label="Animation: so wird das Handy angelegt und die Messung ausgeführt"></div>
+        <canvas id="howcv" width="640" height="420" aria-hidden="true"></canvas>
+        <p class="howstep" id="howstep"></p>
+        <div class="howkey"><span><i></i>Bildschirm</span><span>▲ Oberkante des Handys</span><span>Kamerainsel = oben</span></div>
+      </div>
+    </section>
+
+    <section class="card" id="ergebnis" aria-label="Ergebnis">
+      <div class="res">
+        <div class="deg" id="deg">–<small>°</small></div>
+        <div style="min-width:0"><div class="what" id="what"></div><div class="how" id="how">Noch keine Messung</div></div>
+        <div class="norm">
+          <div class="bar"><div class="band" id="band"></div><div class="fill" id="fill"></div></div>
+          <div class="small" id="normtxt"></div>
+        </div>
+        <div class="tags" id="qtags"></div>
+      </div>
+      <div class="gon">
+        <label for="gv">Goniometer</label>
+        <input id="gv" type="number" inputmode="numeric" placeholder="°" min="-60" max="200">
+        <span class="small" id="diff">optional, zum Vergleich</span>
+      </div>
+      <div class="btns" style="margin-top:12px">
+        <button class="btn main" id="todoku" hidden disabled>In Doku-Fix übernehmen</button>
+        <button class="btn main" id="take" disabled>Übernehmen</button>
+        <button class="btn" id="next">Nächste Bewegung</button>
+      </div>
+    </section>
+  </div>
+
+  <section class="card" aria-label="Messungen">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px">
+      <h2>Messungen</h2><span class="small" id="cnt"></span>
+    </div>
+    <div class="list" id="list"></div>
+    <div class="nnm" id="doku"></div>
+    <div class="btns" style="margin-top:12px">
+      <button class="btn main" id="copy">Text kopieren</button>
+      <button class="btn ghost" id="clear">Liste leeren</button>
+    </div>
+    <div class="btns" style="margin-top:8px">
+      <button class="btn" id="send">An anderes Gerät senden</button>
+      <button class="btn" id="recv">Vom anderen Gerät einfügen</button>
+    </div>
+    <div class="paste" id="pastebox" hidden>
+      <label class="small" for="pastetxt">Hier lange tippen und „Einfügen“ wählen:</label>
+      <textarea id="pastetxt" placeholder="WINKEL1:…"></textarea>
+      <button class="btn main" id="pasteok">Übernehmen</button>
+    </div>
+    <p class="small" style="margin:8px 0 0">Übertragung zwischen iPhone und iPad über die gemeinsame Zwischenablage (gleiche Apple-ID, Handoff an). Es geht nichts über einen Server.</p>
+  </section>
+
+  <details id="d-vgl">
+    <summary>Abgleich mit dem Goniometer</summary>
+    <div class="body" id="vgl"></div>
+  </details>
+
+  <details>
+    <summary>Einstellungen</summary>
+    <div class="body">
+      <div class="set"><span class="lbl">Erkennung</span>
+        <div class="seg" id="modell"><button data-v="lite">Schnell</button><button data-v="full">Standard</button><button data-v="heavy" id="heavybtn">Genau</button></div>
+        <p class="small" id="modelltxt"></p></div>
+      <div class="set"><span class="lbl">Wiederholungen je Messung</span>
+        <div class="seg" id="wdh"><button data-v="1">1</button><button data-v="2">2</button><button data-v="3">3</button></div></div>
+      <div class="set"><span class="lbl">Rückmeldung</span>
+        <div class="seg" id="ton"><button data-v="sprache">Ton und Ansage</button><button data-v="ton">Nur Ton</button><button data-v="aus">Aus</button></div>
+        <button class="btn ghost" id="tontest" style="margin-top:6px">Ton testen</button>
+        <p class="small" style="margin:0">Die Töne kommen auch bei Stummschalter. Lautstärke über die Seitentasten. Beim Auslösen blinkt die Messfläche zusätzlich grün.</p></div>
+    </div>
+  </details>
+
+  <details>
+    <summary>So misst die App</summary>
+    <div class="body" id="info">
+      <p><b>Kamera.</b> Die Körpererkennung (MediaPipe Pose Landmarker, läuft auf dem Gerät) findet die Gelenkpunkte. Der Winkel kommt aus den beiden Körperabschnitten in der Bildebene. Bilder mit unsicheren Punkten werden verworfen, Sprünge herausgefiltert, der Rest geglättet (One-Euro-Filter). Gezählt wird nur eine Endstellung, die mindestens 0,6 s ruhig gehalten wird. Aus mehreren Wiederholungen gilt der Median.</p>
+      <p><b>Prüfungen während der Messung.</b> Der Lagesensor zeigt, ob das Handy senkrecht steht (Ziel unter 5° Neigung). Die App vergleicht den Bildwinkel mit dem räumlich geschätzten Winkel und warnt, wenn die Bewegung aus der Bildebene läuft. Sie prüft Blickrichtung (seitlich oder frontal), Abstand, Licht und ob die gemessene Seite der Kamera zugewandt ist.</p>
+      <p><b>Sensor.</b> Gemessen wird über den Schwerkraftvektor, nicht über Kompass oder Kreisel. Das ist über 90° hinaus eindeutig und driftet nicht. Der Nullpunkt setzt sich in Ruhe von selbst, der Wert wird übernommen, sobald das Handy in der Endstellung ruhig liegt. Kippt das Handy seitlich aus der Messebene, gibt es eine Warnung.</p>
+      <p><b>Grenzen.</b> Kameramessungen liegen in Studien meist bei etwa ±7–9° zum Goniometer, am Sprunggelenk und bei Rotationen schlechter. Verlaufsmessungen deshalb immer mit derselben Methode machen. Die Richtwerte sind ein Entwurf zum fachlichen Prüfen.</p>
+      <p class="small" id="quellen"></p>
+      <p class="small">Bilder und Videos bleiben auf dem Gerät und werden nicht gespeichert. Gespeichert wird nur die Messliste, ohne Patientenbezug.</p>
+    </div>
+  </details>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="kern.js"></script>
+<script src="katalog.js"></script>
+<script src="anleitung.js"></script>
+<script src="figur3.js"></script>
+<script src="anleitung3d.js"></script>
+<script src="app.js"></script>
+</body></html>

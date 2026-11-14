@@ -1,0 +1,21 @@
+// Doku-Fix Service Worker: App-Dateien zwischenspeichern, damit sie ohne Netz starten.
+// Strategie: erst Netz (neue Version kommt an), bei fehlendem Netz die gespeicherte Datei.
+const CACHE = 'doku-fix-v150';
+const DATEIEN = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-192.png', './icon-512.png', './anatomie.js', './ana_daten.js', './ana_css.js', './three.module.min.js', './anatomie-modell.wasm', './anatomie-haut.wasm', './werkstatt.html', './diktat.html', './karte.txt', './jspdf.umd.min.js', './fonts/outfit-latin-wght-normal.woff2', './fonts/ibm-plex-sans-latin-500-normal.woff2'];
+
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(DATEIEN)).then(() => self.skipWaiting()));
+});
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE && k.startsWith('doku-fix-v')).map(k => caches.delete(k)))).then(() => self.clients.claim()));
+});
+self.addEventListener('fetch', e => {
+  const r = e.request;
+  if (r.method !== 'GET' || new URL(r.url).origin !== location.origin) return;
+  e.respondWith(
+    fetch(r.mode === 'navigate' ? r.url : r, { cache: 'no-cache' }).then(antwort => {
+      if (antwort.ok) { const kopie = antwort.clone(); const ziel = new URL(r.url); ziel.search = ''; ziel.hash = ''; caches.open(CACHE).then(c => c.put(ziel.href, kopie)); }
+      return antwort;
+    }).catch(() => caches.match(r, { ignoreSearch: true }).then(g => g || (r.mode === 'navigate' ? caches.match('./index.html') : undefined)))
+  );
+});

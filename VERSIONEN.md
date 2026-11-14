@@ -1,0 +1,704 @@
+# Versionen von Doku-Fix
+
+Ab v150 läuft Doku-Fix unter dokufix-app.github.io. Die Commit-Nummern bis v150 gehören zum früheren Repository und sind dort archiviert.
+
+Hier steht jede Version der App mit Datum und Änderungen. Zu jeder Version gehört eine Commit-Nummer im Repository. Mit ihr lässt sich die App jederzeit auf genau diesen Stand zurücksetzen.
+
+Neue Versionen kommen oben dazu.
+
+| Version | Datum | Commit | Was sich geändert hat |
+|---|---|---|---|
+| v150 | 14.11.2026 | f4fbd94 | Sicherheit und Datenschutz: Texterkennung und Diktat-Erkennung laden ihren Code nicht mehr von fremden Servern (liegt unter vendor/). Schutzregel (CSP) auf allen Seiten: Daten gehen nur an die eigene Adresse, beim Diktat zusätzlich einmal das Whisper-Modell. Patientenname ans Diktat nicht mehr in der Adresse, Offline-Speicher ohne Namen. Präparierte Sicherungen können keinen Code mehr einschleusen. Winkelmessung ohne Mikrofonrecht, keine Nutzungsdaten der Bewegungserkennung an Google. Sicherung wird verschlüsselt (AES-256, eigenes Passwort), alte Sicherungen lassen sich weiter einlesen. Neu unter Mehr › Sicherung: Alle Daten auf diesem Gerät löschen. Diktat standardmäßig auf dem Gerät, Live (Apple) nur auf Wunsch. Praxisadresse und Name für die Fahrtkosten stehen nicht mehr im Code, sondern werden einmal unter Fahrtkosten/Hausbesuche eingetragen. Arbeitgeber im Code neutral benannt. |
+| v149 | 14.11.2026 | c7907d3 | Evidenz-Update: Schlaganfall-Vorschläge nach S3 Armparese und ReMoS (mCIMT, Armtraining, Spiegeltherapie, Eigentraining, Laufband), PNF ehrlich bewertet, MS-Dosierung nach Kalb 2020, Hold-Relax und Contract-Relax, Lymphödem überarbeitet, Lipödem neu, Hinweise zu MLD nach Knie-TEP und zu MT nur mit Übungen. Neue PNF-Karte im Neuro-Behandlungsschritt (Pattern, Methode, Ausgangsstellung, Reizsummation). |
+| v148 | 13.11.2026 | f4c3685 | VKB-Reha-Pfad: geführter LSI-Test über den Kriterien (Keiser-Beinpresse einbeinig mit Spitzenleistung in Watt, Single, Triple und Crossover Hop, 6-m-Hop auf Zeit). Je Test Anleitung in vier Schritten, Versuche für gesunde und betroffene Seite, LSI sofort mit Ampel (ab 90 % grün, 80 bis 89 % gelb). Bestwert aus 3 Versuchen, beim 6-m-Hop aus 2. „In die Kriterien übernehmen“ trägt die Werte ein und schreibt sie in den Verlaufstext. Neues optionales Kriterium „Beinpresse einbeinig (Keiser, Spitzenleistung)“ in den Phasen 2 bis 4 mit Testbeschreibung. |
+| v147 | 12.11.2026 | 12c9f35 | Stunden im Mehr-Bereich auf dem iPad quer: Karten stehen untereinander statt zerquetscht nebeneinander. |
+| v146 | 12.11.2026 | 3e327a2 | Behandlungsvorschlag ab der dritten Behandlung, in Schnell-Doku und ausführlichem Verlauf unter dem Befinden: steigern, anpassen oder zurücknehmen, mit konkreter Dosierung je Maßnahme der letzten Behandlung (Gewicht, Sätze, Wiederholungen, Ergometer, Mobilisationsgrad), Zielen und Knopf zum Übernehmen. Nicht für neurologische Patienten. |
+| v145 | 12.11.2026 | db6ba6a | Schnell-Doku am Handy: Pop-ups für Techniken, Mobilisation und Übungen verrutschen nicht mehr, Kreuz, Abbrechen und Fertig bleiben im Bild. |
+| v144 | 12.11.2026 | 90ffaca | Schnell-Doku: Maßnahmen über drei Pop-ups (Techniken, Mobilisation, Übungen) ändern und hinzufügen, mit Abbrechen; Feld für eigene Maßnahme als freier Text. Nicht erschienen: Termin steht als Ausfall im Verlauf, zählt nicht als Einheit. |
+| v143 | 12.11.2026 | Dienstplan | Termin als „nicht erschienen“ markieren, die Doku bleibt dann nicht offen; aufgeklappte Karte auf dem Tablet nicht mehr abgeschnitten |
+| v142 | 12.11.2026 | Dienstplan | Der erste Termin nach einer Fortbildung ist kein Hausbesuch und bekommt keine Fahrzeit davor; die Fortbildung füllt die ganze Lücke |
+| v141 | 12.11.2026 | Dienstplan | Fobi füllt die Zeit bis zum nächsten Termin (höchstens 60 min); der Termin direkt nach einem Praxistermin gilt nicht mehr als vermuteter Hausbesuch, keine Fahrzeit davor |
+| v140 | 12.11.2026 | Dienstplan, Befund, Gestaltung | Terminhöhe entspricht der Dauer; Streckdefizit nach Neutral-Null (0-20-120); Schriftgrößen vereinheitlicht; „Mehr“ auf dem Tablet ohne Überlappung, Bereichswechsel repariert |
+| v139 | 12.11.2026 | Dienstplan | Fortbildung (Fobi) mit eigener Farbe; Fobi wird nie als Hausbesuch vermutet |
+| v138 | 12.11.2026 | Gestaltung | Verlauf aufgeräumt: „Frühere Doku nachtragen“ als aufklappbarer Block, „Löschen“ an den rechten Rand |
+| v137 | 12.11.2026 | Gestaltung | Hinweis „Abrechnung ist fertig“ als schmale Leiste über der Navigation, nur im Dienstplan, ohne Abdunkeln |
+| v136 | 12.11.2026 | Gestaltung | Terminkarten ruhiger: weiß, ohne Farbstreifen und Rahmen, Kürzel kräftig gefüllt; Pause mit gezeichneter Tasse |
+| v135 | 12.11.2026 | Gestaltung | Dienstplan: Kopf kompakt, auf dem Tablet Tagesübersicht links und Termine rechts; Tipp-Rückmeldung und Schließen-Animationen vereinheitlicht |
+| v134 | 10.11.2026 | Plan-Foto | Liest zuerst das Original, rückt nur bei schwachem Ergebnis selbst gerade; schräge Zeilen, Fahrzeit-Zeile und Kürzel robuster; „Falsch gelesen? Ecken setzen“ |
+| v133 | 09.11.2026 | 2607fd9 | Sicherung einspielen führt zusammen statt nur zu ergänzen: Bei Patienten, die beide Geräte kennen, kommen neue Verlaufseinheiten dazu; ist dieselbe Einheit auf beiden Geräten, schlägt eine fertige den Entwurf, sonst gilt der zuletzt geänderte Stand. Erstbefund und übrige Angaben vom zuletzt geänderten Gerät. Dienstplan-Tage werden ersetzt, wenn sie auf dem anderen Gerät später geändert wurden. Dafür merkt sich die App je Patient und Dienstplan-Tag die Uhrzeit der letzten Änderung (nur Zeitstempel, in der Sicherung mit drin). Gelöscht wird beim Einspielen nichts. Meldung nach dem Einspielen zeigt neu/aktualisiert/neue Einheiten. Fahrtkosten und Stunden wie bisher (nur Fehlendes). |
+| v132 | 09.11.2026 | 85ebffb | Dienstplan-Foto gerade rücken: Nach der Fotowahl sucht die App die Ecken des Blatts und zeigt sie als vier Punkte zum Nachziehen (mit Lupe). „Gerade rücken und lesen“ entzerrt das Blatt wie ein Scanner, „Ohne Ausrichten lesen“ nimmt das Foto wie bisher. Screenshots (PNG) überspringen den Schritt. Papierplan-Leser robuster: „1951-KGP“ wird getrennt, KGG und MLD als Kürzel erkannt, Pause-Zeile mit „P“, Zeitspalte lässt sich von Zeichen am linken Rand nicht mehr verschieben, Arbeitszeit-Zeile auch bei falsch gelesenem „bis“. Am nachgebauten schrägen Foto: vorher 5, jetzt 12 bis 14 von 17 Terminen ganz richtig. |
+| v131 | 09.11.2026 | e6ccfee | Diktat: Live (Apple) ist jetzt Standard, auch in der App vom Home-Bildschirm (vorher dort automatisch „Auf dem Gerät“). Liefert Live nach etwa 9 Sekunden keinen Text oder bricht ab, nimmt die Aufnahme von selbst auf dem Gerät weiter auf, mit Hinweis „bitte noch einmal sprechen“. Ausnahme: Mikrofon nicht freigegeben. Eine früher gespeicherte Wahl „Gerät“ wurde einmalig auf Automatisch gesetzt; unter Mehr › Diktat lässt sich „Gerät“ weiter fest wählen. Gilt für Verlaufs-Diktat und Erstbefund-Diktat. |
+| v130 | 09.11.2026 | 70fcd56 | Diktat schreibt Zahlen als Ziffern: „zweimal zehn“ → 2 × 10, „drei Sätze à zwölf Wiederholungen“ → 3 × 12, „neunzig Grad“ → 90 Grad, „sechs von zehn“ → 6/10, „seit drei Wochen“ → seit 3 Wochen, „zehnmal“ → 10× (ab 5). Zusammengesetzte Zahlen bis 999 (fünfundzwanzig, hundertzwanzig). Artikel („ein Patient“) und Häufigkeiten („zweimal pro Woche“) bleiben stehen. Dazu: Minuten werden als Dosierung übernommen (Ergometer 10 min), bei freien Übungen bleiben keine Satzzeichen-Reste. Alle 11 Probe-Diktate unverändert. |
+| v129 | 08.11.2026 | a426057 | Neues App-Symbol in den Praxis-Farben: Anthrazit-Grund, Blatt als heller Umriss, Pulslinie in Lindgrün (Variante C). Hintergrund beim App-Start und Theme-Farbe jetzt Anthrazit. Das neue Symbol erscheint erst, wenn die App vom Home-Bildschirm gelöscht und über Safari neu hinzugefügt wird. |
+| v128 | 08.11.2026 | 94b48f9 | Neu: Winkelmessung aus Doku-Fix. Im Schritt „Wie weit kommt der Patient?“ stehen unter jedem passenden Bewegungspaar Knöpfe wie „Extension messen“ und „Flexion messen“. Sie öffnen die Winkelmessung als Fenster über Doku-Fix, eingestellt auf Gelenk, Bewegung und Seite aus dem Befund. „In Doku-Fix übernehmen“ schließt das Fenster und trägt den Wert in den Regler ein (auf 5° gerundet), mit kurzer Meldung zum gemessenen Wert und zur Messart. Gilt für Schulter, Ellenbogen, Unterarm, Handgelenk, Finger, HWS, Hüfte, Knie und Sprunggelenk. |
+| v127 | 08.11.2026 | 3cfea75 | Neu: Feierabend-Abschluss. Im Dienstplan unter der Feierabend-Zeile, über „Doku offen“ in der Zusammenfassung und unter Mehr › Doku offen. Listet die vergangenen Termine des Tages: Diktieren oder Kurz-Doku, bei einem Entwurf der Text mit „Kopieren & fertig“ (Zwischenablage und Behandlung beendet) und „Prüfen“. Hausbesuche zählen nirgends mehr als offene Doku, weil sie auf Papier dokumentiert werden; im Abschluss stehen sie eingeklappt mit „Auf Papier“ und lassen sich trotzdem dokumentieren. Neu unter Mehr: Nutzung (nur Zahlen auf dem Gerät, keine Namen oder Texte): Dokus fertig, Dauer vom Öffnen bis zum Kopieren, was wie oft genutzt wird, teilbar. Feierabend-Zeile ohne Puls-Animation. |
+| v126 | 08.11.2026 | 9a99fc1 | Neu: Therapieplanung. Beim ersten Erreichen der Kurzzusammenfassung im Erstbefund öffnet sich eine A4-Seite mit Ist-Zustand, Zielen, Rhythmus mit Leitlinien-Hinweis, drei Phasen mit Dosierung (ACSM), Maßnahmen aus Befund und Wissensdatenbank, Wiederbefund und Hinweisen. Feld „Meine Planung zum Abgleich“ wird mitgespeichert. Oben Neu (neu berechnen), Kopieren, PDF; Antippen vergrößert. Wieder aufrufbar über „Therapieplan“ in der Patientenkarte (Patienten und Dienstplan), im Befund-Überblick und unter der Kurzzusammenfassung. Farben Praxis. Entwurf, fachlich prüfen; Daten nur auf dem Gerät. |
+| v125 | 08.11.2026 | 9017bf1 | Dienstplan heute: Was vorbei ist, steht als eine Zeile „8 Termine vorbei · 5 Doku offen“ und klappt per Tipp auf. Die laufende Behandlung ist als Jetzt-Karte hervorgehoben (Überschrift „Jetzt“, größerer Name, Restzeit in der Akzentfarbe). Die Pause ist schmaler und ohne Leuchten. |
+| v124 | 06.11.2026 | 0b361dc | Stunden: Die Karte Urlaubstage lässt sich antippen und listet jeden Urlaub mit Wochentag, Anzahl Tage und genommen/eingeplant; Tage, die nur aus dem Clockin-Abgleich bekannt sind, stehen als „ohne Datum“ da; unten die Rechnung aus Anspruch, genommen, eingeplant und offen. |
+| v123 | 06.11.2026 | 9c718f9 | Stunden: Krank, Kind krank, Fortbildung und Urlaub zählen auch eingetragene Tage vor dem Abgleich; Antippen listet die Zeiträume (z. B. 8.–9.1., 27.–30.1.). Tage bis zum Clockin-Abgleich gelten als erfüllt und werden nicht noch einmal aus dem Dienstplan abgezogen. |
+| v122 | 06.11.2026 | d493370 | Stunden neu gestaltet: links der Monat mit Ist, Soll bis heute und Plus/Minus, darunter die Kalenderwochen wie in Clockin; die aktuelle Woche zeigt jeden Tag als Kachel, Tippen öffnet Zeiten und Art des Tages. Rechts Stundenkonto, Urlaubstage (genommen, eingeplant, offen) und Fortbildung, Krank, Kind krank. Abgleich nimmt jetzt auch Krank- und Kind-krank-Tage; ein neuerer Abgleich aus der Sicherung ersetzt den alten. |
+| v121 | 06.11.2026 | fb62e7e | Neu unter Mehr: Stunden. Arbeitszeit je Tag aus dem Dienstplan (wie „Arbeitszeit … netto“), Soll 39 h/Woche, Feiertage NRW, 24.12./31.12. halb. Plus/Minus-Konto ab einem Abgleich mit Clockin, Balken je Monat, Monatsliste zum Korrigieren. Urlaub (30 + 6 vorgearbeitet), Krank, Kind krank, Fortbildung, Überstunden frei; Abwesenheiten von–bis eintragen. Daten nur auf dem Gerät, in der Sicherung enthalten. |
+| v120 | 06.11.2026 | c0e3bfc | Hausbesuche-Tour: Standort-Knopf wie bei Apple Karten. 1× tippen folgt dem Standort, 2× tippen dreht die Karte in Fahrtrichtung (Kompass, beim Fahren GPS-Richtung) mit blauem Sichtkegel, 3× tippen wieder Norden oben. |
+| v119 | 06.11.2026 | 9c350f7 | Hausbesuche-Tour: Die Fahrzeit zwischen zwei Halten lässt sich antippen. Die Karte zoomt auf genau dieses Stück und hebt es in der Tourfarbe hervor, der Rest der Route wird grau, unbeteiligte Nadeln blass. Nochmal tippen zeigt wieder die ganze Route. |
+| v118 | 06.11.2026 | f88b99c | Fahrtkosten/Hausbesuche: In Monatsliste und JPEG stehen überall Nachnamen; Dienstplan-Namen wie „Josef P.“ werden über die Adresse oder einen eindeutigen Anfangsbuchstaben zugeordnet, sonst fragt die Monatsliste „Wer ist …?“. Wird ein Patient im Ablauf angetippt, ist seine Nadel auf der Karte groß mit Lichtring, die anderen blass. Ein Tag unter Mehr › Fahrtkosten/Hausbesuche öffnet direkt die Karte dieses Tages. |
+| v117 | 06.11.2026 | 6573077 | Fahrtkosten/Hausbesuche: Ein Termin, der ohne Lücke direkt an Praxis-Terminen liegt, zählt nicht als Hausbesuch (keine Fahrzeit möglich) und landet weder in der Tour noch in den Fahrtkosten. Beim Einlesen des Dienstplans werden solche Termine nicht mehr als „HB?“ vorgeschlagen. Berechnete Abschnitte, die nicht mehr zum Dienstplan passen, verschwinden auch an übernommenen Tagen. |
+| v116 | 05.11.2026 | 680a9f0 | Fahrtkosten/Hausbesuche: Neues Fenster unter Mehr (Variante B3). Oben die heutige Tour wie im Tour-Banner: Strecke, Fahrzeit, Fahrtkosten, kleine Karte und „Als Nächstes … · Navigieren“ zum nächsten Patienten; ohne Hausbesuche die nächste Tour. Darunter der Monat mit Summe und den letzten Tagen (zweigeteilte Tage mit beiden Teilen), Abrechnung des Vormonats (gesichert oder antippen zum Sichern), Sperrungen und Adressen. |
+| v115 | 05.11.2026 | 6673fa7 | Fahrtkosten/Hausbesuche: Zweigeteilte Tage werden sicher getrennt. Nachnamen aus der alten Abrechnung („Kisina“) werden auch dem Dienstplan-Namen mit Anfangsbuchstaben („Esfira K.“) zugeordnet, damit der fehlende Teil nach der Praxis ergänzt wird. Auf der Karte hat jede Tour eine eigene Farbe (vor der Praxis blau, danach lila), oben stehen die km je Tour. Der Hinweis unten sagt ehrlich, wenn ein Teil in den Fahrtkosten fehlt. |
+| v114 | 05.11.2026 | b4dfb12 | Fahrtkosten/Hausbesuche: Zweigeteilte Tage (Hausbesuch vor der Praxis, Hausbesuche nach der Praxis), die aus der alten Fahrtkosten-App nur mit einem Teil übernommen wurden, werden anhand des Dienstplans ergänzt. Der übernommene Teil behält seine km, der fehlende kommt als eigene Zeile mit km von der Karte dazu („vor der Praxis“ / „nach der Praxis“), auch im JPEG und in der Monatssumme. |
+| v113 | 05.11.2026 | 0c065ab | Fahrtkosten/Hausbesuche: Sperrungen selbst eintragen. Auf der Tour-Karte neuer Knopf (Absperrung) unter dem Standort: Straße antippen, Doku-Fix markiert das Stück bis zur nächsten Kreuzung (weitere Stücke dazutippen), Beginn und optional Ende wählen, „Sperren“. Gesperrte Straßen sind rot gestrichelt, Routen fahren außen herum; Touren ab dem Beginn werden neu berechnet (außer von Hand korrigierte km). Antippen der roten Linie → „Wieder freigeben“ (gilt ab heute, frühere Tage bleiben). Sperrungen bleiben auf dem Gerät und sind in der Sicherung. |
+| v112 | 05.11.2026 | 33ad932 | Fahrtkosten/Hausbesuche: Die Karte kennt eine Vollsperrung nahe der Praxis (Straßenbau). Routen fahren außen herum. Touren aus dem Dienstplan, deren km nicht von Hand korrigiert wurden, werden mit der neuen Karte neu berechnet; importierte ältere Monate bleiben unverändert. |
+| v111 | 05.11.2026 | 66f5a0a | Fahrtkosten/Hausbesuche: Die Abrechnung als JPEG zeigt wie früher nur die Nachnamen, die Frage nach Vornamen entfällt. Beim ersten Öffnen im neuen Monat bietet Doku-Fix die fertige Abrechnung des Vormonats an: „JPEG sichern“ öffnet das Teilen-Menü (In Dateien sichern), „Erst ansehen“ öffnet die Monatsliste, „Morgen erinnern“ blendet den Hinweis für heute aus. Ist der Monat gesichert, kommt der Hinweis nicht wieder. |
+| v110 | 05.11.2026 | 124bc47 | Fahrtkosten/Hausbesuche: Adressen, die es nur außerhalb Bochums gibt (z. B. Imandtstraße in Essen), werden auch ohne Stadtangabe gefunden; bei Tippfehlern im Straßennamen schlägt die App die passende Adresse vor („Meintest du …“), ein Tipp übernimmt sie, geraten wird nicht. Vorschläge und Patienten aus der Liste lassen sich jetzt antippen (vorher verschwanden sie beim Berühren). Adresse, Zuordnung und Navigieren öffnen sich in einem eigenen Feld über den Kacheln mit ✕ zum Schließen. |
+| v109 | 05.11.2026 | afaed44 | Fahrtkosten/Hausbesuche: km-Berechnung korrigiert. Gibt es eine Straße in mehreren Städten (z. B. Nierenhofer Str. oder Heinrich-Kämpchen-Str. auch in Essen), nimmt die App die Stadt aus der Adresse, sonst Bochum; vorher landeten Halte teils in Essen (z. B. 02.11. mit 24,2 statt 8,6 km). Die Karte fährt nicht mehr durch Poller, gesperrte Schranken, Privat- und Lieferwege, Anliegerstraßen nur am Ziel. Regeln wie in der Fahrtkostenabrechnung: Mo und Di vom ersten Patienten bis zur Arbeit, Do und Fr von der Arbeit bis zum letzten Patienten, Mi vom ersten bis zum letzten Patienten; zwei Touren an einem Tag enden bzw. beginnen an der Praxis. Bekannte Routen haben Vorrang. Eingespielte Fahrten aus der alten Abrechnung ersetzen falsch berechnete Einträge. Schon berechnete Touren werden mit der neuen Karte neu gerechnet. |
+| v108 | 05.11.2026 | 160a3f0 | Fahrtkosten/Hausbesuche: Auf der Fahrkostenabrechnung steht bei Therapeut/in immer derselbe Name, das Eingabefeld dafür entfällt. |
+| v107 | 05.11.2026 | b7e4b31 | Fahrtkosten/Hausbesuche: Fahrten aus der alten Fahrtkosten-App (per Sicherung eingespielt) bleiben so, wie sie abgerechnet wurden, auch wenn für den Tag ein Dienstplan mit Hausbesuchen vorliegt; in der Liste mit „übernommen“ markiert. |
+| v106 | 05.11.2026 | e78165f | Neu: Fahrtkosten/Hausbesuche. Im Dienstplan öffnet „Hausbesuche · Tour ›“ die Tour auf einer Offline-Karte (Straßennetz von OpenStreetMap, liegt als karte.txt bei der App): Reihenfolge und Uhrzeiten aus dem Plan, Strecke, Fahrzeit und Kosten (0,30 € pro km), Hinweis ob die Fahrt in die Lücke passt; Start und Ziel Praxis nach Wochentag wie bisher. Patient antippen: „Navigieren“ (öffnet Apple Karten, nur der Zielpunkt wird übergeben) und „Adresse ändern“. Eigener Standort als blauer Punkt, nur solange die Karte offen ist, wird nicht gespeichert. Jede Tour wird am Tag selbst in die Monatsliste eingetragen, km korrigierbar und für dieselbe Tour gemerkt, Tage nachtragen, Abrechnung als JPEG im bisherigen Layout. Dienstplan-Namen („Anna M.“) lassen sich einmal einem Nachnamen aus der Adressliste zuordnen, auf der Abrechnung steht dann Vor- und Nachname; fehlende Vornamen fragt die App vor dem Speichern ab. Adressen, Fahrten und Strecken bleiben auf dem Gerät und sind in der Sicherung enthalten. Unter Mehr: Eintrag „Fahrtkosten/Hausbesuche“. |
+| v105 | 05.11.2026 | 6b83c5b | Dienstplan: Der Pausenblock füllt sich während der Pause von links nach rechts mit Grün, so sieht man, wie viel der Pause schon vorbei ist. |
+| v104 | 05.11.2026 | 9f67eff | Dienstplan: Die Feierabend-Zeile wächst beim Pulsieren auf etwa die dreifache Höhe (Schrift und Symbol mit) und geht wieder zurück, bis sie angetippt wird. |
+| v103 | 05.11.2026 | 2fc3ae7 | Dienstplan: Ist der Feierabend erreicht, pulsiert die Feierabend-Zeile („Schönen Feierabend!“), bis sie einmal angetippt wird; das merkt sich die App für den Tag. |
+| v102 | 05.11.2026 | 69e652d | Dienstplan: Die Feierabend-Zeile geht über die volle Breite bis unter die Uhrzeiten und hat links keine eigene Uhrzeit mehr, damit sie als Tagesende und nicht als Termin erscheint. |
+| v101 | 05.11.2026 | 6bb04d2 | Dienstplan: Nach dem letzten Patienten steht eine schmale Zeile „Feierabend um 19:00“ mit der Restzeit bis Arbeitsende und der Zahl der Patienten, die heute noch kommen (Ende der Arbeitszeit aus dem Plan, sonst Ende des letzten Termins); danach „Schönen Feierabend!“. |
+| v100 | 05.11.2026 | 9001119 | Dienstplan: Beim laufenden Termin steht rechts neben dem Fortschrittsbalken die Restzeit („noch 12 min · bis 11:20“); in den letzten 5 Minuten werden Balken und Zahl orange. |
+| v99 | 05.11.2026 | b91b3f8 | Erstbefund: In jedem ausführlichen Schritt steht oben „Zum Kurzbefund“ (vorher nur im Schritt Diagnose); ein neuer Befund bleibt nach der Diagnose im Kurzbefund. Aus vorhandener Doku: Laufen zwei Verordnungen gleichzeitig (z. B. MT und KGG), landen Einheiten, Diagnose und Rezeptzählung bei der passenden Behandlung, fehlt sie, wird sie als weitere Diagnose angelegt. Dienstplan-Karte zeigt beim MT-Termin die MT-Behandlung, beim KGG-Termin die KGG-Behandlung. Import aus der Karte öffnet als Blatt über die ganze Breite. |
+| v98 | 04.11.2026 | c4ca2ec | Therapiebericht-Diktat folgt jetzt dem Formular: 1 Ziele, 2 Maßnahmen, 3 Empfehlung, 4 Verordnung. Die Frage „Besonderheiten“ entfällt, an ihrer Stelle steht „Welche Maßnahmen hast du durchgeführt?“ mit fünf Maßnahmen passend zur Diagnose zum Antippen (an/aus) und eigenen Maßnahmen per Sprache oder Text. Dieselben Vorschläge in der Kachel „Therapeutische Maßnahmen“. Maßnahmensätze als Entwurf, fachlich prüfen. |
+| v97 | 04.11.2026 | 048ba97 | Therapiebericht: Die erste Diktat-Frage heißt jetzt „Welche Therapieziele gehören in den Bericht?“. Fünf Ziele passend zur Diagnose (Region aus ICD-Kode und Diagnosetext, Seite aus der Diagnose; Schulter, Ellenbogen, Hand, HWS, BWS, LWS, Hüfte, Knie, Sprunggelenk, Fuß, Neurologie) zum Antippen, eigene Ziele sprechen oder schreiben (mit Punkt getrennt), Stand der Ziele als Schalter. Dieselben Vorschläge in der Kachel „Therapieziele“. Formular: mehr als drei Ziele laufen mit Semikolon hintereinander statt zu verschwinden, zu langer Text wird abgeschnitten statt gar nicht gezeichnet. Zielsätze als Entwurf, fachlich prüfen. |
+| v96 | 04.11.2026 | a338361 | Therapiebericht: neuer Knopf „Bericht diktieren“. Eine Karte über den Abschnitten führt durch vier Fragen (Ziele, Empfehlung, weitere Verordnung, Besonderheiten), oben als Reiter zum Springen. Gesprochenes landet live im passenden Abschnitt und im Praxis-Formular, das gerade gefüllte Feld leuchtet in der Vorschau. Schnellbausteine zum Antippen, Zurück/Weiter, die vorige Antwort mit „ändern“, bisheriger Text lässt sich übernehmen oder wiederherstellen. Bei „Verordnung“ wird Ja/Nein aus dem Gesagten gesetzt. Erkennung wie beim Diktat (Live oder auf dem Gerät, Einstellung unter Mehr). Das Bericht-Fenster darf dafür das Mikrofon nutzen. |
+| v95 | 04.11.2026 | 6c5b1a0 | Darstellung: Die gewählte Farbe (Hell, Dunkel, Automatisch) wird gemerkt und beim nächsten Öffnen wieder so angezeigt. Vorher teilte sie sich den Speicher mit der Praxis-Formularvorlage (gleicher interner Name), dadurch startete die App dunkel und die Vorlage wurde überschrieben. Eine falsch abgelegte Wahl wird beim ersten Start zurückgeholt. |
+| v94 | 04.11.2026 | 9032744 | Reiter Mehr neu gestaltet: links Liste in Gruppen (Heute mit offener Doku, fälligen Berichten und fälliger Sicherung; Werkzeuge; Dokumentation; App), rechts die Einstellungen des gewählten Punkts, auf dem iPhone als eigene Ansicht mit „‹ Mehr“. Neu: Diktat-Einstellungen (Erkennung Auto/Live/Gerät, Sprachmodell Schnell/Genau, Wörterbuch ansehen, ergänzen, Einträge entfernen), Erinnerung an die Sicherung nach 3/7/14 Tagen, alte Dienstpläne automatisch löschen (Nie/14/30/60 Tage, Standard Nie), „Kopie vom Vortag entfernen“ abschaltbar, Therapiebericht-Seite mit fälligen Berichten und Fortschritt. |
+| v93 | 04.11.2026 | 6e8c48d | Dienstplan: Ist die Karte des laufenden Termins aufgeklappt, gleitet die rote Zeitlinie mit Uhrzeit und Zähler nach links weg und blendet aus; beim Zuklappen kommt sie zurück und läuft wieder blass durch die Karte. Bei „Bewegung reduzieren“ nur Ein- und Ausblenden. |
+| v92 | 04.11.2026 | 2940cd3 | Diktat in den Verlauf: Hat der Patient noch keine Region und nennt das Diktat keine, zeigt das Blatt Region-Chips (HWS, BWS, LWS, Schulter bis Fuß je re./li.). Ohne Region landet der Text unter „Behandlung (aus dem Diktat)“ statt unter Subjektiv, eigenes Feld in der Kurz-Doku. Schnell-Doku öffnet nach einem Diktat direkt die Kurz-Doku. „Dein Diktat im Wortlaut“ aufklappbar. Dosierung nur noch bei der Übung, bei der sie genannt wurde. |
+| v91 | 03.11.2026 | 289b66b | Diktat: Die große Diktat-Seite lädt unsichtbar vor, sobald das Diktat-Blatt oder der Befund-Überblick eines Patienten mit Doku offen ist. Beim Wechsel auf „Neues Rezept, Befund“ wächst die fertige Seite direkt auf, der bisherige Text steht sofort drin; kein Gerüst, keine springenden Überschriften. Die Seite meldet sich erst nach geladener Schrift als fertig. Ohne Vorladen (neuer Patient) nur eine ruhige Fläche mit Leiste, dann weiches Einblenden. |
+| v90 | 03.11.2026 | 5f24899 | Diktat in den Verlauf: Fehlen beim Patienten Region oder Diagnose (z. B. neue Schnell-Doku), werden sie aus dem Diktat übernommen, Schmerz und Maßnahmen landen in der Region, die Schnell-Doku öffnet direkt die Doku. Der gesprochene Text wird immer mitgespeichert; ohne erkannte Region kommt er ins Feld Subjektiv. Die diktierte, noch nicht abgeschlossene Einheit erscheint im Zeitstrahl als „heute · prüfen“ mit Text, Knopf „Diktat prüfen“. Ohne Diagnose zeigt die Karte die Region mit „Diagnose fehlt“. |
+| v89 | 03.11.2026 | 75b640b | Patientenkartei: Aufgeklappter Patient wie die Dienstplan-Karte: Diagnose-Umschalter, Zeitstrahl mit Schmerzwert je Termin, letzte Doku (Punkt antippen zeigt den Tag), rechts Diktieren, Verlauf bzw. Schnell-Doku, Befund, Historie, Aus Doku; darunter Weitere Diagnose, Wieder aufnehmen und Patient löschen. „heute offen“ nur bei Termin im heutigen Dienstplan. |
+| v88 | 03.11.2026 | c7ada54 | Diktat: Beim Wechsel auf „Neues Rezept, Befund“ (und bei „Neubefundung diktieren“ oder Diktieren für neue Patienten) wächst die große Diktat-Ansicht von der Oberkante des Blatts über den Bildschirm; sofort steht ein schimmerndes Gerüst in Praxis-Farben, die fertige Seite blendet weich darüber. Kein weißer Bildschirm mehr. Bei „Bewegung reduzieren“ ohne Animation. |
+| v87 | 03.11.2026 | 686210e | Dienstplan-Patientenkarte neu (C3a): Umschalter zwischen Diagnosen mit Punkt (orange heute offen, grün dokumentiert), Zeitstrahl aus Erstbefund, letzten fünf Einheiten und heutigem Termin mit Schmerzwert (NRS bei Belastung) je Termin, grün bei deutlicher Besserung; Punkt antippen zeigt die Doku dieses Tages, sonst die letzte. Rechts Diktieren, Verlauf (n. Einheit) bzw. Schnell-Doku, Befund-Überblick, Historie und Aus Doku. Dienstplan: Ein Plan, der Termin für Termin zum heutigen passt, bleibt auch abends auf heute; eine Kopie des heutigen Plans auf dem nächsten Tag wird beim Öffnen entfernt und gemeldet. |
+| v86 | 03.11.2026 | 420456a | Große Diktat-Ansicht übernimmt Farben, Schrift (Outfit) und Hell/Dunkel aus Doku-Fix: Mikrofon und Hauptknöpfe lindgrün mit dunkler Schrift, runde Knöpfe, Praxis-Ecken, Titel in Großbuchstaben, Mikrofon beim Aufnehmen rot. Mikrofon im Diktat-Blatt und in der Kachel „Diktieren“ ebenfalls in Praxis-Farben statt blau. |
+| v85 | 03.11.2026 | 19ab153 | Dienstplan-Patientenkarte aufgeräumt: oben zwei Kacheln „Diktieren“ und „Verlauf“ (bzw. „Schnell-Doku“), darunter „Erstbefund“ und „Patientenhistorie“; „Dem Patienten zeigen“ und die eigene Zeile „Neubefundung“ entfallen. „Erstbefund“ öffnet ein Überblick-Blatt mit Diagnose und schriftlichem Befund (Absätze blenden nacheinander ein), Knöpfe „Neues Rezept“ (Neubefundung diktieren oder tippen) und „Erstbefund bearbeiten“. Erst- und Neubefund diktieren öffnet die große Diktat-Ansicht (diktat.html): links Mikrofon und Text, rechts alle Bereiche von Erstbefund und 1. Behandlung mit Haken, die beim Diktieren mitwachsen, Text Kurz/Lang; Datum wählbar oder aus dem Diktat; „In Doku-Fix übernehmen“ legt den Befund an. Verlauf diktieren bleibt im kleinen Blatt. |
+| v84 | 03.11.2026 | 34ec718 | Diktat: Beim Start vom Home-Bildschirm nimmt das Mikrofon jetzt „Auf dem Gerät“ auf, weil Apples Live-Erkennung dort keinen Text liefert (Aufnahme lief, aber nichts kam an). Kommt bei Live nach 9 Sekunden nichts an, erscheint ein Hinweis und es wird auf „Auf dem Gerät“ umgestellt. Beim Stoppen geht der zuletzt gesprochene Satz nicht mehr verloren. Auf dem Gerät nutzt das kleinere Sprachmodell (einmalig ca. 76 MB, danach offline). |
+| v83 | 03.11.2026 | 81708ee | Diktat: Verlaufseinheit wird nur über das Blatt unten eingetragen, die Ansicht bleibt im Dienstplan (kurze Bestätigung). Bei Erstbefund oder neuem Rezept öffnet sich sofort die Befundansicht, das Diktat sitzt verkleinert unten (über den Strich ein- und ausklappbar) und wird laufend eingetragen. Oben im Blatt stehen die ausgefüllten Bereiche („✓ 13 von 16“) und die noch offenen, die Kreise unter „Springen zu“ füllen sich mit. „Fertig“ lässt den Befund offen, „Verwerfen“ nimmt alles zurück (auch den Abschluss des alten Befunds). |
+| v82 | 03.11.2026 | 4f8a003 | Diktat: Hat der Patient schon Doku (Erstbefund oder nur Verlaufseinträge), steht im Diktat-Blatt ein Umschalter „Verlaufseinheit | Neues Rezept, Befund“. Neues Rezept schließt bisherigen Befund und Verlauf ab (bleiben in der Patientenhistorie) und legt eine Neubefundung mit erster Behandlung an. Datum „Neubefundung vom“ bzw. „Erstbefund vom“ einstellbar, wird aus dem Diktat übernommen („Befund vom 27.10.“). „Neues Rezept“, „Folgerezept“ oder „Neubefundung“ im Diktat stellt den Umschalter von selbst um. |
+| v81 | 03.11.2026 | e71963d | Dienstplan: neue erste Zeile „Diktieren“ in der Patientenkarte. Rückschau nach dem Termin einsprechen (Live über Apple oder auf dem Gerät), Text bei Bedarf nachbessern, „Fertig, einsortieren“ trägt alles in die echten Felder ein: bei Patienten ohne Doku als Erstbefund mit erster Behandlung, sonst als heutige Verlaufseinheit (umschaltbar über den Chip „Wird zu“). Erkannt werden u. a. Diagnose, Beschwerdebeginn, Auslöser, Schmerz (NRS), Beweglichkeit, Tests, Detonisierung, Mobilisation und Übungen mit Dosierung. |
+| v80 | 03.11.2026 | aa36951 | Dienstplan: Steht ein lesbares Datum auf dem Plan, landet er immer auf diesem Tag. Vorher wurde ein Plan auf morgen geschoben, wenn am Tag schon ein anderer (falsch abgelegter) Plan lag; beim Wechsel der Reiter erschien dann wieder der alte Plan. |
+| v79 | 03.11.2026 | 575ade9 | Dienstplan: Bleibt die App über Nacht offen, springt der Plan beim Öffnen auf heute. Das Druckdatum oben rechts auf dem Papierplan wird nie mehr als Plandatum genommen; ist nur das Druckdatum lesbar und liegt es vor heute, landet der Plan auf heute. Ist ein Plan schon vollständig übernommen, heißt der Knopf „Zum Plan“ statt ausgegraut zu sein. |
+| v78 | 03.11.2026 | 03ab253 | Dienstplan-Foto: Termine gehen nicht mehr verloren, wenn die Uhrzeit schlecht gelesen wird (z. B. Doppeltermin Barbara K. erschien als Lücke). Uhrzeiten ohne Doppelpunkt werden erkannt, Zeilen ohne lesbare Uhrzeit übernimmt die App mit Beginn aus den Nachbarterminen, Zeilen mit unlesbarem Namen bleiben als „(Name unleserlich)“ stehen statt als Lücke. |
+| v77 | 02.11.2026 | d6e95ef | Therapiebericht: Textbausteine stehen als Standard in Stichpunkten; mit dem Haken „Fließtext generieren“ werden Ziele, Maßnahmen, Empfehlungen und Begründung als ein bis zwei Sätze formuliert (Aufzählungen „A, B und C“, bei „und“ im Baustein mit „sowie“), Vorschau direkt im Abschnitt. |
+| v76 | 02.11.2026 | 450cf5f | Therapiebericht: Handschrift aus der geladenen Vorlage wird jetzt wirklich verwendet (vorher Kästchen statt Buchstaben). |
+| v75 | 02.11.2026 | 6c7a334 | Praxis-Gestaltung in Hell, Dunkel oder Automatisch, unter Mehr umschaltbar. Therapiebericht-Werkstatt als Kachel unter Testdatenbank. Im Verlauf wächst der Therapiebericht mit: Karte mit Fortschritt, ab der vorletzten Einheit „Therapiebericht fällig“, Werkstatt vorausgefüllt (Zeitraum, Verordnung, Einheiten, Heilmittel, Diagnose mit ICD, Ziele, Maßnahmen, Begründung aus dem NRS-Verlauf), bisherige Berichte unter der Verlaufskurve. ICD-Raten korrigiert. Praxis-Formular und Handschrift stehen nicht im Code, sie werden einmal als Vorlage-Datei geladen und bleiben auf dem Gerät. Schriften und PDF-Bibliothek liegen lokal (offline, keine Verbindung zu Google). |
+| v74 | 29.10.2026 | 0b6c271 | Fehler behoben: „Aus vorhandener Doku übernehmen“ bei einem bekannten Patienten in Kartei oder Dienstplan führte zum Absturz („eb.diagnoseKat“). Übernahme landet jetzt beim richtigen Patienten |
+| v73 | 29.10.2026 | 154fbde | Anatomie: neues, genaueres 3D-Modell aus Z-Anatomy (CC BY-SA 4.0, auf Basis von BodyParts3D) mit rund 1200 Teilen. Muskeln mit eigener Sehne (hell), feinen Faserlinien entlang der Zugrichtung und leicht unterschiedlichen Rottönen, Gelenkknorpel bläulich, echte Menisken, Kreuz- und Seitenbänder, Labren, Wirbelsäulen- und Hüftbänder statt schematischer Formen. Bei Bewegungen färben sich die arbeitenden Muskeln kräftig rot und werden dicker, die Gegenspieler blassrosa und schlanker (Legende „Spannt an“ / „Wird gedehnt“). Muskelkarte mit „Funktion zeigen“ spielt die passende Bewegung ab. Bei Kreuzband und Meniskus wird der Oberschenkelknochen durchsichtig |
+| v72 | 29.10.2026 | caa968c | Anatomie: Strukturkarte mit sechs Knöpfen (neu: Durchsichtig und Rest durchsichtig als Röntgen-Ansicht), Umschalter Ansehen / Sezieren (Antippen entfernt eine Struktur), „Auswahl zurücksetzen“ setzt auch diese zurück. Diagnose-Erklärungen als Tour mit Schritten: gesund, Problem, je nach Diagnose Nervenwurzel und Dermatom, eingeengter Nerv oder Bewegung, dann woran wir arbeiten |
+| v71 | 28.10.2026 | 21700db | Patientenkartei: Kürzel-Kreise farbig nach Therapieart wie im Dienstplan (KG blau, KG ZNS violett, MT türkis, KGG rosa), Farbe aus dem letzten Dienstplan-Termin, neurologische Patienten ohne Termin violett, sonst grau; Legende mit Anzahl über den Filtern |
+| v70 | 28.10.2026 | f2fe29f | Anatomie: neue Schicht „Dermatome“ (Figur mit Haut, Dermatome farbig mit weichen Übergängen, Antippen oder Bereich malen mit Rückschluss auf Nervenwurzel, Bandscheibenhöhe, Kennmuskel und Reflex, „An der Wirbelsäule zeigen“, Kauda-Hinweis bei S3 bis S5). Kiefer öffnet sich animiert beim Antippen von Kaumuskeln, Unterkiefer oder Zähnen, dazu „Mund öffnen“ mit Millimeterangabe. Werkzeugleiste senkrecht rechts, Schichten, Strukturen und Zeichnen öffnen links daneben, Strukturen als Aufklappbereiche, Figur rückt in den freien Platz. Kein Schild mehr beim Antippen. Eigener Knopf „Auswahl zurücksetzen“ unter der Werkzeugleiste |
+| v69 | 28.10.2026 | 7b12fb6 | Mehr-Seite neu gestaltet: jeder Bereich als Karte mit farbigem rundem Symbol, Titel und Untertitel (z. B. Textstil, Zahl der Tagespläne, „Noch nie gesichert“), weiche Schatten statt Rahmen, auch im Dunkelmodus |
+| v68 | 28.10.2026 | 3488ce4 | Mehr-Seite: Testdatenbank als schlichte Zeile ohne Erklärtext, Gelernte Vorschläge zugeklappt wie Verlaufsdoku und Dienstpläne, alle Kacheln gleich hoch und kompakter |
+| v67 | 28.10.2026 | ee2d83e | Reiter „Mehr“ mit Zahnrad-Symbol. Mehr-Seite neu sortiert: Testdatenbank oben, Sicherung ganz unten; Verlaufsdoku und Dienstpläne zugeklappt, erst beim Antippen mit Auswahl bzw. Liste |
+| v66 | 28.10.2026 | d4578a6 | Patientenkartei ordnen: Umschalter A–Z, Krankheitsbild, Region. Krankheitsbild aus der Wissensbasis (bestätigt oder aus der Diagnose erkannt), gruppiert nach Bereich; Patienten mit mehreren Diagnosen stehen in jeder passenden Gruppe mit der jeweiligen Diagnose; ohne Treffer „Ohne passendes Krankheitsbild“ bzw. „Diagnose noch offen“. Gewählte Ansicht wird gemerkt |
+| v65 | 28.10.2026 | 908e6e7 | Testdatenbank überarbeitet: alle 190 Tests mit Quelle (Studien mit PubMed-Link statt Physiopedia/Wikipedia), Belegstärke stark/mäßig/schwach/ohne Daten, rund 60 falsche oder falsch zugeordnete Kennwerte korrigiert (u. a. Lachman, Drop-Arm, Ottawa Knie, Wainner-KTS, BBS), Gruppenhinweise angepasst. 21 neue Tests, u. a. Jobe, Bear-Hug, Speed, Upper-Cut, Canadian C-Spine Rule, Cauda-equina-Screening, Zentralisation, Moving Patellar Apprehension, Weight-Bearing Lunge, Handkraft, Tinetti, Barthel, FAC. Test-Kacheln neu: Belegstärke als Balken, LR+/LR− auf einen Blick, „Positiv bei“, Kennwerte mit Deutung, Durchführung, Quellen mit Links; Tests nach Gruppen je Region, Filter nach Belegstärke und „neu“; doppelte Orthopädie-Gruppen unter Neurologie entfernt |
+| v64 | 28.10.2026 | f140d6f | Neuer Reiter „Anatomie“ zum Zeigen am Patienten: 3D-Skelett mit Muskeln, Bändern, Bandscheiben und Zähnen, offline (ca. 2,4 MB). Regionen mit rechts/links, Begriffe auf Latein (Deutsch umschaltbar), „Erklären“ mit 20 Diagnosen (Beschwerden rot, Behandlung blau, Mit Befund / Gesund), Schichten, Strukturenliste mit Suche, Zeichnen und Schmerzpunkt, Gelenkbewegung mit Normbereich, Vollbild. Beim Patienten im Menü „Dem Patienten zeigen“ übernimmt Region, Seite, Diagnose und behandelte Muskeln. Modell: BodyParts3D (CC BY-SA) |
+| v63 | 28.10.2026 | ecbab7f | Reiter Patienten ist jetzt eine Patientenkartei mit allen Patienten (auch Schnell-Doku), alphabetisch, mit Suche nach Name oder Diagnose, Filtern (Alle, Heute, Erstbefund, Schnell-Doku, Abgeschlossen) und Anlegen über +. Antippen öffnet ein Menü mit Verlauf, Erstbefund, Patientenhistorie, Neubefundung, Weitere Diagnose und Löschen; bei mehreren Diagnosen steckt der Verlauf im Menü der jeweiligen Diagnose. Dienstplan: gleiches Menü, Bearbeiten als Werkzeugsymbol oben rechts, darunter immer „Aus vorhandener Doku übernehmen“. Zurück-Knopf oben links zurück zu Patienten oder Dienstplan. Reiter Schnell-Doku entfernt |
+| v62 | 28.10.2026 | 4a2df3c | Dienstplan: neuer Knopf „Patientenhistorie“ (Diagnosen, Erstbefunde, Verlaufsdokumentation, eingeklappt) und „Neubefundung“ (neuer Befund mit übernommener Diagnose und Anamnese, bisheriger Befund und Verlauf werden abgeschlossen und bleiben in der Historie) |
+| v61 | 27.10.2026 | 5f49d42 | Reiterleiste unten neu gestaltet (klassisch): vier gleich breite Reiter, aktiver Reiter mit hellblauer Fläche und blauem Strich oben, kürzere Namen „Patienten“ und „Schnell-Doku“ |
+| v60 | 27.10.2026 | 1adfae8 | Weicher Übergang beim Wischen: alte und neue Seite gleiten zusammen, Tempo vom Finger, Überschrift blendet mit |
+| v59 | 27.10.2026 | 551b0bc | Dienstplan: kleine Zahl an der roten Zeitlinie, wie viele Patienten heute noch kommen |
+| v58 | 27.10.2026 | ccc457d | App seitlich fixiert: Wischen in Auswahlzeilen oder ohne Nachbarseite zieht die Seite nicht mehr mit |
+| v57 | 27.10.2026 | e0af16c | „Aus vorhandener Doku übernehmen“ deutlich zuverlässiger: Tabelle wird an der Spaltenlinie geteilt und getrennt gelesen, Feldnamen auch verlesen erkannt, ICD-Codes mit dem Katalog abgeglichen, abgeschnittene Zeilen und Verordnungen sauber behandelt. Trainiert mit rund 470 erfundenen Testseiten, zuletzt ohne Fehler |
+| v56 | 27.10.2026 | 4aa199d | Fehler behoben: Komma vor Punkt, Beweglichkeit im Bericht, NAS heißt NRS, Speicherwarnung, Sicherung über Teilen, Red Flags Wirbelsäule, VKB-Pfad, Seitenerkennung |
+| v55 | 27.10.2026 | ea91a4c | Neu: „Aus vorhandener Doku übernehmen“ im Dienstplan, bei Patienten Dokumentation, Schnell Dokumentation und im Verlauf („ergänzen“). Screenshots der bisherigen Doku werden gelesen: Diagnosen, Rezepte mit Zählung, „Therapiebericht verlangt“, eine Einheit pro Tag, „siehe oben“ aufgelöst, Ausfälle erkannt, Prüfliste vor dem Übernehmen. Screenshots und erkannter Text werden nicht gespeichert |
+| v54 | 27.10.2026 | e6074a9 | Leeres Praxis-Formular nicht mehr im Code, wird einmal auf dem Gerät hinterlegt |
+| v53 | 26.10.2026 | 5d04fa2 | Therapiebericht im Aufbau des Praxis-Formulars: Felder zum Kopieren, Weitere Verordnungen, Formular als PDF |
+| v52 | 26.10.2026 | c558f4b | Rote Zeitlinie im Dienstplan läuft stufenlos durch den laufenden Termin, im Termin blass |
+| v51 | 26.10.2026 | 1e23644 | Hausbesuch-Erkennung: Korrektur von Hand wird gemerkt, gleicher Nachname mit anderem Vornamen und Termine außerhalb der Hausbesuchszeit nicht mehr automatisch Hausbesuch |
+| v50 | 16.10.2026 | 60f2d57 | Arbeitszeit im Dienstplan immer sichtbar, mit Dauer |
+| v49 | 16.10.2026 | 239fb0f | Absturz „e.unter.length“ bei unvollständig gespeicherten Regionen behoben |
+| v48 | 15.10.2026 | b3d06a8 | Vorschläge lernen eigene Formulierungen, Eingabefelder bläulich abgesetzt |
+| v47 | 15.10.2026 | ff0c7c7 | Kurzbefund, Vorschläge beim Tippen, Messhinweis vor Rezeptende, „Verlauf zusammengefasst“ und Lückenprüfung im Therapiebericht, Kurz-Doku ab der ersten Einheit |
+| v46 | 15.10.2026 | 7e06b45 | Kurz-Doku auf einer Seite, kurzer Textstil |
+| v45 | 15.10.2026 | 6a83322 | iPad-Liste korrigiert, „Bisherige Dokumentation“ nur bei geöffnetem Patienten, zuverlässigere Updates mit Versionsanzeige, Namen im Dienstplan-Archiv öffnen die Doku |
+| v44 | 15.10.2026 | cbc7287 | Vierter Reiter „Mehr“ mit Sicherung, Testdatenbank und Dienstplan-Archiv |
+| v43 | 15.10.2026 | 1c7d4d0 | Verlaufskurve, Fortschritt im Verlaufstext, mehrere Diagnosen pro Patient, Auslöser in der Schnell Doku, BG-Haken beim Rezept-Foto |
+| v42 | 15.10.2026 | a1a5139 | Patientenliste mit Suche in der Patienten Dokumentation, Rezept-Leser verbessert, neue Kachel „Wie ist es dazu gekommen?“ |
+| v41 | 15.10.2026 | b9ba360 | Einfarbige Symbole bei „Foto machen“ und „Bild wählen“ |
+| v40 | 15.10.2026 | 31439a1 | Rezept per Foto oder Bild einlesen (Diagnose, Behandlungseinheiten), Patientenfenster mit Suche in der Schnell Doku |
+| v39 | 15.10.2026 | a99bae3 | Absturz in der Schnell Doku behoben (Fehler „n.name“) |
+| v38 | 15.10.2026 | c77016f | Hängender leerer Bildschirm nach Wischen behoben, Fehlerhinweis mit „Neu laden“ |
+| v37 | 15.10.2026 | 0a42acd | Leerer Bildschirm nach Wechsel aus dem Dienstplan behoben, Kasten „Weiter mit“ entfernt |
+| v36 | 15.10.2026 | 9f02bdb | Eine Sicherung für alle Daten, unten im Dienstplan |
+| v35 | 15.10.2026 | c8285ba | Plan-Update per Foto übernimmt verschobene Uhrzeiten; Pause auch ohne erkannte p-Zeile |
+| v34 | 15.10.2026 | e28da86 | Pause im Dienstplan groß hervorgehoben, mit Countdown |
+| v33 | 15.10.2026 | d20fb60 | Offene Dokus im Dienstplan: Grau zwischen v31 und v32 |
+| v32 | 15.10.2026 | be8207e | Offene Dokus im Dienstplan etwas ausgegraut, damit sie sich von noch kommenden Patienten abheben |
+| v31 | 15.10.2026 | c28125f | Offene Dokus im Dienstplan direkt an den Terminen hervorgehoben, Zeile oben entfernt |
+| v30 | 15.10.2026 | d77f454 | Fehler behoben: kopierter Text kam in praxxo als Link mit %20 an |
+| v29 | 15.10.2026 | db4907a | Dienstplan: Lücken ohne Patient orange markiert, getrennt von der Pause |
+| v28 | 15.10.2026 | af84008 | Kopierter Verlaufstext ohne Datum |
+| v27 | 15.10.2026 | 6b70402 | VKB-Pfad anlegen: Eingaben bleiben gespeichert, Knopf nie mehr ausgegraut, Plastik und mitverletzte oder mitoperierte Strukturen einmal abfragen |
+| v26 | 15.10.2026 | f37376a | VKB-Reha-Pfad auch im Erstbefund, direkt nach der Region |
+| v25 | 15.10.2026 | 62090d4 | Testdatenbank zum Durchblättern und Suchen |
+| v24 | 15.10.2026 | 0cf7590 | VKB-Reha-Pfad im Verlauf (operiert und konservativ) mit Kriterien, Aufrücken und Text, neue Tests in der Testdatenbank |
+| v23 | 14.10.2026 | 5ef44d5 | Weiter mit nächstem Patient, Alles wie letztes Mal, Übungsfundus mit Kategorien, Dosierung je Übung |
+| v22 | 14.10.2026 | 43e0f6e | Querformat auf dem iPad: Liste scrollt wieder bis ganz unten |
+| v21 | 14.10.2026 | 1d22970 | praxxo-Screenshots und Papierfotos besser lesen, Notizen aus dem Plan, Hausbesuch-Abgleich mit der Fahrtkostenabrechnung |
+| v20 | 14.10.2026 | 85fe641 | Behandlung beenden mit Doku-Status im Dienstplan, Hausbesuche aus Fahrzeit-Lücken erkennen, Termine verschieben |
+| v19 | 14.10.2026 | 7556fc7 | Verlaufstext beginnt nur mit dem Datum |
+| v18 | 14.10.2026 | 13202e2 | Dienstplan: Screenshot aus praxxo einlesen, verschobene Zeiten werden übernommen |
+| v17 | 14.10.2026 | 9fd42c1 | Prüfbericht umgesetzt: Reizbarkeit, Kraft, PSFS, Reaktion und Heimübungen, Bericht als PDF |
+| v16 | 13.10.2026 | 8a7d893 | Dienstplan-Kopf größer und mittig, Hinweiszeile entfernt |
+| v15 | 13.10.2026 | b89ee14 | Dienstplan-Termine farbig nach Therapieart, mit Legende |
+| v14 | 13.10.2026 | 90707d8 | Neuro-Tests als Kacheln (mit MS), Körperfigur bei Neuro, KGG eigener Punkt, Übungssuche überall, Dienstplan in Sicherung |
+| v13 | 13.10.2026 | a2b5002 | Fahrzeit und Pause im Dienstplan, bessere Fotoerkennung |
+| v12 | 13.10.2026 | 3cb2405 | Dienstplan landet am richtigen Tag, Aufräumen, Tag leeren, Import zurücknehmen |
+| v11 | 13.10.2026 | e9e34b2 | Dienstplan-Import per Foto überarbeitet, Prüfliste vor dem Übernehmen |
+| v10 | 13.10.2026 | ae909b7 | Dienstplan, neue Reiter-Reihenfolge, Diagnose-Vorschläge, Mobilisation bei Gesamter Körper, Eigenmobilisation |
+| v9 | 13.10.2026 | 9ac8010 | Fehlerbehebung: Wischen bei „Bisherige Dokumentation“ |
+| v8 | 13.10.2026 | 0997cf9 | Übungssuche und Hausbesuche, Kurztext bei Einheiten, Wischen zwischen Seiten, Bisherige Dokumentation |
+| v7 | 13.10.2026 | 2a6f648 | Leiste nur Patienten und Schnell Doku, Behandlung nur noch im Verlauf |
+| v6 | 13.10.2026 | 813202c | Übungen bei Gesamter Körper mit KGG, KGG-Bereiche und Dosierung als Kacheln |
+| v5 | 13.10.2026 | 1331216 | Reiter Behandlung und Schnell Doku, Gesamter Körper, Befinden-Regler, Namensvorschläge |
+| v4 | 13.10.2026 | 7a90664 | Orthopädische Tests als Kacheln, Jahresrad, farbige Schmerzregler, Therapieziele vorgezogen, Behandlung als Kacheln |
+| v3 | 13.10.2026 | 1577076 | Änderungen aus der Testversion übernommen (siehe unten) |
+| v2 | 11.10.2026 | f6f5fb3 | Knopf „Behandlung abgeschlossen“ mit Bericht und Nur Verlauf |
+| v1 | 11.10.2026 | 1db82ca | Erste Version mit Offline-Betrieb |
+
+## v60, 27.10.2026
+
+Commit `1adfae8`
+
+- Wischen zwischen Reitern und Schritten: Alte und neue Seite liegen nebeneinander und gleiten zusammen, statt dass die neue Seite auf einen Schlag erscheint und die alte verblasst. Vorbild sind Swiper und Apples „Designing Fluid Interfaces“.
+- Die Bewegung übernimmt das Tempo des Fingers und läuft weich aus (240 bis 420 ms). Ein kurzer schneller Wisch blättert um, ein langsamer braucht gut ein Drittel der Breite, sonst federt die Seite zurück. Zurückziehen am Ende bricht ab.
+- Überschrift: Beim Ziehen wandert der alte Titel halb so schnell mit und blendet aus. Nach dem Loslassen gleitet der neue Titel von der Seite herein und blendet ein. Nur beim Wechsel der Reiter, in den Schritten bleibt die Kopfzeile stehen.
+- Leichter Schatten am Seitenrand während der Bewegung. Die alte Seite wird ohne Neuaufbau des HTML kopiert, das spart Rechenzeit beim Loslassen.
+- Offline-Speicher auf `doku-fix-v59`.
+
+## v59, 27.10.2026
+
+Commit `551b0bc`
+
+- Dienstplan: Links neben der roten Uhrzeit an der Zeitlinie steht eine kleine rote Zahl. Sie zeigt, wie viele Patienten heute noch kommen.
+- Gezählt werden Termine, die noch nicht begonnen haben. Der laufende Termin zählt nicht mehr mit, zwei Termine desselben Patienten direkt hintereinander zählen einmal.
+- Offline-Speicher auf `doku-fix-v58`.
+
+## v58, 27.10.2026
+
+Commit `ccc457d`
+
+- Die Seite bleibt beim Wischen seitlich stehen. Gibt es links oder rechts keine Seite zum Blättern (zum Beispiel in der Kurz-Doku), bewegt sich nichts mehr. Vorher wanderte die ganze Seite mit dem Finger mit und federte zurück.
+- Wischen in waagerecht scrollbaren Auswahlzeilen (Vorschläge unter den Textfeldern, Phasenleiste im VKB-Pfad, Ziel-Chips und andere) blättert nicht mehr die Seite um.
+- Die App kann insgesamt nicht mehr seitlich verschoben werden. Blättern zwischen Reitern und Schritten per Wisch funktioniert wie bisher.
+- Offline-Speicher auf `doku-fix-v57`.
+
+## v56, 27.10.2026
+
+Commit `4aa199d`
+
+- Texte: Ein Vorschlag-Chip am Ende eines Feldes ergab „besser,.“. Komma, Semikolon und Doppelpunkt am Ende werden jetzt vor dem Punkt entfernt.
+- Beweglichkeit: Wurde nach den Stufen (Schnell) auf „Pro (Grad)“ umgeschaltet, ohne Gradzahlen einzutragen, fehlte die Beweglichkeit in Text und Therapiebericht. Jetzt steht dann die andere Erfassung im Text.
+- Schmerzskala heißt überall NRS (Numerische Rating-Skala) statt NAS. „Aus vorhandener Doku übernehmen“ erkennt beide Schreibweisen.
+- Speichern: Klappt das Speichern auf dem Gerät nicht (zum Beispiel Speicher voll), erscheint oben ein roter Hinweis mit „Daten kopieren“. Lassen sich gespeicherte Daten beim Start nicht lesen, legt die App vorher eine Kopie an (physio-doku-v1-defekt-…) und bietet sie zum Kopieren an.
+- Sicherung: Öffnet zuerst den Teilen-Dialog (In Dateien sichern, AirDrop, Mail). Die Meldung sagt, was passiert ist (übergeben, Download gestartet oder abgebrochen). Gilt auch für die PDFs.
+- Red Flags der Wirbelsäule (Cauda equina, Fraktur, Tumor, Infektion) erscheinen auch bei „Gesamte Wirbelsäule“.
+- Kurzbefund: Bei Fuß und anderen Regionen ohne Leitbewegungen wird „Beweglichkeit“ in der Prüfliste nicht mehr verlangt. „Mehr Auswahl und Techniken“ öffnet die Behandlung am Tag des Erstbefunds statt der Kurzzusammenfassung.
+- Seitenerkennung: Wörter wie „primäre“ im ICD-Text zählen nicht mehr als „re“ für rechts (aus „Gonarthrose links“ wurde vorher „beidseits“).
+- VKB-Pfad: startet nicht mehr beim hinteren Kreuzband. Das Streckdefizit wird nicht mehr automatisch als erfüllt eingetragen, es wird von Hand gemessen. Stuhltest Phase 3 verlangt wie im Richtwert mehr als 22 Wiederholungen.
+- „Speichert den einen Patienten“ und „eine eigene Formulierung“ statt „1 Patienten“ und „1 eigene Formulierungen“.
+- Bewusst unverändert: Normwerte (fachliche Entscheidung), Zählweise der Einheiten im Bericht, Lückenprüfung bei Schnell-Doku-Patienten.
+- Offline-Speicher auf `doku-fix-v55`.
+
+## v54, 27.10.2026
+
+Commit `e6074a9`
+
+- Das leere Praxis-Formular steckt nicht mehr als Bild im öffentlichen Code. Es wird auf jedem Gerät einmal unter Therapiebericht › „Formular als PDF“ › „Leeres Formular hinterlegen“ eingelesen und bleibt nur dort (nicht in der Sicherung). Daneben „Formular ersetzen“ und „Formular entfernen“.
+- Ohne hinterlegtes Formular funktionieren alle Felder zum Kopieren wie bisher, nur das PDF fehlt.
+- Die Vorlage liegt im Projekt unter therapiebericht/ww-formular-vorlage.md.
+- Offline-Speicher auf `doku-fix-v53`.
+
+## v53, 26.10.2026
+
+Commit `5d04fa2`
+
+- Therapiebericht: Neuer Aufbau wie das Papierformular „Therapiebericht“ der Praxis, als Standard. Oben schaltet „Praxis-Formular“ / „Ausführlich“ zwischen dem neuen und dem bisherigen Bericht um.
+- Felder Diagnosen, Therapieziele, Therapeutische Maßnahmen, Empfehlungen und Weitere Verordnungen füllen sich aus Erstbefund, Zielen und allen Einheiten im Zeitraum. Jedes Feld hat einen eigenen Kopieren-Knopf, dazu „Alle Felder kopieren“.
+- Neu abgefragt: Verordnung vom, Empfehlungen mit Bausteinen, Weitere Verordnungen ja oder nein mit Art (Physiotherapie, Ergotherapie/Logopädie, Reha-Sport, Rückenschule, Wassergymnastik, Sonstiges) und Begründung mit Vorschlag aus der Doku.
+- „Formular als PDF“ füllt das Praxis-Formular aus. Name und Geburtsdatum stehen nur auf dem PDF und werden nicht gespeichert. Ort, Datum und Therapeut*In bleiben frei zum Unterschreiben.
+- Offline-Speicher auf `doku-fix-v52`.
+
+## v52, 26.10.2026
+
+Commit `c558f4b`
+
+- Dienstplan: Die rote Zeitlinie steht nicht mehr vor oder nach einem Termin, sondern läuft während des Termins durch ihn hindurch, passend zur Uhrzeit. Gleiches gilt für Pause, Fahrzeit und Lücke. Sie rückt alle 30 Sekunden weiter.
+- Innerhalb eines Termins ist der Strich blass, damit nichts durchgestrichen wirkt. Die Uhrzeit links bleibt kräftig rot.
+- Offline-Speicher auf `doku-fix-v51`.
+
+## v51, 26.10.2026
+
+Commit `1e23644`
+
+- Dienstplan: Schaltest du „Hausbesuch“ unter „Bearbeiten“ oder in der Prüfliste ab, bleibt das so, auch wenn der Plan neu eingelesen wird. Die App merkt sich die Korrektur schon nach einem Mal für die nächsten Tage.
+- Ein Name aus der Fahrtkostenabrechnung zählt nur noch als Hausbesuch, wenn der Termin in der Hausbesuchszeit liegt (Mo/Di vormittags bis mittags, Do/Fr mittags bis nachmittags).
+- Gleicher Nachname, anderer Vorname (z. B. Ehepaar): Nur der Termin, der zum Hausbesuch gehört, wird als Hausbesuch erkannt. Direkt danach zuhause zählt mit.
+- Namensliste aus der Fahrtkostenabrechnung auf den Stand vom 26.10.2026 gebracht.
+- Offline-Speicher auf `doku-fix-v50`.
+
+## v50, 16.10.2026
+
+Commit `60f2d57`
+
+- Dienstplan: Die Arbeitszeit steht oben bei jedem Tag. Mit Zeitangabe im Plan wird diese genommen, sonst vom ersten Termin bis zum Ende des letzten. Dazu die Dauer, bei Pause abzüglich Pause mit dem Zusatz „netto“.
+
+## v49, 16.10.2026
+
+Commit `239fb0f`
+
+- Absturz mit leerem Bildschirm („undefined is not an object (evaluating 'e.unter.length')“) behoben. Ursache waren gespeicherte Regionen ohne vollständige Angaben (ältere Daten).
+- Beim Start und beim Einlesen einer Sicherung ergänzt die App jetzt fehlende Angaben in allen Regionen von Erstbefund und Verlaufseinheiten.
+- Die betroffenen Stellen (Regionsname, Bewegungsliste, Unterregionen) sind zusätzlich abgesichert.
+
+## v48, 15.10.2026
+
+Commit `b3d06a8`
+
+- Lernende Vorschläge: Eigene Formulierungen aus Eigene Angaben, Patientenziel, PSFS-Tätigkeit und „Wobei genau?“ werden gemerkt und beim nächsten Mal zuerst vorgeschlagen (fett, durchgezogener Rahmen). Unter „Mehr“ › „Gelernte Vorschläge“ einzeln oder alle löschbar. Nur auf dem Gerät, noch nicht in der Sicherung.
+- Eingabefelder zum Selbsteintippen sind überall leicht bläulich unterlegt, mit blauem Rand und Streifen links, damit sie sich von den Antipp-Knöpfen abheben. Dunkler Modus passt sich an.
+- Seit wann: Der schon ausgeschriebene Zeitraum wird nicht mehr doppelt vorgeschlagen.
+
+## v47, 15.10.2026
+
+Commit `ff0c7c7`
+
+- Kurzbefund: Neue Erstbefunde öffnen als eine Seite mit Diagnose (Rezept-Foto), Region aus der Diagnose, Beginn und Auslöser, Red Flags zum Antippen mit Bestätigung, Schmerz (Regler), Leitbewegungen je Region (frei/leicht/mäßig/stark, Schmerz), Schwellung, Kraft, Ziel mit PSFS-Tätigkeit und Behandlung aus dem Katalog. Prüf-Ampel zeigt, was fehlt. „Ausführlich“ und „Zum Kurzbefund“ wechseln. Einstellung unter „Mehr“.
+- Vorschläge beim Tippen: Seit wann, Eigene Angaben, Patientenziel, PSFS-Tätigkeit und „Wobei genau?“ bieten passende Ergänzungen als Chips an.
+- Kurz-Doku: öffnet jetzt auch für die erste Einheit (Maßnahmen aus dem Erstbefund oder Katalog zum Antippen). Ab der vorletzten Einheit laut Rezept erscheint ein Messhinweis mit „Befund messen“ (Ruheschmerz, Leitbewegungen, Erstbefund-Wert daneben). Schmerz in Bewegung als Regler mit „zuletzt“.
+- Therapiebericht: Neuer Abschnitt „Verlauf zusammengefasst“ in ganzen Sätzen (Gesamttendenz, Schmerz, Beweglichkeit, Schwellung, Behandlungsschwerpunkt, subjektiver Verlauf). Oben „Vor dem Kopieren prüfen“ mit fehlenden Angaben.
+- Rezept-Foto merkt sich das Datum, ab dem die Einheiten gezählt werden.
+
+## v46, 15.10.2026
+
+Commit `7e06b45`
+
+- Kurz-Doku: Neue Einheiten mit einer früheren Einheit öffnen auf einer einzigen Seite. Maßnahmen und Heimübungen vom letzten Mal sind übernommen, Befinden per Regler, Schmerz in Bewegung per 0–10-Tasten (mit „zuletzt“), Maßnahmen als Karten zum Ab- und Wiederanwählen, Reaktion, Text mit Kopieren und „Behandlung beenden“. „Ausführlich“ führt in die normale Schrittfolge, „Zur Kurz-Doku“ zurück.
+- Kurzer Textstil: Umschalter Kurz/Ausführlich, gilt für alle Verlaufstexte. Kurz im Format S / O / Th / R mit Tendenz aus dem Vergleich.
+- Unter „Mehr“: Bereich „Verlaufsdoku“ mit Kurz-Doku als Standard (an/aus) und Textstil.
+
+## v45, 15.10.2026
+
+Commit `6a83322`
+
+- iPad: Aufklappbereiche (Patientenliste, Verlaufskurve, Sicherung, Dienstpläne) waren zweispaltig, weil die Layout-Regel für die iPad-Aufteilung auch sie erfasst hat. Die Regel gilt jetzt nur noch für das Hauptlayout. Eine geöffnete Patientenkarte zieht die anderen nicht mehr mit.
+- „Bisherige Dokumentation“ (rechte Spalte am iPad, Wischfeld am iPhone) erscheint nur noch bei geöffnetem Patienten in Erstbefund, Verlauf oder Schnell Doku. Sonst nutzt der Inhalt die volle Breite.
+- Updates: Die App prüft beim Öffnen und alle 30 Minuten auf eine neue Version, ohne Browser-Zwischenspeicher. Ist eine da, erscheint „Neue Version da. Tippen zum Aktualisieren“. Unter „Mehr“ steht die Versionsnummer.
+- Dienstplan-Archiv: Namen mit vorhandener Doku sind antippbar und öffnen Schnell Doku oder Verlauf, bei mehreren Diagnosen mit Auswahl.
+
+## v44, 15.10.2026
+
+Commit `cbc7287`
+
+- Neuer vierter Reiter „Mehr“ unten rechts.
+- Die Sicherung steht nur noch dort (vorher im Dienstplan). Der Hinweis in der Patienten Dokumentation verweist auf „Mehr“ › „Sicherung“.
+- Der Knopf zur Testdatenbank ist aus der Patienten Dokumentation nach „Mehr“ gewandert. Zurück geht es mit „Zurück zu Mehr“.
+- Dienstpläne: Alle gespeicherten Tagespläne als Liste, neuester oben, Tag aufklappbar mit Uhrzeit, Name, Kürzel, Hausbesuch und „✓ Doku“. Suche nach Patient zeigt alle Tage mit Uhrzeit.
+- Auf dem iPad blendet „Mehr“ die rechte Spalte „Bisherige Dokumentation“ aus.
+
+## v43, 15.10.2026
+
+Commit `1c7d4d0`
+
+- Verlaufskurve: Im Verlauf steht über den Einheiten ein aufklappbares Feld mit Schmerz (Bewegung und Ruhe) und jeder gemessenen Bewegung über alle Einheiten, Normbereich hinterlegt, Werte per Antippen und als Tabelle.
+- Fortschritt im Text: Jeder Verlaufstext bekommt pro Region „Verlauf seit Erstbefund: …“ mit Bewertung. Schmerz deutlich ab 2 Punkten und 30 %, Beweglichkeit leicht ab 5°, deutlich ab 10° (gemessen am Abstand zum Normbereich). Ohne Erstbefund wird mit der ersten Einheit mit Werten verglichen.
+- Mehrere Diagnosen pro Patient: „+ Weitere Diagnose“ in Patienten Dokumentation und Schnell Doku, entweder gleichzeitig oder als neue Episode (die bisherige wird abgeschlossen, „Wieder aufnehmen“ möglich). Jede Diagnose hat eigenen Befund und Verlauf, Vorgeschichte und Sozialanamnese werden übernommen. Im Dienstplan gibt es je Diagnose eigene Knöpfe, eine fertige Doku pro Tag reicht, die dokumentierte trägt einen Haken.
+- Schnell Doku: Der Auslöser steht einmal im ersten Verlaufstext.
+- Rezept-Foto: Bei BG-Verordnungen kann „Arbeitsunfall (BG)“ per Haken als Auslöser übernommen werden.
+
+## v42, 15.10.2026
+
+Commit `a1a5139`
+
+- Patienten Dokumentation: Die Patienten stehen eingeklappt unter „Alle Patienten“. Beim Tippen ins Namensfeld erscheinen die passenden Namen, wie in der Schnell Doku.
+- Rezept-Leser: „Gesichert“ wird als G hinter den Code gesetzt, Diagnosetexte über zwei Zeilen werden zusammengesetzt, Text neben „ICD-10-Code“ wird gefunden. BG-Verordnungen (F 2400) werden ohne ICD-Code gelesen, die Behandlungen kommen aus der ersten Leistungsziffer. Bei Blankoverordnungen bleiben die Behandlungseinheiten frei.
+- Neue Kachel „Wie ist es dazu gekommen?“ im Erstbefund (nach dem Beginn) und in der Schnell Doku (nach der Diagnose): typische Auslöser je Krankheitsbild für alle 121 Krankheitsbilder, weitere allgemeine Auslöser, Suche beim Tippen, eigener Text, Mehrfachauswahl. Das Feld „Wobei genau?“ ist aus dem Beginn-Schritt hierher gewandert. Im Erstbefundtext steht „Auslöser: …“, im Therapiebericht beim Symptombeginn.
+
+## v41, 15.10.2026
+
+Commit `b9ba360`
+
+- Die Knöpfe „Foto machen“ und „Bild wählen“ im Diagnoseschritt haben jetzt einfarbige Symbole statt bunter Emojis. Sie nehmen die Schriftfarbe an, auch im dunklen Modus.
+
+## v40, 15.10.2026
+
+Commit `31439a1`
+
+- Schritt „Wie lautet die Diagnose?“ (Erstbefund und Schnell Doku): „Rezept einlesen“ mit „Foto machen“ oder „Bild wählen“. Die App liest den Text auf dem Gerät und zeigt ICD-Code mit Zusatz (G, R, L), Diagnosetext und Behandlungseinheiten zum Prüfen und Ändern. „In Diagnose übernehmen“ schreibt die Diagnose ins Feld und merkt sich nur die Zahl der Einheiten.
+- Der Name auf dem Rezept wird nur mit dem Patienten abgeglichen (passt / unsicher / nicht gefunden). Foto, Name, Kasse, Adresse und der übrige Text werden nicht gespeichert.
+- Schnell Doku: Patienten stehen im aufklappbaren Fenster „Alle Patienten“ (alphabetisch). Beim Tippen im Namensfeld erscheinen direkt darunter die passenden Patienten zum Antippen.
+- Cache: `doku-fix-v39`
+
+## v39, 15.10.2026
+
+Commit `a99bae3`
+
+- Ursache des leeren Bildschirms in der Schnell Doku: Hatte eine Einheit eine Körperstelle, deren Region die App nicht in ihrer Liste fand, stürzte die Anzeige ab, sobald der Name der Stelle gebraucht wurde (ab Schritt 2). Die App nimmt jetzt in dem Fall einen Ersatznamen (zum Beispiel „Wirbelsäule“) und läuft weiter. Gefunden über den neuen Fehlerhinweis aus v38.
+- Cache: `doku-fix-v38`
+
+## v38, 15.10.2026
+
+Commit `c77016f`
+
+- Beim Wischen zwischen Seiten legt die App kurz eine Kopie der alten Seite über den Bildschirm und schiebt sie weg. Spielte Safari diese Animation nicht ab, blieb die Kopie liegen und verdeckte den Bereich links dauerhaft (leer, nichts antippbar, nur Neustart half). Die Kopie wird jetzt spätestens nach 0,7 s entfernt, bei jeder neuen Berührung aufgeräumt und beim Zurückkehren in die App ebenfalls.
+- Tritt ein Programmfehler auf, erscheint unten ein Hinweis „Da ist etwas schiefgelaufen“ mit der Meldung und dem Knopf „Neu laden“ statt einer leeren Seite.
+- Cache: `doku-fix-v37`
+
+## v37, 15.10.2026
+
+Commit `0a42acd`
+
+- Beim Wechsel zwischen Dienstplan, Patienten Dokumentation und Schnell Doku wird der Bereich links neu aufgebaut und startet oben. Vorher konnte er auf dem iPad weit unten hängen bleiben (leerer Bildschirm, nichts antippbar), wenn der Dienstplan gerade zur Jetzt-Linie scrollte.
+- Das automatische Scrollen zur Jetzt-Linie wird abgebrochen, sobald man den Dienstplan verlässt.
+- Der Kasten „Weiter mit / Als Nächstes“ oben im Dienstplan ist weg. Der Plan steht wie er ist; Termine öffnet man durch Antippen.
+- Cache: `doku-fix-v36`
+
+## v36, 15.10.2026
+
+Commit `9f02bdb`
+
+- Die Sicherung steht nur noch unten im Dienstplan („Sicherung aller Daten“). Die Knöpfe unter Patienten Dokumentation und Schnell Doku sind weg.
+- Eine Datei enthält alle Patienten (Patienten Dokumentation und Schnell Doku), Dienstpläne, eigene Übungen und Diagnosen. Einlesen auf einem neuen Gerät an derselben Stelle.
+- Cache: `doku-fix-v35`
+
+## v35, 15.10.2026
+
+Commit `c8285ba`
+
+- Neues Foto eines geänderten Plans: Die App ordnet Termine jetzt zuerst über den Patienten zu (Vorname und Anfangsbuchstabe, nächstliegende Uhrzeit bis 2 Stunden Abstand), erst dann über die Uhrzeit. Verschiebt sich ein Patient von 10:00 auf 10:10, wird sein Termin auf die neue Zeit gesetzt und als „geändert“ markiert. Bisher blieb der alte Termin teils stehen und der neue kam doppelt dazu.
+- Termine aus dem alten Plan, die im neuen Foto im gleichen Zeitraum nicht mehr vorkommen, fallen weg. Auch die p-Zeile wandert mit.
+- Pause ohne erkannte p-Zeile: längste freie Zeit über Mittag (11:30 bis 14:30) ab 30 min, davon 30 min Pause, der Rest Lücke.
+- Cache: `doku-fix-v34`
+
+## v34, 15.10.2026
+
+Commit `e28da86`
+
+- Die Pause (Zeile „p“ im Plan) steht als große grüne Karte mit Kaffeetasse im Dienstplan. Heute steht darunter „in 1 h 07 min“, während der Pause „Genieß sie · noch 12 min“, mit leichtem Leuchten.
+- Die Pause dauert genau so lange wie die p-Zeile (meist 30 min). Freie Zeit davor oder danach wird als Lücke ohne Patient gezeigt.
+- Ohne p-Zeile gilt weiter: Pause laut Plan, sonst die längste freie Zeit ab 45 min.
+- Cache: `doku-fix-v33`
+
+## v33, 15.10.2026
+
+Commit `d20fb60`
+
+- Vergangene Termine mit offener Doku: Deckkraft 80 % und leichtes Grau, also zwischen v31 (fast voll) und v32 (deutlich grau).
+- Cache: `doku-fix-v32`
+
+## v32, 15.10.2026
+
+Commit `be8207e`
+
+- Vergangene Termine mit offener Doku sind jetzt etwas ausgegraut (zwischen fertig und noch kommend). Versatz, orange Kante und „Doku offen“ bleiben.
+- Cache: `doku-fix-v31`
+
+## v31, 15.10.2026
+
+Commit `c28125f`
+
+- Die Zeile „x Dokus von vorhin noch offen“ oben im Kasten „Weiter mit“ ist weg.
+- Stattdessen stehen vergangene Termine, deren Doku noch nicht beendet ist, im Plan hervorgehoben: kaum ausgegraut, leicht nach rechts versetzt, orange Kante, Uhrzeit orange, Name etwas größer und „Doku offen“ als Marke. Termine mit fertiger Doku bleiben grau.
+- Cache: `doku-fix-v30`
+
+## v30, 15.10.2026
+
+Commit `d77f454`
+
+- Seit v28 beginnt der kopierte Text ohne Datum, also mit „Subjektiv: …“. iOS hält so einen Anfang („Wort:“) für eine Internetadresse und gibt ihn beim Einfügen verschlüsselt weiter (subjektiv:%20Pat.%20…). Beim Kopieren wird der Doppelpunkt am Textanfang deshalb durch einen Gedankenstrich ersetzt: „Subjektiv – Pat. berichtet …“. Gilt für alle Kopieren-Knöpfe.
+- Cache: `doku-fix-v29`
+
+## v29, 15.10.2026
+
+Commit `db4907a`
+
+- Zeiten ohne geplanten Patienten stehen im Dienstplan jetzt als „Lücke bis … · kein Patient geplant“ (orange), an der richtigen Stelle nach Uhrzeit.
+- „Pause“ (grün) heißt nur noch, was wirklich Pause ist: die Pause laut Plan, eine Zeile „p“ oder „Pause“ im Plan. Gibt es dazu keine Angabe, gilt die längste freie Zeit ab 45 Minuten als Pause.
+- Fahrzeit vor und nach Hausbesuchen bleibt wie bisher.
+- Cache: `doku-fix-v28`
+
+## v28, 15.10.2026
+
+Commit `af84008`
+
+- Beim Kopieren einer einzelnen Einheit (Fertig zum Kopieren, Knopf in der Liste der Einheiten, Textleiste unten bei offener Einheit) fällt die Datumszeile weg. Gilt für Verlauf und Schnell Doku.
+- In der Anzeige und in der Übersicht aller Einheiten bleibt das Datum stehen, dort wird auch mit Datum kopiert.
+- Cache: `doku-fix-v27`
+
+## v27, 15.10.2026
+
+Commit `6b70402`
+
+- Beim Anlegen des VKB-Pfads wird jede Eingabe sofort am Patienten gespeichert. Nichts geht verloren, wenn man den Schritt verlässt.
+- Der Knopf heißt „Speichern und weiter“ und ist nie ausgegraut. Fehlt das OP- oder Verletzungsdatum, erscheint ein roter Hinweis und das Feld wird markiert.
+- Abgefragt wird einmal: Art der Plastik (Transplantat), mitoperierte Strukturen (Meniskusnaht, Meniskusteilresektion, Knorpeleingriff, Innenband, laterale Tenodese / ALL) und mitverletzte Strukturen (Innen- und Außenmeniskus, Innen- und Außenband, Knorpel, Knochenmarködem, hinteres Kreuzband). Danach geht es direkt im Ablauf weiter, der Pfad fragt das nicht noch einmal.
+- Mitverletzt und mitoperiert stehen im Kopf des Pfads und im Verlaufstext. Bei Knochenmarködem erscheint der Hinweis, Stoßbelastungen mindestens 4 Wochen zu meiden (AWMF S1).
+- Cache: `doku-fix-v26`
+
+## v26, 15.10.2026
+
+Commit `f37376a`
+
+- Steht in der Diagnose Kreuzband, VKB oder ACL, kommt im Erstbefund nach „Betroffener Bereich“ der Schritt „VKB-Reha-Pfad“. Dort wird der Pfad angelegt und die Phase eingeordnet. Danach zeigt der Schritt die Kriterien für die nächste Phase als Vorschau. Gemessen und geprüft wird ab der ersten Verlaufseinheit.
+- Cache: `doku-fix-v25`
+
+## v25, 15.10.2026
+
+Commit `62090d4`
+
+- Neuer Knopf „Testdatenbank“ unten in der Patientenliste. Dort stehen alle 169 Tests, nach Orthopädie (je Region), VKB-Reha und Neurologie sortiert.
+- Suchfeld (Name und was der Test prüft) und Filter nach Bereich. Jeder Test klappt auf mit Kurzbeschreibung, Ziel, Position, Richtwerten, Durchführung und Quellen.
+- Cache: `doku-fix-v24`
+
+## v24, 15.10.2026
+
+Commit `0cf7590`
+
+- VKB-Reha-Pfad: Steht in der Diagnose Kreuzband, VKB oder ACL, kommt im Verlauf nach „Datum und Befinden“ der Schritt „VKB-Reha-Pfad“. Bei anderen Kniepatienten gibt es dort den Knopf „VKB-Reha-Pfad anlegen“.
+- Anlegen: operiert oder konservativ, OP- oder Verletzungsdatum, Seite, Transplantat, Begleiteingriffe, Vorgaben vom Arzt. Die App schlägt eine Phase nach Zeit vor, die Phase wird von Hand bestätigt.
+- Phasen operiert: 0 Vor der OP, 1 Früh nach der OP, 2 Kraft und Kontrolle, 3 Laufen, Sprünge, Agilität, 4 Rückkehr zum Sport, 5 Prävention. Konservativ: 0 Akutphase, 1 Screening Stabilität (Delaware), dann wie operiert.
+- Kriterien für die nächste Phase nach Kategorien (Gelenk und Erguss, Schmerz, Ansteuerung und Gang, Kraft im Seitenvergleich, Kontrolle und Gleichgewicht, Sprünge, Kopf und Fragebögen) mit Ampel. Seitenvergleich überall ab 90 % LSI, die App rechnet den LSI aus betroffen und gesund (bei Zeiten gesund durch betroffen). Kraft ohne Messgerät über Wiederholungstests und Sprünge, Beinpresse optional.
+- Mindestzeiten: Laufen ab Woche 12, sportartspezifisch ab 6 Monaten, Wettkampf nach VKB-Plastik ab 9 Monaten. Sind alle Kriterien erfüllt, fragt die App „In Phase X aufrücken?“. Fehlt nur die Zeit, steht dort das Datum.
+- Werte aus früheren Einheiten gelten weiter und stehen mit „zuletzt“ und Datum da. Beweglichkeit (Pro-Modus), Schmerz und „keine Schwellung“ aus der Einheit werden übernommen.
+- ACL-RSI (12 Fragen oder Gesamtwert, über 56 Punkte) und IKDC (Gesamtwert) in der App.
+- Verlaufstext: Phase, Woche nach OP, heute gemessene Werte, Stand der Kriterien oder Aufstieg.
+- Testdatenbank: Stroke-Test, Beinheben, einbeinige Kniebeuge, Brücke, Wadenheben, Stuhl, Seitstütz, Beinpresse, Einbeinstand, Y-Balance, Single, Triple, Crossover und 6-m-Hop, Side Hop, ACL-RSI, IKDC, Giving-way, Selbsteinschätzung, jeweils mit Durchführung, Richtwerten und Quellen.
+- Quelle Q19 (AWMF S1 Vordere Kreuzbandruptur) als abgelaufen markiert, Wissenseintrag KN04 an den Pfad angepasst.
+- Cache: `doku-fix-v23`
+
+## v23, 14.10.2026
+
+Commit `5ef44d5`
+
+- Dienstplan: Oben steht „Weiter mit“ bzw. „Als Nächstes“ mit dem nächsten Patienten, der noch keine fertige Doku hat, und ein Knopf, der direkt die Einheit von heute öffnet. Offene Dokus von vorhin werden gezählt. Die Knöpfe auf den Karten öffnen heute ebenfalls gleich die heutige Einheit.
+- „Alles wie am …“: übernimmt Maßnahmen, Übungen und Heimprogramm der letzten Einheit und springt direkt zu „Fertig zum Kopieren“. „Nur Maßnahmen wie am …“ gibt es weiterhin.
+- Reizbarkeit: Die Erklärung steht jetzt unter jeder der drei Kacheln.
+- Übungsfundus: Beim Suchen erscheinen auch Übungen aus anderen Regionen und Bereichen, Treffer blau markiert. Neue Übungen fragen nach der Kategorie, eigene Übungen stehen nach Kategorie gruppiert. Bei Gesamter Körper hat jede Kategorie ein eigenes Suchfeld.
+- Suchfeld steht unter den Ziel-Chips. Die Kacheln „Übungen aus der Liste“, „Eigene Übung“ und „Dosierung“ sind weg.
+- Dosierung je Übung mit Vorschlägen (3 × 8, 3 × 10, 3 × 15 Wiederholungen). Die App merkt sich häufig genutzte Angaben auf dem Gerät. Die Dosierung steht im Text hinter der Übung.
+- Cache: `doku-fix-v22`
+
+## v22, 14.10.2026
+
+Commit `43e0f6e`
+
+- Im Querformat (zweispaltige Ansicht ab 900 px Breite) war die Zeile des Rasters so hoch wie der Inhalt. Safari auf dem iPad hat dadurch das Ende der Liste abgeschnitten. Die Zeile ist jetzt auf die Bildschirmhöhe begrenzt, die Liste scrollt in sich bis ganz unten.
+- Cache: `doku-fix-v21`
+
+## v21, 14.10.2026
+
+Commit `1d22970`
+
+- Texterkennung: Tabellenlinien und große schwarze Flächen werden vor dem Lesen entfernt, kleine Screenshots vergrößert. Schatten auf Papierfotos bleiben erhalten.
+- praxxo-Liste: Datum aus der linken Spalte, Spalten nach linker Kante, verlesene Uhrzeiten (3/8, 1/7) und Behandlungsnummern werden korrigiert, Behandlung mit festem Wortlaut zur Nummer. Neue Nummern 20537 (KGG) und 20205 (MLD).
+- Zeilen ohne Patient: „p“ wird Pause, Notizen in Lücken stehen im Pausen- oder Fahrzeit-Block, Notizen über einem Termin stehen als Notiz auf der Karte (bearbeitbar). Nachnamen in Notizen werden gekürzt.
+- Gedruckter Plan: Uhrzeiten werden in Reihenfolge geprüft und auf 5-Minuten-Schritte gesetzt, Zeilen mit HB und Adresse ohne lesbaren Namen bleiben Termine.
+- Hausbesuch-Abgleich mit der Fahrtkostenabrechnung: Die App kennt die Nachnamen der bisherigen Hausbesuchspatienten nur als kurze Prüfsumme (keine Namen im Code) und markiert passende Termine als „HB?“. Mehrere Termine desselben Patienten zählen als ein Besuch, die Zeile „Fahrzeit“ überbrückt längere Lücken.
+- Cache: `doku-fix-v20`
+
+## v20, 14.10.2026
+
+Commit `85fe641`
+
+- „Behandlung beenden“ am Ende jeder Einheit (Befund, Verlauf, Schnell Doku). Erst danach steht im Dienstplan beim Patienten „✓ Doku fertig“, vorher „Doku offen“.
+- Hausbesuche ohne gedruckten Plan: Mehrere 10-Minuten-Lücken hintereinander im Hausbesuchs-Zeitraum (Mo/Di 7:00–13:30, Do/Fr 11:00–17:30) gelten als Fahrzeit. In der Prüfliste steht dann „HB?“. Einzelne Lücken zählen nicht.
+- Bekannte Hausbesuchs-Patienten merkt sich die App nur auf dem Gerät, ohne Namen im Klartext (nur ein Kurzcode), mit Adresse und Telefon. Nach 180 Tagen ohne Termin wird der Eintrag gelöscht. Nicht in der Sicherung enthalten.
+- praxxo: Zeile „Fahrzeit“ wird nicht mehr als Patient gelesen. Behandlungsnummern 20106 (KMT) und 20535 (KG) ergänzt.
+- Bearbeiten: Termin um −10, −5, +5 oder +10 Minuten verschieben. Beim Verschieben nach hinten rücken die folgenden Termine mit, bis eine Lücke den Versatz aufnimmt. Gibt es bis Tagesende keine Lücke, rückt niemand nach, und die Termine werden überlappend angezeigt (mit „x min Überschneidung“).
+- Cache: `doku-fix-v19`
+
+## v19, 14.10.2026
+
+Commit `7556fc7`
+
+- Der Text jeder Einheit beginnt nur mit dem Datum, z. B. „14.10.2026:“. Vorher stand dort „Verlauf vom …“ bzw. „Behandlung am Tag des Erstbefunds (…)“.
+- Cache: `doku-fix-v18`
+
+## v18, 14.10.2026
+
+Commit `13202e2`
+
+- Dienstplan: Screenshots der Terminliste aus praxxo IntraWeb werden als Tabelle gelesen (Spalten Uhrzeit, min, Behandlung, Vorname, Nachname, GebDat).
+- Das Datum kommt aus „Termine am … “ bzw. der Datumsspalte. Die Datumsleiste oben (Woche-, Tag-) wird nicht mehr als Plandatum genommen.
+- Verschobene Termine landen auf der neuen Uhrzeit. Hausbesuch, offenes Rezept, Adresse und Telefon aus dem gedruckten Plan bleiben erhalten.
+- Liest die Texterkennung einen Vornamen falsch, bleibt der Name aus dem bisherigen Plan stehen.
+- Zeile „p“ wird als Pause übernommen. Notizzeilen wie „10 min später“ oder „gedruckt“ werden übersprungen.
+- Therapieart aus der Positionsnummer (20501 KG, 21201 MT, 20507 KGG, 20712 KGP) oder dem Behandlungstext.
+- Cache: `doku-fix-v17`
+
+## v17, 14.10.2026
+
+Commit `9fd42c1`
+
+- Erstbefund: Funktionstests stehen vor den Therapiezielen.
+- Schmerz-Schritt: Reizbarkeit (niedrig, mittel, hoch). Die Mobilisation zeigt dazu die passenden Grade.
+- Schritt „Schwellung und Kraft“: Kraftgrade 0 bis 5 je Bewegung und Region, im Text und als Vorschlag bei den Funktionszielen.
+- Therapieziele: Patientenspezifische Funktionsskala (PSFS) mit bis zu drei Tätigkeiten, 0 bis 10, mit Mittelwert im Befund.
+- Kurzzusammenfassung: Hinweis, wenn Nachtschmerz erfasst, die Red Flag aber verneint ist, und wenn die Reizbarkeit fehlt.
+- Verlauf und Schnell Dokumentation: neuer Schritt „Reaktion und Heimübungen“ mit Reaktion, Heimübungen, Beratung und Besonderheiten.
+- Heimübungen: Suchfeld mit Vorschlägen ab den ersten Buchstaben aus allen Übungen. Neue Übungen merkt sich die App.
+- Verlauf-Start: PSFS des Tages, Knopf „Maßnahmen wie am …“ übernimmt die letzte Behandlung.
+- Warnung, wenn im Verlaufstext nur das Datum steht. Übungsvorschläge im Verlauf nutzen den Erstbefund.
+- Therapiebericht: „Formular als PDF“ und „Nur Text als PDF“ (A4) statt JPEG. PSFS und Kraft im Vergleich zum Erstbefund.
+- Red und Yellow Flags „abgefragt“ als Haken mit Erklärung. Baustellen-Hinweise aus dem Arbeitsablauf entfernt. Schritt-Menü und Umschalter größer.
+- Cache: `doku-fix-v16`
+
+## v16, 13.10.2026
+
+Commit `8a7d893`
+
+- Wochentag und Datum im Dienstplan sind größer und stehen in der Mitte, die Pfeile sind größer.
+- Arbeitszeit, Pause, Termine, Fahrzeit und die Farblegende stehen mittig und etwas größer.
+- Die blaue Hinweiszeile zum Beispielplan ist entfernt.
+- Cache: `doku-fix-v15`
+
+## v15, 13.10.2026
+
+Commit `b89ee14`
+
+- Termine im Dienstplan sind nach Therapieart eingefärbt: KG blau, KG ZNS violett, MT türkis, KGG rosa. KGP (PNF) zählt als KG ZNS.
+- Über der Liste steht eine Legende mit der Anzahl je Therapieart.
+- Mit einer Doku verknüpfte Termine haben jetzt eine dünne Kontur statt des blauen Rands.
+- Der Foto-Import erkennt auch das Kürzel MT.
+- Cache: `doku-fix-v14`
+
+## v14, 13.10.2026
+
+- Neurologische Tests als Kacheln mit nummerierten Testclustern, sortiert nach Beleglage: Kernset Neurologie, Schlaganfall, Parkinson und neu Multiple Sklerose. Quellen in jeder Kachel.
+- Neue Tests für MS: Timed 25-Foot Walk, MSWS-12, MFIS, MSIS-29.
+- Körperfigur auch bei neurologischen Patienten, mit Schnellwahl (Körperhälfte, beide Arme, beide Beine, Rumpf, ganzer Körper) und lila Markierung; Vorauswahl aus der Diagnose in der Figur.
+- Behandlung neurologisch: KGG als eigener Punkt, nicht mehr unter Krafttraining.
+- Übungen: Suchfeld „Übungen suchen oder hinzufügen“ in allen Regionen; Hilfsmittel („Womit?“) für eigene Übungen in allen Regionen, auch im Text.
+- Sicherung enthält jetzt den Dienstplan; beim Einlesen kommen nur fehlende Tage dazu.
+- Offline-Speicher auf `doku-fix-v13`.
+
+## v13, 13.10.2026
+
+- Freie Zeit im Dienstplan wird benannt: neben einem Hausbesuch als Fahrzeit (grau, Länge aus „R: 10min“ im Plan, sonst 10 Minuten), zwischen Praxisterminen als Pause (grün).
+- Die längste Pause steht oben in der Kopfzeile. Weicht sie von der gedruckten Pause ab, steht „laut Plan …“ daneben. Dazu ein Chip mit der Fahrzeit des Tages.
+- Die Pause aus dem Kopf des Plans wird auch bei schrägem Foto oder verlesenem Wort erkannt.
+- Fotoaufbereitung vor der Texterkennung: Schatten und Knicke werden ausgeglichen. Störzeichen an Uhrzeiten werden entfernt, ein als Strich gelesenes „!“ zählt als offenes Rezept.
+- Hängt die Texterkennung 40 Sekunden, kommt eine Meldung.
+- Offline-Speicher auf `doku-fix-v12`.
+
+## v12, 13.10.2026
+
+- Das Datum wird jetzt aus dem Kopf des Plans gelesen. Die Druckzeit oben rechts wird nicht mehr mit dem Plandatum verwechselt.
+- Ist kein Datum lesbar, legt die App den Plan nach Feierabend automatisch auf den nächsten Arbeitstag (sonntags übersprungen) und zeigt einen Hinweis.
+- Die Prüfliste zeigt oben „Plan für Mittwoch (morgen)“. Das Datum lässt sich dort ändern.
+- Wurde ein Plan vorher am falschen Tag eingemischt, räumt die App das beim richtigen Import auf und nimmt diese Termine aus dem falschen Tag heraus.
+- Ein neuer Plan ersetzt den Tag im abgedeckten Zeitraum. Abgesagte Termine fallen dabei weg.
+- Unter „Plan aktualisieren“: „Letzten Import zurücknehmen“ und „Tag leeren“ (mit Rückfrage).
+- Offline-Speicher auf `doku-fix-v11`.
+
+## v11, 13.10.2026
+
+- Dienstplan-Import neu gebaut. Die Texterkennung liest jetzt Zeile für Zeile über die Position der Wörter auf dem Foto. Ein leicht schräges Foto bringt die Zeilen nicht mehr durcheinander.
+- Uhrzeit, Dauer, Name, Geburtsjahr, KG/KGP/KGG, Hausbesuch und „!“ (Rezept offen) werden pro Termin getrennt erkannt. Falsch gelesene Uhrzeiten korrigiert die App über den vorherigen Termin plus Dauer.
+- Datum wird aus dem Kopf des Plans gelesen.
+- Ähnlich geschriebene Vornamen werden vorhandenen Patienten zugeordnet.
+- Neu: Liste „Erkannte Termine“ vor dem Übernehmen. Uhrzeit, Dauer, Name, Hausbesuch und „!“ lassen sich dort korrigieren oder Termine löschen. Der Rohtext ist zuschaltbar.
+- Offline-Speicher auf `doku-fix-v10`.
+
+## v10, 13.10.2026
+
+- Neuer Reiter „Dienstplan“. Reihenfolge unten: Dienstplan, Patienten Dokumentation, Schnell Dokumentation.
+- Dienstplan: Tagesansicht mit Arbeitszeit, Pause, Terminen, Hausbesuchen und „Rezept offen“. Eine rote Linie zeigt die aktuelle Uhrzeit, Vergangenes ist ausgegraut, der laufende Termin hat einen Fortschrittsbalken. Doppeltermine sind mit einer Klammer verbunden.
+- Plan hinzufügen per Foto oder Screenshot mit automatischer Texterkennung (lädt beim ersten Mal aus dem Internet) oder per eingefügtem Text. Namen werden als Vorname und Anfangsbuchstabe gespeichert. Für einen Tag mit vorhandenem Plan ersetzt die App nur geänderte Termine und markiert sie mit „neu“ oder „geändert“.
+- Termine mit passender Dokumentation (Vorname N.) öffnen den Patienten. Ohne Dokumentation: „Erstbefund anlegen“ oder „Schnell Dokumentation“.
+- Diagnose: Vorschläge beim Tippen aus häufigen Diagnosen, ICD-10-Katalog und eigenen Diagnosen. Unbekannte Diagnosen merkt sich die App beim Tippen auf „Weiter“ (auch in der Sicherung).
+- Mobilisation bei „Gesamter Körper“ nach Bereich, Region und Gelenk.
+- Eigenmobilisation für HWS, BWS und LWS.
+- Offline-Speicher auf `doku-fix-v9`.
+
+## v9, 13.10.2026
+
+- Fehlerbehebung: Das Feld „Bisherige Dokumentation“ öffnet und schließt wieder per Wisch. In v8 fehlte eine Zeile, die das Wischen dort braucht. Die Wischerkennung reagiert jetzt schon während der Bewegung und verhindert dabei, dass die Seite mitscrollt.
+- Offline-Speicher auf `doku-fix-v8`.
+
+## v8, 13.10.2026
+
+- Übungen bei „Gesamter Körper“: blaues Feld „Übungen suchen oder hinzufügen“ durchsucht alle Übungen. Gibt es eine Übung noch nicht, fragt die App vor dem Speichern nach dem Bereich. Darunter „Oder nach Bereich suchen“ mit den Bereichen als Kacheln.
+- Neuer Bereich „Hausbesuche“ (ganz unten) für eigene Übungen, mit der Auswahl Ball, Loop, Theraband, am Stuhl, am Bett, an der Wand, mit Wasserflaschen, an der Treppe. Eigene Übungen werden samt Bereich gespeichert und sind in der Sicherung enthalten.
+- Bisherige Einheiten zeigen unter dem Datum eine Kurzzeile mit Befinden, Angaben, NAS und Behandlung.
+- Wischen nach links oder rechts blättert eine Seite vor oder zurück. Die Seite folgt dem Finger. In der Patientenliste, der Schnell-Doku-Liste und der Verlauf-Übersicht wechselt das Wischen zwischen diesen Bereichen.
+- Das Feld unten heißt „Bisherige Dokumentation“ und öffnet und schließt mit einem Wisch nach oben oder unten.
+- Offline-Speicher auf `doku-fix-v7`.
+
+## v7, 13.10.2026
+
+- Leiste unten nur noch mit „Patienten“ und „Schnell Doku“. Ein Tipp auf einen Patienten zeigt die Auswahl Erstbefund oder Verlauf. Oben auf der Seite schaltet ein Umschalter zwischen beiden.
+- Den Bereich „Behandlung“ gibt es nicht mehr. Der Erstbefund endet mit der Kurzzusammenfassung. „Weiter zur Behandlung“ legt im Verlauf die erste Einheit mit dem Datum des Erstbefunds an. Sie beginnt direkt mit Detonisierung, Mobilisation und Übungen und heißt „Tag des Erstbefunds“.
+- Schon im Erstbefund eingetragene Behandlungen übernimmt die App in diese erste Einheit.
+- Offline-Speicher auf `doku-fix-v6`.
+
+## v6, 13.10.2026
+
+- Übungen bei „Gesamter Körper“: Die KGG-Bereiche (Untere Extremität, Obere Extremität, Rumpf, Gleichgewicht, Mobilisation allgemein) stehen direkt auf der Seite, darunter „Eigene Übung“ als Eingabefeld. Filterleiste und Kachel „Dosierung“ fallen dort weg.
+- KGG-Bereiche überall als Kacheln, von denen immer nur eine offen ist.
+- Abfrage zu jeder KGG-Übung (Griff bzw. Ausführung, Gewicht, Sätze, Wiederholungen) als kleine Kacheln, die sich nach der Auswahl schließen und die nächste öffnen. Anmerkung als freies Textfeld.
+- Ein zweiter Tipp auf eine eingetragene Übung klappt die Abfrage zu, die Werte bleiben. Neu sind die Knöpfe „Fertig“ und „Übung entfernen“.
+- Offline-Speicher auf `doku-fix-v5`.
+
+## v5, 13.10.2026
+
+- Neuer Reiter „Behandlung“ in der Leiste unten: Detonisierung, Mobilisation, Übungen (bei neurologischen Diagnosen auch Behandlung neurologisch) und die Ausgabe. Der Erstbefund endet mit der Kurzzusammenfassung, dort steht jetzt auch „Erstbefund neu beginnen“.
+- Reiter „Nur Verlauf“ heißt jetzt „Schnell Doku“. Er startet immer mit der Patientenliste. Die Übersicht beginnt mit „Neue Einheit“, „Therapiebericht“ und „Frühere Einheiten einfügen“, Diagnose oder Region ändern und Neuer Patient stehen klein darunter. „Behandlung abgeschlossen“ steht am Ende des Therapieberichts.
+- Bereich „Gesamter Körper“ auf der Seite „Welcher Bereich ist betroffen?“. Bei der Detonisierung gibt es dafür ein Menü nach Körperregion, Gelenk und umgebender Muskulatur.
+- Befinden seit der letzten Behandlung als Regler von „deutlich schlechter“ über „unverändert“ bis „deutlich besser“, mit Satz im Verlaufstext und im Therapiebericht. Das Freitextfeld bleibt darunter.
+- Schritt-Menü oben rechts auch in den Einheiten von Verlauf und Schnell Doku.
+- Beim Eintippen eines Namens zeigen Patienten und Schnell Doku passende Patienten zum Öffnen an.
+- Offline-Speicher auf `doku-fix-v4`.
+
+## v4, 13.10.2026
+
+- Orthopädische Tests als aufklappbare Kacheln, nach Körperregion in Clustern und in sinnvoller Reihenfolge. Grundlage ist eine Recherche zu 103 Tests mit Quellen; zu einigen Tests fehlen belastbare Genauigkeitswerte.
+- Nebendiagnosen: Beim Antippen erscheint ein Rad zur Jahresauswahl, das Jahr steht direkt hinter der Diagnose.
+- Schmerzregler laufen farblich von grün (0) über gelb nach rot (10), die Farbe ändert sich beim Ziehen.
+- Schwellung mit stufenlosem Schieberegler.
+- „Wobei tritt der Schmerz auf?“ und die Region der Schwellung: Vorschläge sichtbar, alle weiteren Kacheln erst nach Antippen.
+- Beweglichkeit: Die Bewegungsrichtungen (Flexion, Extension usw.) sind je Paar als Kachel zusammengefasst.
+- Neue Reihenfolge: Therapieziele (Schritt 10), dann Funktionstests, dann Befund. Die Ziele erscheinen in der Kurzzusammenfassung, der Knopf „Weiter zum Ziel“ ist weg.
+- Therapieziele als Kacheln mit Vorschlägen aus den vorherigen Schritten, grüner Haken bei Auswahl, Kachel schließt sich danach und die nächste öffnet sich.
+- Behandlung (Detonisierung, Mobilisation, Übungen) im selben Kachelmuster.
+- Offline-Speicher auf `doku-fix-v3`.
+
+## v3, 13.10.2026
+
+- Körperschema auf der Seite „Welcher Bereich ist betroffen?“: Jede Stelle der Figur ist antippbar, vorne und hinten, Finger und Zehen einzeln. Vorschläge aus der Diagnose leuchten orange.
+- Schmerzverlauf mit dem Finger einzeichnen. Die App schreibt den Verlauf als Text in die Doku.
+- Diagnoselisten (neurologisch, orthopädisch, innere Medizin) nach Häufigkeit in Deutschland sortiert.
+- Bereichsauswahl (Kopf, Extremitäten, Wirbelsäule, anderer Körperteil) hinter einer aufklappbaren Fläche.
+- Befundhistorie: „Vorliegende Befunde“ entfernt. „Bisherige Maßnahmen“ und „Bekannte Nebendiagnosen“ als Kacheln. „Orthopädische Vorstellung“ heißt jetzt „Ärztliche Vorstellung“. Jede gewählte Nebendiagnose bekommt eine eigene Zeile im Detailfeld.
+- Sozialanamnese als Kacheln: Soziales (mit Haustieren), Arbeit und Beruf, Sport, Hilfsmittel.
+- Vorschläge passend zur Stelle bei „Wobei tritt der Schmerz am meisten auf?“ und bei der Region der Schwellung.
+- Schritt-Menü oben rechts: Zu jeder Seite springen, vor und zurück. Ausgefüllte Seiten sind blau markiert.
+- Beweglichkeit „Schnell“: Standard ist „nicht geprüft“, neu ist die Stufe „mäßig reduziert“.
+- Offline-Speicher auf `doku-fix-v2`, damit installierte Apps die neue Version laden.
+
+## v2, 11.10.2026
+
+- Knopf „Behandlung abgeschlossen“ für den Therapiebericht und den Bereich „Nur Verlauf“.
+
+## v1, 11.10.2026
+
+- Erste Version der App auf GitHub Pages, installierbar auf dem Home-Bildschirm und offline nutzbar.
+
+## Eine alte Version wiederherstellen
+
+Am einfachsten sagst du Claude zum Beispiel: „Stelle Doku-Fix auf Version v2 zurück.“ Claude holt dann über die Commit-Nummer die Dateien aus diesem Stand, erhöht die Nummer des Offline-Speichers in `sw.js` und lädt das Ganze als neue Version hoch. Die späteren Versionen gehen dabei nicht verloren und lassen sich genauso zurückholen.
+
+Wer es selbst machen will, nimmt diese Befehle im Repository (Beispiel v2, die Nummer steht in der Tabelle):
+
+```
+git checkout f6f5fb3 -- index.html
+git commit -m "Zurück auf Version v2"
+git push
+```
+
+Danach in `sw.js` die Cache-Nummer um eins erhöhen, sonst zeigt die installierte App eventuell noch den alten Stand.
+
+Die Patientendaten auf dem Gerät hängen nicht an der Version. Sie bleiben beim Zurücksetzen erhalten.
