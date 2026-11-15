@@ -4710,6 +4710,27 @@ html.hb-offen,html.hb-offen body{overflow:hidden}
 .hb-seite{max-width:680px;margin:0 auto;padding:4px max(16px,env(safe-area-inset-right,0px)) calc(40px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column}
 .hb-monat{display:flex;align-items:center;justify-content:space-between;margin:14px 0 12px;background:var(--flaeche);border-radius:999px;padding:4px}
 .hb-monat b{font-size:17px;font-weight:700}
+.hb-ab{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;margin:0 0 10px;padding:10px 14px;border:0;border-radius:16px;background:var(--flaeche);color:var(--schrift);text-align:left;font:inherit;transition:background-color .2s ease,transform .16s cubic-bezier(.23,1,.32,1)}
+.hb-ab:active{transform:scale(.98)}
+.hb-ab i{flex:none;width:28px;height:28px;border-radius:50%;border:2px solid var(--linie);display:grid;place-items:center;transition:background-color .2s ease,border-color .2s ease}
+.hb-ab i svg{width:17px;height:17px}
+.hb-ab span{display:flex;flex-direction:column;gap:2px;min-width:0}
+.hb-ab b{font-size:16px;font-weight:700}
+.hb-ab small{font-size:13px;color:var(--schrift2)}
+.hb-ab.an{background:#E4F3D0}
+.hb-ab.an i{background:#3F6E12;border-color:#3F6E12;color:#fff}
+.hb-ab.an small{color:#3F5A1D}
+.hb-jahr{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:4px;margin:0 0 14px}
+.hb-jm{position:relative;min-height:40px;padding:0;border:0;border-radius:10px;background:var(--flaeche);color:var(--schrift2);font:inherit;font-size:12px;font-weight:600}
+.hb-jm.offen{color:var(--schrift)}
+.hb-jm.offen:after{content:"";position:absolute;left:50%;bottom:5px;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:#C77700}
+.hb-jm.ab{background:#E4F3D0;color:#2E5209}
+.hb-jm.ab:after{content:"";position:absolute;left:50%;bottom:4px;width:8px;height:4px;margin-left:-4px;border:solid #3F6E12;border-width:0 0 2px 2px;transform:rotate(-45deg)}
+.hb-jm.leer,.hb-jm.zuk{opacity:.55}
+.hb-jm.akt{box-shadow:inset 0 0 0 2px var(--schrift)}
+.hb-ab:focus-visible,.hb-jm:focus-visible{outline:2px solid var(--tape);outline-offset:2px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .hb-ab.an,:root:not([data-theme="light"]) .hb-jm.ab{background:#2C3A1C;color:#D7F0B0}:root:not([data-theme="light"]) .hb-ab.an small{color:#C2DDA0}:root:not([data-theme="light"]) .hb-ab.an i{background:#8DC63F;border-color:#8DC63F;color:#1a1a1a}:root:not([data-theme="light"]) .hb-jm.ab:after{border-color:#8DC63F}}
+:root[data-theme="dark"] .hb-ab.an,:root[data-theme="dark"] .hb-jm.ab{background:#2C3A1C;color:#D7F0B0}:root[data-theme="dark"] .hb-ab.an small{color:#C2DDA0}:root[data-theme="dark"] .hb-ab.an i{background:#8DC63F;border-color:#8DC63F;color:#1a1a1a}:root[data-theme="dark"] .hb-jm.ab:after{border-color:#8DC63F}
 .hb-monat button{width:44px;height:40px;border:0;background:none;border-radius:999px;display:grid;place-items:center;color:var(--tape)!important}
 .hb-warn{margin:4px 0 10px;padding:10px 12px;border-radius:14px;background:var(--hb-knapp-weich);color:var(--hb-knapp);font-size:15px;font-weight:600;line-height:1.4}
 .hb-liste{list-style:none;margin:6px 0 14px;padding:0;background:var(--flaeche);border-radius:20px;overflow:hidden}
@@ -4984,7 +5005,7 @@ var KARTE_KEY = "doku-fix-hb-karte";
 function kartenStil() { return "k2"; }
 function hlStil() { return "h1"; } // angetippter Patient: große Nadel mit Lichtring, andere blass
 function kachel() { return stil().charAt(0) === "c"; }
-var DP_KEY = "doku-fix-dienstplan", ADR_KEY = "doku-fix-hb-adressen", FK_KEY = "doku-fix-fahrtkosten", RT_KEY = "doku-fix-hb-routen", SP_KEY = "doku-fix-hb-sperren", TH_KEY = "doku-fix-therapeut";
+var DP_KEY = "doku-fix-dienstplan", ADR_KEY = "doku-fix-hb-adressen", FK_KEY = "doku-fix-fahrtkosten", RT_KEY = "doku-fix-hb-routen", SP_KEY = "doku-fix-hb-sperren", TH_KEY = "doku-fix-therapeut", AB_KEY = "doku-fix-fk-abgerechnet";
 var WT = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"], WK = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
 var MON = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
 
@@ -6017,6 +6038,7 @@ function fahrtkostenOeffnen(ym, zurueck, markiert, adrAuf) {
     var h = '<div class="hb-leiste"><button type="button" class="hb-zurueck" data-k="zu">' + IC.zur + '<span>' + esc(OV.zurueck) + '</span></button></div>' +
       '<div class="hb-seite"><h2>Fahrtkosten/<wbr>Hausbesuche</h2>' +
       '<div class="hb-monat"><button type="button" data-k="mon" data-r="-1" aria-label="Vorheriger Monat">' + IC.li + '</button><b>' + MON[m - 1] + ' ' + y + '</b><button type="button" data-k="mon" data-r="1" aria-label="Nächster Monat">' + IC.re + '</button></div>' +
+      abRow() + jahrLeiste() +
       '<div class="hb-zahlen"><div class="hb-zahl"><small>Kilometer</small><b>' + kmTxt(t.km) + '<span>km</span></b></div><div class="hb-zahl"><small>Betrag</small><b>' + euroTxt(t.cent) + '<span>€</span></b></div><div class="hb-zahl"><small>Tage</small><b>' + L.filter(function (e, i) { return !i || L[i - 1].datum !== e.datum; }).length + '</b></div></div>' +
       (t.offen ? '<p class="hb-warn">' + (t.offen === 1 ? "Ein Tag hat" : t.offen + " Tage haben") + ' noch keine km, weil eine Adresse fehlt. Unten unter „Adressen“ nachtragen.</p>' : "") +
       '<ul class="hb-liste">' + (L.length ? L.map(zeile).join("") : '<li class="hb-leer"><b>Noch keine Fahrten</b>Hausbesuche aus dem Dienstplan werden am Tag selbst eingetragen.</li>') + '</ul>' +
@@ -6069,6 +6091,23 @@ function fahrtkostenOeffnen(ym, zurueck, markiert, adrAuf) {
       (S.add.namen.length ? '<p class="hb-hinw">' + esc(S.add.namen.join(" → ")) + '</p>' : "") +
       '<div class="hb-zx-kn"><button type="button" class="hb-knopf" data-k="add-ok"' + (S.add.namen.length ? "" : " disabled") + '>Eintragen</button><button type="button" class="hb-knopf zwei" data-k="add-ab">Abbrechen</button></div></div>';
   }
+  function abDatum(v) { var d = new Date(v); return isNaN(d) ? "" : String(d.getDate()).padStart(2, "0") + "." + String(d.getMonth() + 1).padStart(2, "0") + "." + d.getFullYear(); }
+  function abRow() {
+    var AB = lies(AB_KEY, {}), an = !!AB[S.ym], mn = MON[+S.ym.slice(5, 7) - 1];
+    return '<button type="button" class="hb-ab' + (an ? " an" : "") + '" data-k="ab" role="switch" aria-checked="' + an + '">' +
+      '<i aria-hidden="true">' + (an ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>' : "") + '</i>' +
+      '<span><b>' + (an ? mn + " ist abgerechnet" : mn + " abgerechnet?") + '</b><small>' + (an ? "Abgehakt am " + abDatum(AB[S.ym]) + " · zum Zurücknehmen antippen" : "Antippen, wenn du den Monat bei der Arbeit abgegeben hast") + '</small></span></button>';
+  }
+  function jahrLeiste() {
+    var AB = lies(AB_KEY, {}), y = S.ym.slice(0, 4), jetzt = heute().slice(0, 7), h = '<div class="hb-jahr" role="group" aria-label="Übersicht ' + y + '">';
+    for (var i = 1; i <= 12; i++) {
+      var ym = y + "-" + String(i).padStart(2, "0"), zukunft = ym > jetzt, ab = !!AB[ym], hat = !zukunft && monatsListe(ym).length > 0;
+      var kl = "hb-jm" + (ab ? " ab" : hat ? " offen" : " leer") + (ym === S.ym ? " akt" : "") + (zukunft ? " zuk" : "");
+      var txt = MON[i - 1] + " " + y + (ab ? ", abgerechnet" : hat ? ", noch nicht abgerechnet" : zukunft ? "" : ", keine Fahrten");
+      h += '<button type="button" class="' + kl + '" data-k="jm" data-ym="' + ym + '" aria-label="' + txt + '"' + (ym === S.ym ? ' aria-current="true"' : "") + '>' + MON[i - 1].slice(0, 3) + '</button>';
+    }
+    return h + '</div>';
+  }
   function speichereKm(key, km) {
     var F = fahrten(), e = F[key]; if (!e) return;
     e.km = km; e.korr = km != null && e.kmKarte !== km;
@@ -6078,6 +6117,8 @@ function fahrtkostenOeffnen(ym, zurueck, markiert, adrAuf) {
   o.addEventListener("click", async function (ev) {
     var t = ev.target.closest("button"); if (!t) return; var k = t.getAttribute("data-k"), key = t.getAttribute("data-key");
     if (k === "zu") { schliessen(); return; }
+    if (k === "ab") { var AB = lies(AB_KEY, {}); if (AB[S.ym]) delete AB[S.ym]; else AB[S.ym] = new Date().toISOString(); schreib(AB_KEY, AB); zeichne(); var nb = o.querySelector(".hb-ab"); if (nb) nb.focus(); return; }
+    if (k === "jm") { S.ym = t.getAttribute("data-ym"); S.auf = null; zeichne(); return; }
     if (k === "mon") { var d = new Date(+S.ym.slice(0, 4), +S.ym.slice(5, 7) - 1 + +t.getAttribute("data-r"), 1); S.ym = iso(d).slice(0, 7); S.auf = null; zeichne(); return; }
     if (k === "z") { S.auf = S.auf === key ? null : key; zeichne(); return; }
     if (k === "fk-zuord") { zuordnen(t.getAttribute("data-n"), t.getAttribute("data-key")); zeichne(); return; }
@@ -6170,12 +6211,13 @@ function sicherung() {
   var o = {}, a = adressen(), f = fahrten(), r = routen(), th = liesText(TH_KEY);
   if (Object.keys(a).length) o.hbAdressen = a; if (Object.keys(f).length) o.fahrtkosten = f; if (Object.keys(r).length) o.hbRouten = r; if (th) o.therapeut = th;
   var sp = sperren(); if (Object.keys(sp).length) o.hbSperren = sp;
+  var ab = lies(AB_KEY, {}); if (Object.keys(ab).length) o.fkAbgerechnet = ab;
   return o;
 }
 function einspielen(x) {
   if (!x || typeof x !== "object") return;
   function misch(key, neu) { if (!neu || typeof neu !== "object") return; var alt = lies(key, {}); Object.keys(neu).forEach(function (k) { if (!(k in alt)) alt[k] = neu[k]; }); schreib(key, alt); }
-  misch(ADR_KEY, x.hbAdressen); misch(RT_KEY, x.hbRouten); misch(SP_KEY, x.hbSperren);
+  misch(ADR_KEY, x.hbAdressen); misch(RT_KEY, x.hbRouten); misch(SP_KEY, x.hbSperren); misch(AB_KEY, x.fkAbgerechnet);
   if (x.fahrtkosten && typeof x.fahrtkosten === "object") {
     var F = fahrten(), tage = {};
     Object.keys(x.fahrtkosten).forEach(function (k) { if (x.fahrtkosten[k].quelle === "alt") tage[x.fahrtkosten[k].datum] = 1; });
