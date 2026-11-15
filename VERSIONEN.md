@@ -8,6 +8,7 @@ Neue Versionen kommen oben dazu.
 
 | Version | Datum | Commit | Was sich geändert hat |
 |---|---|---|---|
+| v156 | 15.11.2026 | c92a2ea | Wissen › Krankheitsbilder: „Info für Patienten“ auch bei Achillessehnen-Tendinopathie (SG04). Jetzt 76 Blätter. |
 | v155 | 15.11.2026 | 7155c1f | Wissen › Krankheitsbilder: „Info für Patienten“ jetzt bei 75 Krankheitsbildern. Neu sind 61 Blätter: Ellenbogen (EB01–EB10), Finger (FI01–FI10), Lisfranc-Verletzung, Handgelenk (HG01–HG10), Hüfte (HU01–HU10), Knie (KN01–KN10), Lagerungsschwindel, Fazialisparese, Außenband Sprunggelenk und Schulter (Frozen Shoulder, Instabilität, Omarthrose/Prothese, AC-Gelenk, Humeruskopffraktur, Bizepssehne/SLAP, Klavikulafraktur). Aufbau wie bei v152. Für Hand und Finger stehen Ersatzübungen für Arm und Schulter auf dem Blatt, weil es in Kraft-Fix noch keine Handübungen gibt. Bei der Fazialisparese fehlen die Bilder zu den drei Mimikübungen noch. |
 | v154 | 15.11.2026 | dcab33a | Wissen › Krankheitsbilder: Plakate zu Herzinsuffizienz, Diabetes Typ 2, Adipositas und Long/Post-COVID neu, jetzt wie alle anderen mit einem großen Hauptmotiv statt mehrerer kleiner Szenen. |
 | v153 | 15.11.2026 | 3548804 | Wissen › Krankheitsbilder: 47 weitere Plakate (Sprunggelenk, Fuß, Zehen, Neurologie, Innere Medizin, CMD). Jetzt hat jedes der 122 Krankheitsbilder ein Plakat im einheitlichen Stil. |
