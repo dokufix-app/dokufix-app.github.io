@@ -8,6 +8,7 @@ Neue Versionen kommen oben dazu.
 
 | Version | Datum | Commit | Was sich geändert hat |
 |---|---|---|---|
+| v163 | 15.11.2026 | 28ae463 | Wissen: Wer ein Krankheitsbild, einen Test oder ein Kapitel aus Verordnung & Abrechnung öffnet, landet jetzt immer am Anfang statt an der Stelle, wo vorher gescrollt war. Gilt auch für verlinkte Tests und Krankheitsbilder. |
 | v162 | 15.11.2026 | bf239b7 | iPad im Hochformat: Dienstplan, Patienten, Wissen und Anatomie nutzen jetzt die ganze Bildschirmbreite statt eines schmalen Streifens in der Mitte. Querformat bleibt wie bisher. |
 | v161 | 15.11.2026 | a9f2ed3 | Wissen › Tests: 33 neue Bilder zur Durchführung, jetzt hat jeder Test mit starker Evidenz ein Bild (59 insgesamt). Neu unter anderem Apprehension, Relocation, Surprise, Ellenbogenstreckung, Griffkraft, Tabatière, Phalen, Tinel, Durkan, SLR und gekreuzter SLR, ULTT, Zentralisation, Ottawa Fuß, vordere Schublade OSG, Weight-Bearing-Lunge, die vier Hop-Tests, Berg Balance, 10-m- und 6-Minuten-Gehtest, TUG, DGI, Fugl-Meyer, Nine-Hole-Peg, UPDRS, Mini-BESTest, 25-Fuß-Gehtest und Tinetti. |
 | v160 | 15.11.2026 | bd1b2c0 | Wissen › Tests: Die Gestaltung der Testseiten wurde bisher gar nicht geladen. Jetzt passt die Seite auf dem iPhone in die Breite, nichts wird mehr rechts abgeschnitten. Auswertung als rote und grüne Kästen, Aussagekraft mit großen Zahlen und Skala, „Im Cluster mit“ als Kärtchen, Krankheitsbilder mit kleinem Vorschaubild statt riesiger Plakate, „Für die Doku“ mit richtigen Umschaltern. |
