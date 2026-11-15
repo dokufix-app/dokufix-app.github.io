@@ -8,6 +8,9 @@
 <title>Doku-Fix Diktat</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="apple-mobile-web-app-title" content="Doku-Fix">
+<script>/* Speicher über den Tresor von Doku-Fix (verschlüsselt), wenn als Fenster in Doku-Fix geöffnet */
+var LSX=(function(){try{if(window.parent!==window&&parent.TRESOR&&parent.TRESOR.offen){var t=parent.TRESOR;["pointerdown","keydown","input"].forEach(function(e){addEventListener(e,function(){try{t.aktiv()}catch(x){}},{capture:true,passive:true})});return t}}catch(e){}try{return window.localStorage}catch(e){return{getItem:function(){return null},setItem:function(){},removeItem:function(){}}}})();
+</script>
 <script>window.DF_APP=/[?&]app=1/.test(location.search);if(window.DF_APP)document.documentElement.classList.add("app");</script>
 <style>
 /* Layout: Doku-Fix-Stil. iPhone eine Spalte; iPad links Gespräch, rechts einsortierte Kacheln und Text. */
@@ -1980,8 +1983,8 @@ html.ww ::selection{background:#ddf6a2;color:#1a1a1a}
     [/\b(\d+)\s*°/g, '$1 Grad']
   ];
 
-  function laden(k, std) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : std; } catch (e) { return std; } }
-  function speichern(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* ohne Speicher weiter */ } }
+  function laden(k, std) { try { var v = LSX.getItem(k); return v ? JSON.parse(v) : std; } catch (e) { return std; } }
+  function speichern(k, v) { try { LSX.setItem(k, JSON.stringify(v)); } catch (e) { /* ohne Speicher weiter */ } }
   var LS = 'doku-fix-diktat-woerterbuch';
   function woerterbuch() { return laden(LS, []); }
   function woerterbuchSetzen(l) { speichern(LS, l); }
@@ -2342,11 +2345,11 @@ html.ww ::selection{background:#ddf6a2;color:#1a1a1a}
   var heute = new Date();
   var erg = null, aus = {}, art = null, aktuelleProbe = null;
   var laenge = 'lang';
-  try { laenge = localStorage.getItem('doku-fix-diktat-laenge') || 'lang'; } catch (e) { /* ohne Speicher */ }
+  try { laenge = LSX.getItem('doku-fix-diktat-laenge') || 'lang'; } catch (e) { /* ohne Speicher */ }
   function laengeZeigen() { document.querySelectorAll('#laenge button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.l === laenge); }); }
   document.getElementById('laenge').addEventListener('click', function (ev) {
     var b = ev.target.closest('button'); if (!b) return;
-    laenge = b.dataset.l; try { localStorage.setItem('doku-fix-diktat-laenge', laenge); } catch (e) { /* egal */ }
+    laenge = b.dataset.l; try { LSX.setItem('doku-fix-diktat-laenge', laenge); } catch (e) { /* egal */ }
     laengeZeigen(); if (erg) zeichne();
   });
   laengeZeigen();
@@ -2619,7 +2622,7 @@ html.ww ::selection{background:#ddf6a2;color:#1a1a1a}
   var imArtefakt = /claude/i.test(location.hostname) || location.protocol === 'about:' || location.protocol === 'blob:';
   var alsApp = false; try { var tp = window.parent || window; alsApp = tp.navigator.standalone === true || tp.matchMedia('(display-mode: standalone)').matches || AU.alsApp(); } catch (e) { alsApp = false; }
   if (imArtefakt) document.documentElement.classList.add('artefakt');
-  var wegGesp = 'geraet'; try { if (!localStorage.getItem('doku-fix-diktat-weg-v3')) { localStorage.setItem('doku-fix-diktat-weg-v3', '1'); if ((localStorage.getItem('doku-fix-diktat-weg') || 'auto') === 'auto') localStorage.setItem('doku-fix-diktat-weg', 'geraet'); } wegGesp = localStorage.getItem('doku-fix-diktat-weg') || 'geraet'; } catch (e) { /* ohne Speicher */ }
+  var wegGesp = 'geraet'; try { if (!LSX.getItem('doku-fix-diktat-weg-v3')) { LSX.setItem('doku-fix-diktat-weg-v3', '1'); if ((LSX.getItem('doku-fix-diktat-weg') || 'auto') === 'auto') LSX.setItem('doku-fix-diktat-weg', 'geraet'); } wegGesp = LSX.getItem('doku-fix-diktat-weg') || 'geraet'; } catch (e) { /* ohne Speicher */ }
   var weg = imArtefakt ? 'demo' : (wegGesp !== 'geraet' && AU.liveVerfuegbar() ? 'live' : 'geraet'), wegAkt = null;
   var maschine = '', korrekturen = [], vorschlaege = [];
 
@@ -2635,10 +2638,10 @@ html.ww ::selection{background:#ddf6a2;color:#1a1a1a}
     $('modell').hidden = w !== 'geraet';
   }
   var modellWahl = 'gut';
-  try { modellWahl = localStorage.getItem('doku-fix-diktat-modell') || 'gut'; } catch (e) { /* ohne Speicher */ }
+  try { modellWahl = LSX.getItem('doku-fix-diktat-modell') || 'gut'; } catch (e) { /* ohne Speicher */ }
   function modellSetzen(m) {
     modellWahl = m; if (typeof aufOpt !== 'undefined') aufOpt.groesse = m;
-    try { localStorage.setItem('doku-fix-diktat-modell', m); } catch (e) { /* ohne Speicher */ }
+    try { LSX.setItem('doku-fix-diktat-modell', m); } catch (e) { /* ohne Speicher */ }
     $('modell').querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.m === m); });
   }
   $('modell').addEventListener('click', function (ev) { var b = ev.target.closest('button'); if (b && !auf.aktiv()) modellSetzen(b.dataset.m); });

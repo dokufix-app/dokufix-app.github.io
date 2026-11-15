@@ -1593,7 +1593,7 @@ export function host(elem) {
   const ziel = window.ANA_ziel; window.ANA_ziel = null;
   if (ziel) {
     let P = null;
-    try { const z = JSON.parse(localStorage.getItem('physio-doku-v1') || 'null'); P = z?.patienten?.find((x) => x.id === ziel); } catch {}
+    try { const z = JSON.parse((window.TRESOR||localStorage).getItem('physio-doku-v1') || 'null'); P = z?.patienten?.find((x) => x.id === ziel); } catch {}
     if (P) A.zeigePatient(P);
   }
   return A;
