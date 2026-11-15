@@ -31,7 +31,7 @@ html.ana-voll body{overflow:hidden}
 .ana-labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
 .ana-label{position:absolute;left:0;top:0;will-change:transform}
 .ana-label i{position:absolute;left:-5px;top:-5px;width:10px;height:10px;border-radius:50%;background:#fff;border:2.5px solid var(--tape,#146C99);box-shadow:0 1px 3px rgba(0,0,0,.3)}
-.ana-label span{position:absolute;left:12px;top:-34px;white-space:nowrap;padding:5px 10px;border-radius:9px;background:rgba(255,255,255,.94);color:#000;font-size:13px;font-weight:600;box-shadow:0 2px 10px rgba(0,0,0,.18);border-left:3px solid var(--tape,#146C99)}
+.ana-label span{position:absolute;left:12px;top:-34px;white-space:nowrap;padding:5px 10px;border-radius:9px;background:rgba(255,255,255,.94);color:#000;font-size:13px;font-weight:600;box-shadow:0 2px 10px rgba(0,0,0,.18)}
 .ana-label span::before{content:"";position:absolute;left:-12px;bottom:-14px;width:14px;height:1.5px;background:currentColor;opacity:.45;transform:rotate(-55deg);transform-origin:left}
 .ana-label.links span{left:auto;right:12px;border-left:0;border-right:3px solid var(--tape,#146C99)}
 .ana-label.problem i,.ana-label.pin i{border-color:#FF3B30}.ana-label.problem span,.ana-label.pin span{border-color:#FF3B30}
