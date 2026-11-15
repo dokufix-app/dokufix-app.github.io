@@ -25,6 +25,36 @@ var ICO={ok:'<svg viewBox="0 0 24 24" class="wq-mk"><path d="M5 12.5l4.5 4.5L19 
 .wi-portal .wk-seg{max-width:100%;overflow-x:auto;scrollbar-width:none;flex-wrap:nowrap}
 .wi-portal .wk-seg::-webkit-scrollbar{display:none}
 .wi-portal .wk-seg button{flex:none;white-space:nowrap}
+.wd-kblink{border:0;background:none;padding:0;font:inherit;color:var(--tape);font-weight:600;cursor:pointer}
+.wd-toc{position:sticky;top:0;z-index:3;margin:14px calc(-1 * clamp(16px,4.5vw,56px)) 6px;padding:8px clamp(16px,4.5vw,56px) 0;background:color-mix(in srgb,var(--grund) 88%,transparent);-webkit-backdrop-filter:saturate(1.6) blur(14px);backdrop-filter:saturate(1.6) blur(14px)}
+.wd-toc-l{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:8px}
+.wd-toc-l::-webkit-scrollbar{display:none}
+.wd-toc-l button{flex:none;border:0;border-radius:999px;padding:8px 14px;min-height:36px;background:var(--flaeche);color:var(--schrift2);font:inherit;font-weight:600;font-size:.875rem;cursor:pointer;white-space:nowrap;transition:background-color 200ms ease,color 200ms ease,transform 140ms ease-out}
+.wd-toc-l button:active{transform:scale(.97)}
+.wd-toc-l .wd-toc-q{color:var(--tape);box-shadow:inset 0 0 0 1.5px var(--tape);background:transparent}
+.wd-toc-l button.an{background:var(--tape);color:var(--flaeche)}
+.wd-lese{display:block;height:3px;background:var(--linie);border-radius:99px;overflow:hidden}
+.wd-lese em{display:block;height:100%;background:var(--tape);transform-origin:left;transform:scaleX(0);transition:transform 400ms cubic-bezier(.23,1,.32,1)}
+.wd-k,.wd-start{scroll-margin-top:72px}
+.wd-kurz{background:color-mix(in srgb,#C9E86B 32%,var(--flaeche));border-radius:20px;padding:16px 18px;margin:8px 0 12px}
+.wd-kurz h2{font-size:1.0625rem;font-weight:800;margin:0 0 6px}
+.wd-kurz ul{margin:0;padding-left:20px}.wd-kurz li{margin:5px 0;line-height:1.5;font-weight:600}
+.wd-anim .wd-k{opacity:0;transform:translateY(10px);transition:opacity 420ms ease-out,transform 420ms cubic-bezier(.23,1,.32,1)}
+.wd-anim .wd-k.sicht{opacity:1;transform:none}
+.wd-anim .wd-bars em{transform:scaleX(0);transform-origin:left;transition:transform 700ms cubic-bezier(.23,1,.32,1) 150ms}
+.wd-anim .wd-k.sicht .wd-bars em{transform:none}
+.wd-figs img{cursor:zoom-in;transition:transform 140ms ease-out}
+.wd-figs img:active{transform:scale(.98)}
+.wd-lupe{position:fixed;inset:0;z-index:10060;background:rgba(10,12,14,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom));animation:wd-auf 200ms ease-out;cursor:zoom-out}
+.wd-lupe.zu{opacity:0;transition:opacity 150ms ease-in}
+.wd-lupe img{max-width:min(100%,900px);max-height:72vh;object-fit:contain;border-radius:10px;animation:wd-gross 260ms cubic-bezier(.23,1,.32,1)}
+.wd-lupe p{color:#d8dde1;font-size:.9375rem;line-height:1.5;max-width:70ch;margin:0;text-align:left}
+.wd-lupe p b{color:#fff}
+.wd-lupe button{position:absolute;top:max(12px,env(safe-area-inset-top));right:12px;width:44px;height:44px;border:0;border-radius:12px;background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center}
+.wd-lupe button svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+@keyframes wd-auf{from{opacity:0}}
+@keyframes wd-gross{from{opacity:0;transform:scale(.96)}}
+@media (prefers-reduced-motion:reduce){.wd-anim .wd-k{opacity:1;transform:none;transition:none}.wd-anim .wd-bars em{transform:none;transition:none}.wd-lupe,.wd-lupe img{animation:none}}
 .wd-woche{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:22px 0 10px}
 .wd-woche h2{font-size:1.25rem;font-weight:800;margin:0;letter-spacing:-.01em}
 .wd-woche span{color:var(--schrift2);font-size:.875rem;white-space:nowrap}
@@ -46,6 +76,11 @@ var ICO={ok:'<svg viewBox="0 0 24 24" class="wq-mk"><path d="M5 12.5l4.5 4.5L19 
 .wd-k p,.wd-k li{line-height:1.55}
 .wd-k ul{padding-left:20px;margin:8px 0}
 .wd-k li{margin:5px 0}
+.wd-bars{display:grid;gap:12px;background:var(--seite);border-radius:14px;padding:14px;margin:10px 0}
+.wd-bars b{display:flex;justify-content:space-between;gap:10px;font-size:.9375rem}
+.wd-bars b span:last-child{font-weight:600;color:var(--schrift2)}
+.wd-bars i{display:block;height:12px;border-radius:99px;background:var(--flaeche);margin-top:5px;overflow:hidden}
+.wd-bars em{display:block;height:100%;border-radius:99px;background:var(--tape)}
 .wd-tab{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.4fr);border-top:1px solid var(--linie);margin-top:8px}
 .wd-tab div{padding:9px 10px 9px 0;border-bottom:1px solid var(--linie);font-size:.9375rem;line-height:1.4}
 .wd-tab div:nth-child(odd){font-weight:700}
@@ -149,31 +184,54 @@ function seiteListe(){
 function block(b){var h=b.t?`<h3>${E(b.t)}</h3>`:"";
  (b.p||[]).forEach(function(x){h+=`<p>${E(x)}</p>`});
  if(b.l)h+=`<ul>${b.l.map(function(x){return `<li>${E(x)}</li>`}).join("")}</ul>`;
+ if(b.bars)h+=`<div class="wd-bars">${b.bars.map(function(r){return `<div><b><span>${E(r[0])}</span><span>${E(r[2]||"")}</span></b><i><em style="width:${+r[1]}%"></em></i></div>`}).join("")}</div>`;
  if(b.tab)h+=`<div class="wd-tab">${b.tab.map(function(r){return `<div>${E(r[0])}</div><div>${E(r[1])}</div>`}).join("")}</div>`;
  if(b.fig)h+=`<div class="wd-figs">${b.fig.map(function(f){return `<figure><img src="${E(f.src)}" alt="${E(f.alt||"")}" loading="lazy"><figcaption><b>${E(f.t)}</b> ${E(f.c||"")}</figcaption></figure>`}).join("")}</div>`;
  if(b.merk)h+=`<div class="wd-merk"><b>Merke:</b> ${E(b.merk)}</div>`;
  return h}
+function kurzTitel(t){return String(t).replace(/^\d+\.\s*/,"").replace(/[:?].*$/,"").replace(/^Was ist das eigentlich$/,"Grundlagen").replace(/^Was hilft laut Studienlage$/,"Studienlage")}
 function seiteEinheit(kw,id){var w=woche(kw),e=w&&w.einheiten.find(function(x){return x.id===id});
  if(!e)return seiteListe();
- var r=lesen()[id];
- var h=`<div class="wi-seite"><button class="wi-zur" data-a="wdh-liste">‹ Wiederholung</button><h1>${E(e.titel)}</h1><p class="wi-unter">${E(ART[e.art]||"")} · ca. ${E(e.min||8)} min · ${E(e.fragen.length)} Fragen${e.kb?` · <button class="wd-kblink" data-kbid="${E(e.kb)}" style="border:0;background:none;padding:0;font:inherit;color:var(--tape);font-weight:600;cursor:pointer">Zum Krankheitsbild</button>`:""}</p>`;
- (e.abschnitte||[]).forEach(function(a){h+=`<section class="wi-karte wd-k"><h2>${E(a.t)}</h2>${(a.b||[a]).map(function(b){return block(b===a?{p:a.p,l:a.l,tab:a.tab,fig:a.fig,merk:a.merk}:b)}).join("")}</section>`});
+ var r=lesen()[id],ab=e.abschnitte||[],merk=[];
+ ab.forEach(function(a){(a.b||[a]).forEach(function(b){if(b.merk)merk.push(b.merk)})});
+ var h=`<div class="wi-seite wd-einheit"><button class="wi-zur" data-a="wdh-liste">‹ Wiederholung</button><h1>${E(e.titel)}</h1><p class="wi-unter">${E(ART[e.art]||"")} · ca. ${E(e.min||8)} min · ${E(e.fragen.length)} Fragen${e.kb?` · <button class="wd-kblink" data-kbid="${E(e.kb)}">Zum Krankheitsbild</button>`:""}</p>`;
+ h+=`<div class="wd-toc" role="navigation" aria-label="Kapitel"><div class="wd-toc-l">${ab.map(function(a,i){return `<button data-wdhgo="${i}">${E(kurzTitel(a.t))}</button>`}).join("")}<button class="wd-toc-q" data-wdhquiz="${E(id)}" data-kw="${E(kw)}">Quiz starten</button></div><i class="wd-lese"><em></em></i></div>`;
+ if(merk.length)h+=`<section class="wd-kurz"><h2>Kurz gemerkt</h2><ul>${merk.map(function(m){return `<li>${E(m)}</li>`}).join("")}</ul></section>`;
+ ab.forEach(function(a,i){h+=`<section class="wi-karte wd-k" id="wd-s${i}" data-i="${i}"><h2>${E(a.t)}</h2>${(a.b||[a]).map(function(b){return block(b===a?{p:a.p,l:a.l,tab:a.tab,fig:a.fig,merk:a.merk,bars:a.bars}:b)}).join("")}</section>`});
  if(e.quellen)h+=`<section class="wi-karte"><h2>Quellen</h2><p class="wd-quellen">${e.quellen.map(E).join("<br>")}</p></section>`;
- h+=`<div class="wd-start"><button class="wd-teil" data-wdhpdf="${E(id)}" data-kw="${E(kw)}" aria-label="Als PDF teilen"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg></button><span><b>${r?"Quiz nochmal":"Quiz"}</b>${E(e.fragen.length)} Fragen · ca. 5 min${r?" · zuletzt "+E(status(id)):""}</span><button class="wq-go" data-wdhquiz="${E(id)}" data-kw="${E(kw)}">Quiz starten</button></div>`;
+ h+=`<div class="wd-start" id="wd-quiz"><button class="wd-teil" data-wdhpdf="${E(id)}" data-kw="${E(kw)}" aria-label="Als PDF teilen"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg></button><span><b>${r?"Quiz nochmal":"Quiz"}</b>${E(e.fragen.length)} Fragen · ca. 5 min${r?" · zuletzt "+E(status(id)):""}</span><button class="wq-go" data-wdhquiz="${E(id)}" data-kw="${E(kw)}">Quiz starten</button></div>`;
  return h+`</div>`}
+/* Lernseite: Kapitel mitlaufen lassen, sanft einblenden, Balken füllen */
+var beob=null;
+function einrichten(el){if(beob){beob.disconnect();beob=null}
+ var seite=el.querySelector(".wd-einheit");if(!seite||!("IntersectionObserver" in window))return;
+ var secs=[].slice.call(seite.querySelectorAll(".wd-k")),chips=[].slice.call(seite.querySelectorAll(".wd-toc-l button")),lese=seite.querySelector(".wd-lese em"),toc=seite.querySelector(".wd-toc-l"),akt=-1;
+ seite.classList.add("wd-anim");
+ function setze(i){if(i===akt)return;akt=i;chips.forEach(function(c,k){c.classList.toggle("an",k===i)});if(lese)lese.style.transform="scaleX("+((i+1)/(secs.length+1))+")";var c=chips[i];if(c&&toc.scrollWidth>toc.clientWidth)toc.scrollTo({left:c.offsetLeft-toc.clientWidth/2+c.offsetWidth/2,behavior:"smooth"})}
+ beob=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting){x.target.classList.add("sicht");beob.unobserve(x.target)}})},{rootMargin:"0px 0px -10% 0px"});
+ secs.forEach(function(s){beob.observe(s)});
+ var tocEl=seite.querySelector(".wd-toc"),quiz=seite.querySelector("#wd-quiz"),plan=0;
+ function lage(){plan=0;var kante=tocEl.getBoundingClientRect().bottom+16,i=0;secs.forEach(function(s,k){if(s.getBoundingClientRect().top<=kante)i=k});
+  var letzte=secs[secs.length-1].getBoundingClientRect().bottom;setze(i)}
+ var weiter=function(){if(!plan)plan=requestAnimationFrame(lage)};document.addEventListener("scroll",weiter,true);
+ beob.weiter=weiter;var alt=beob.disconnect.bind(beob);beob.disconnect=function(){document.removeEventListener("scroll",weiter,true);alt()};
+ setze(0)}
+function lupe(img){var o=document.createElement("div");o.className="wd-lupe";o.innerHTML=`<img src="${E(img.getAttribute("src"))}" alt="${E(img.alt)}"><p>${img.parentElement.querySelector("figcaption")?img.parentElement.querySelector("figcaption").innerHTML:""}</p><button aria-label="Schließen">${ICO.x}</button>`;
+ o.addEventListener("click",function(){o.classList.add("zu");setTimeout(function(){o.remove()},160)});document.body.append(o)}
 window.WI_umschWdh=function(){return `<div class="wk-seg"><button data-a="wk-kb">Krankheitsbilder</button><button data-modus="tests">Tests</button><button data-a="wk-vo">Verordnung &amp; Abrechnung</button><button data-modus="wdh" class="an">Wiederholung</button></div>`};
 
 /* Einhängen: neues letztes Segment */
 var vorListe=WI_liste,vorZeige=WI_zeige;
 WI_liste=function(){if(WI_st.modus==="wdh")return WI_st.wdh?seiteEinheit(WI_st.wdhKw,WI_st.wdh):seiteListe();return vorListe.apply(this,arguments)};
 WI_zeige=function(){var el=WI_st.el;
- if(el&&WI_st.modus==="wdh"&&!WI_st.tid&&!WI_st.id&&!WI_st.kap){var k=WI_st.wdh||"",a=el.dataset.wdhK;el.innerHTML=WI_liste();el.dataset.wdhK=k;var sg=el.querySelector(".wk-seg"),an=sg&&sg.querySelector(".an");if(an&&sg.scrollWidth>sg.clientWidth)sg.scrollLeft=an.offsetLeft-sg.offsetLeft-12;if(a!==k){var n=el;while(n&&n!==document.documentElement){if(n.scrollTop)n.scrollTop=0;n=n.parentElement}try{window.scrollTo(0,0)}catch(e){}}return}
+ if(el&&WI_st.modus==="wdh"&&!WI_st.tid&&!WI_st.id&&!WI_st.kap){var k=WI_st.wdh||"",a=el.dataset.wdhK;el.innerHTML=WI_liste();el.dataset.wdhK=k;var sg=el.querySelector(".wk-seg"),an=sg&&sg.querySelector(".an");if(an&&sg.scrollWidth>sg.clientWidth)sg.scrollLeft=an.offsetLeft-sg.offsetLeft-12;einrichten(el);if(a!==k){var n=el;while(n&&n!==document.documentElement){if(n.scrollTop)n.scrollTop=0;n=n.parentElement}try{window.scrollTo(0,0)}catch(e){}}return}
  vorZeige.apply(this,arguments);
  if(!el)return;el.querySelectorAll(".wk-seg").forEach(function(s){if(!s.querySelector('[data-modus="wdh"]')){var b=document.createElement("button");b.dataset.modus="wdh";b.textContent="Wiederholung";s.append(b)}})};
 document.addEventListener("click",function(ev){var b=ev.target.closest(".wi-portal button,.wi-portal summary");if(!b)return;var d=b.dataset;
  if(b.tagName==="SUMMARY"){setTimeout(function(){WI_st.wdhAlt=b.parentElement.open},0);return}
  if(d.modus==="wdh"){WI_st.wdh=null}
  if(d.wdh){ev.stopImmediatePropagation();WI_st.wdh=d.wdh;WI_st.wdhKw=d.kw;WI_zeige();return}
+ if(d.wdhgo!=null){ev.stopImmediatePropagation();var z=document.getElementById("wd-s"+d.wdhgo);if(z)z.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});return}
  if(d.a==="wdh-liste"){ev.stopImmediatePropagation();WI_st.wdh=null;WI_zeige();return}
  if(d.wdhpdf){ev.stopImmediatePropagation();var w2=woche(d.kw),e2=w2&&w2.einheiten.find(function(x){return x.id===d.wdhpdf});if(e2)pdfTeilen(e2,b);return}
  if(d.wdhquiz){ev.stopImmediatePropagation();var w=woche(d.kw),e=w&&w.einheiten.find(function(x){return x.id===d.wdhquiz});if(e)Quiz.auf(e);return}
@@ -203,6 +261,7 @@ async function pdfBauen(e){
    if(b.t){y+=1;text(b.t,11,"bold");y+=1}
    (b.p||[]).forEach(function(x){text(x,10.5);y+=2});
    if(b.l)b.l.forEach(function(x){doc.setFontSize(10.5);var z=doc.splitTextToSize(T(x),B-6);platz(z.length*4.4);doc.setFillColor(ANT[0],ANT[1],ANT[2]);doc.circle(M+1.5,y+2.5,.8,"F");farbe(ANT);doc.setFont("helvetica","normal");z.forEach(function(l){doc.text(l,M+6,y+3.6);y+=4.4});y+=1.2});
+   if(b.bars){b.bars.forEach(function(r){platz(11);doc.setFont("helvetica","bold");doc.setFontSize(10);farbe(ANT);doc.text(T(r[0]),M,y+3.5);doc.setFont("helvetica","normal");farbe(GR);doc.text(T(r[2]||""),W-M,y+3.5,{align:"right"});doc.setFillColor(LINIE[0],LINIE[1],LINIE[2]);doc.roundedRect(M,y+5.5,B,3,1.5,1.5,"F");doc.setFillColor(LIM[0],LIM[1],LIM[2]);doc.roundedRect(M,y+5.5,B*r[1]/100,3,1.5,1.5,"F");y+=12});y+=2}
    if(b.tab){y+=1;b.tab.forEach(function(r){doc.setFontSize(10);var k=doc.splitTextToSize(T(r[0]),52),v=doc.splitTextToSize(T(r[1]),B-58),h=Math.max(k.length,v.length)*4.2+3;platz(h);doc.setFont("helvetica","bold");farbe(ANT);k.forEach(function(l,i){doc.text(l,M,y+4+i*4.2)});doc.setFont("helvetica","normal");v.forEach(function(l,i){doc.text(l,M+58,y+4+i*4.2)});y+=h;doc.setDrawColor(LINIE[0],LINIE[1],LINIE[2]);doc.line(M,y-.5,W-M,y-.5)});y+=3}
    if(b.fig&&b.fig.length===1){var f1=b.fig[0],iw=72;doc.setFont("helvetica","normal");doc.setFontSize(9.5);var cz=doc.splitTextToSize(T(f1.t+" "+(f1.c||"")),B-iw-6);platz(iw+4);if(bilder[f1.src])doc.addImage(bilder[f1.src],"JPEG",M,y,iw,iw);farbe(GR);cz.forEach(function(l,k){doc.text(l,M+iw+6,y+4+k*4.2)});y+=iw+5}
    else if(b.fig){var bw=(B-6)/2;for(var i=0;i<b.fig.length;i+=2){var zeile=b.fig.slice(i,i+2),capH=0;doc.setFontSize(9);zeile.forEach(function(f){capH=Math.max(capH,doc.splitTextToSize(T(f.t+" "+(f.c||"")),bw).length*3.8)});platz(bw+capH+6);zeile.forEach(function(f,j){var x=M+j*(bw+6);if(bilder[f.src])doc.addImage(bilder[f.src],"JPEG",x,y,bw,bw);doc.setFont("helvetica","normal");farbe(GR);doc.splitTextToSize(T(f.t+" "+(f.c||"")),bw).forEach(function(l,k){doc.text(l,x,y+bw+4.5+k*3.8)})});y+=bw+capH+7}}
@@ -301,6 +360,7 @@ var Quiz=(function(){
  function zu(){st.hidden=true;sheetZu();document.documentElement.classList.remove("wi-auf");if(WI_st.modus==="wdh")WI_zeige()}
  return{auf:auf}})();
 window.WDH_Quiz=Quiz;
+document.addEventListener("click",function(ev){var im=ev.target.closest(".wd-figs img");if(im)lupe(im)});
 index();
 if(WI_st&&WI_st.el&&WI_st.modus==="wdh")WI_zeige();
 })();
