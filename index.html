@@ -10786,7 +10786,7 @@ WI_oeffnen=function(id){var neu=!WI_st.el;altOeffnen(id);if(neu&&WI_st.el){WI_st
  if(b.dataset.kap){ev.stopImmediatePropagation();WI_st.tab="vo";WI_st.kap=+b.dataset.kap;WI_st.id=null;WI_zeige()}},true)}};
 window.WI_oeffnen=WI_oeffnen;
 var altSchliessen=WI_schliessen;
-(function(){var s=document.createElement("script");s.src="wissen-tests.js";document.head.append(s)})();WI_schliessen=function(){WI_st.kap=null;altSchliessen()};
+(function(){var s=document.createElement("script");s.src="wissen-tests.js";s.onload=function(){var w=document.createElement("script");w.src="wissen-wiederholung.js";document.head.append(w)};document.head.append(s)})();WI_schliessen=function(){WI_st.kap=null;altSchliessen()};
 })();
 
 </script><style id="pi-css">
