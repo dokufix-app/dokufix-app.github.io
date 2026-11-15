@@ -579,3 +579,10 @@ window.WI_oeffneTest=function(id){WI_oeffnen();WI_st.kap=null;WI_st.modus="tests
 })();
 
 (function(){var r=document.querySelector(".wi-portal");if(r&&window.WI_st)WI_zeige()})();
+
+/* Neues Kapitel, neuer Test oder neues Thema: immer oben anfangen (auch im Reiter Wissen, wo die Seite selbst scrollt) */
+(function(){var vorZeige=WI_zeige,letzter=null;
+function schluessel(){return [WI_st.modus,WI_st.id,WI_st.tid,WI_st.kap].join("|")}
+WI_zeige=function(){var k=schluessel();vorZeige.apply(this,arguments);if(k===letzter)return;letzter=k;var el=WI_st.el;if(!el)return;
+var n=el;while(n&&n!==document.documentElement){if(n.scrollTop)n.scrollTop=0;n=n.parentElement}
+try{window.scrollTo(0,0)}catch(e){}};})();
