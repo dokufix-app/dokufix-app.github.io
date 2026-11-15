@@ -56,7 +56,10 @@ var ICO={ok:'<svg viewBox="0 0 24 24" class="wq-mk"><path d="M5 12.5l4.5 4.5L19 
 .wd-figs figcaption b{color:var(--schrift)}
 .wd-merk{background:color-mix(in srgb,#C9E86B 30%,var(--flaeche));border-radius:14px;padding:12px 14px;margin-top:10px;line-height:1.5}
 .wd-quellen{font-size:.8125rem;color:var(--schrift2);line-height:1.5}
-.wd-start{position:sticky;bottom:calc(84px + env(safe-area-inset-bottom));z-index:2;display:flex;align-items:center;gap:14px;background:var(--flaeche);border-radius:20px;padding:12px 12px 12px 18px;margin:18px 0 0;box-shadow:0 6px 24px rgba(0,0,0,.12)}
+.wd-start{position:sticky;bottom:calc(84px + env(safe-area-inset-bottom));z-index:2;display:flex;align-items:center;gap:12px;background:var(--flaeche);border-radius:20px;padding:12px;margin:18px 0 0;box-shadow:0 6px 24px rgba(0,0,0,.12)}
+.wd-teil{flex:none;width:48px;height:48px;border:0;border-radius:14px;background:var(--seite);color:var(--schrift);display:grid;place-items:center;cursor:pointer;transition:transform 140ms ease-out}
+.wd-teil:active{transform:scale(.97)}
+.wd-teil[aria-busy="true"]{opacity:.5;pointer-events:none}
 .wd-start span{flex:1;font-size:.9375rem;color:var(--schrift2);line-height:1.35}
 .wd-start span b{color:var(--schrift);display:block;font-size:1rem}
 .wq-go,.wq-ghost{font:inherit;font-weight:700;font-size:1.0625rem;min-height:52px;padding:0 24px;border-radius:14px;border:0;cursor:pointer;transition:transform 140ms ease-out;-webkit-tap-highlight-color:transparent;white-space:nowrap}
@@ -156,7 +159,7 @@ function seiteEinheit(kw,id){var w=woche(kw),e=w&&w.einheiten.find(function(x){r
  var h=`<div class="wi-seite"><button class="wi-zur" data-a="wdh-liste">‹ Wiederholung</button><h1>${E(e.titel)}</h1><p class="wi-unter">${E(ART[e.art]||"")} · ca. ${E(e.min||8)} min · ${E(e.fragen.length)} Fragen${e.kb?` · <button class="wd-kblink" data-kbid="${E(e.kb)}" style="border:0;background:none;padding:0;font:inherit;color:var(--tape);font-weight:600;cursor:pointer">Zum Krankheitsbild</button>`:""}</p>`;
  (e.abschnitte||[]).forEach(function(a){h+=`<section class="wi-karte wd-k"><h2>${E(a.t)}</h2>${(a.b||[a]).map(function(b){return block(b===a?{p:a.p,l:a.l,tab:a.tab,fig:a.fig,merk:a.merk}:b)}).join("")}</section>`});
  if(e.quellen)h+=`<section class="wi-karte"><h2>Quellen</h2><p class="wd-quellen">${e.quellen.map(E).join("<br>")}</p></section>`;
- h+=`<div class="wd-start"><span><b>${r?"Quiz nochmal":"Quiz"}</b>${E(e.fragen.length)} Fragen · ca. 5 min${r?" · zuletzt "+E(status(id)):""}</span><button class="wq-go" data-wdhquiz="${E(id)}" data-kw="${E(kw)}">Quiz starten</button></div>`;
+ h+=`<div class="wd-start"><button class="wd-teil" data-wdhpdf="${E(id)}" data-kw="${E(kw)}" aria-label="Als PDF teilen"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg></button><span><b>${r?"Quiz nochmal":"Quiz"}</b>${E(e.fragen.length)} Fragen · ca. 5 min${r?" · zuletzt "+E(status(id)):""}</span><button class="wq-go" data-wdhquiz="${E(id)}" data-kw="${E(kw)}">Quiz starten</button></div>`;
  return h+`</div>`}
 window.WI_umschWdh=function(){return `<div class="wk-seg"><button data-a="wk-kb">Krankheitsbilder</button><button data-modus="tests">Tests</button><button data-a="wk-vo">Verordnung &amp; Abrechnung</button><button data-modus="wdh" class="an">Wiederholung</button></div>`};
 
@@ -172,8 +175,63 @@ document.addEventListener("click",function(ev){var b=ev.target.closest(".wi-port
  if(d.modus==="wdh"){WI_st.wdh=null}
  if(d.wdh){ev.stopImmediatePropagation();WI_st.wdh=d.wdh;WI_st.wdhKw=d.kw;WI_zeige();return}
  if(d.a==="wdh-liste"){ev.stopImmediatePropagation();WI_st.wdh=null;WI_zeige();return}
+ if(d.wdhpdf){ev.stopImmediatePropagation();var w2=woche(d.kw),e2=w2&&w2.einheiten.find(function(x){return x.id===d.wdhpdf});if(e2)pdfTeilen(e2,b);return}
  if(d.wdhquiz){ev.stopImmediatePropagation();var w=woche(d.kw),e=w&&w.einheiten.find(function(x){return x.id===d.wdhquiz});if(e)Quiz.auf(e);return}
 },true);
+
+
+/* ---------- Teilen als PDF: Wiederholung, dann jede Frage auf eigener Seite, Lösungen am Ende ---------- */
+function ladeJs(src){return new Promise(function(ok,no){if(window.jspdf)return ok();var s=document.createElement("script");s.src=src;s.onload=ok;s.onerror=no;document.head.append(s)})}
+function bildJpg(src){return new Promise(function(ok){var im=new Image();im.onload=function(){var c=document.createElement("canvas");c.width=im.naturalWidth;c.height=im.naturalHeight;var g=c.getContext("2d");g.fillStyle="#000";g.fillRect(0,0,c.width,c.height);g.drawImage(im,0,0);ok(c.toDataURL("image/jpeg",.85))};im.onerror=function(){ok(null)};im.src=src})}
+// shortcut: Helvetica kann nur Windows-1252, seltene Zeichen werden ersetzt; bei Bedarf eigene TTF einbetten
+function T(x){return String(x==null?"":x).replace(/≤/g,"<=").replace(/≥/g,">=").replace(/→/g,"->").replace(/≈/g,"ca.").replace(/[^\x00-\xff€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ]/g,"")}
+async function pdfBauen(e){
+ await ladeJs("jspdf.umd.min.js");
+ var doc=new window.jspdf.jsPDF({unit:"mm",format:"a4"}),W=210,H=297,M=18,B=W-2*M,y=M,ANT=[46,50,54],GR=[110,116,122],LIM=[201,232,107],LINIE=[226,226,222];
+ var bilder={},alle=[];(e.abschnitte||[]).forEach(function(a){(a.b||[a]).forEach(function(b){(b.fig||[]).forEach(function(f){alle.push(f.src)})})});e.fragen.forEach(function(q){if(q[4])alle.push(q[4])});
+ await Promise.all(alle.map(function(s){return bildJpg(s).then(function(d){bilder[s]=d})}));
+ function farbe(c){doc.setTextColor(c[0],c[1],c[2])}
+ function neu(){doc.addPage();y=M}
+ function platz(h){if(y+h>H-M-8)neu()}
+ function text(t,gr,stil,c,ab){doc.setFont("helvetica",stil||"normal");doc.setFontSize(gr);farbe(c||ANT);var z=doc.splitTextToSize(T(t),ab||B),lh=gr*.42;z.forEach(function(l){platz(lh);doc.text(l,M+(B-(ab||B)),y+lh*.8);y+=lh});return z.length*lh}
+ // Kopf
+ doc.setFillColor(LIM[0],LIM[1],LIM[2]);doc.roundedRect(M,y,46,7,3.5,3.5,"F");doc.setFont("helvetica","bold");doc.setFontSize(8.5);farbe(ANT);doc.text(T(ART[e.art]||"Wiederholung"),M+23,y+4.8,{align:"center"});y+=13;
+ text(e.titel,24,"bold");y+=2;text("Kurze Wiederholung, ca. "+(e.min||8)+" min lesen · Quiz mit "+e.fragen.length+" Fragen",10,"normal",GR);y+=6;
+ (e.abschnitte||[]).forEach(function(a){
+  platz(16);doc.setDrawColor(LINIE[0],LINIE[1],LINIE[2]);doc.setLineWidth(.3);doc.line(M,y,W-M,y);y+=6;text(a.t,14,"bold");y+=2;
+  (a.b||[a]).forEach(function(b){
+   if(b.t){y+=1;text(b.t,11,"bold");y+=1}
+   (b.p||[]).forEach(function(x){text(x,10.5);y+=2});
+   if(b.l)b.l.forEach(function(x){doc.setFontSize(10.5);var z=doc.splitTextToSize(T(x),B-6);platz(z.length*4.4);doc.setFillColor(ANT[0],ANT[1],ANT[2]);doc.circle(M+1.5,y+2.5,.8,"F");farbe(ANT);doc.setFont("helvetica","normal");z.forEach(function(l){doc.text(l,M+6,y+3.6);y+=4.4});y+=1.2});
+   if(b.tab){y+=1;b.tab.forEach(function(r){doc.setFontSize(10);var k=doc.splitTextToSize(T(r[0]),52),v=doc.splitTextToSize(T(r[1]),B-58),h=Math.max(k.length,v.length)*4.2+3;platz(h);doc.setFont("helvetica","bold");farbe(ANT);k.forEach(function(l,i){doc.text(l,M,y+4+i*4.2)});doc.setFont("helvetica","normal");v.forEach(function(l,i){doc.text(l,M+58,y+4+i*4.2)});y+=h;doc.setDrawColor(LINIE[0],LINIE[1],LINIE[2]);doc.line(M,y-.5,W-M,y-.5)});y+=3}
+   if(b.fig&&b.fig.length===1){var f1=b.fig[0],iw=72;doc.setFont("helvetica","normal");doc.setFontSize(9.5);var cz=doc.splitTextToSize(T(f1.t+" "+(f1.c||"")),B-iw-6);platz(iw+4);if(bilder[f1.src])doc.addImage(bilder[f1.src],"JPEG",M,y,iw,iw);farbe(GR);cz.forEach(function(l,k){doc.text(l,M+iw+6,y+4+k*4.2)});y+=iw+5}
+   else if(b.fig){var bw=(B-6)/2;for(var i=0;i<b.fig.length;i+=2){var zeile=b.fig.slice(i,i+2),capH=0;doc.setFontSize(9);zeile.forEach(function(f){capH=Math.max(capH,doc.splitTextToSize(T(f.t+" "+(f.c||"")),bw).length*3.8)});platz(bw+capH+6);zeile.forEach(function(f,j){var x=M+j*(bw+6);if(bilder[f.src])doc.addImage(bilder[f.src],"JPEG",x,y,bw,bw);doc.setFont("helvetica","normal");farbe(GR);doc.splitTextToSize(T(f.t+" "+(f.c||"")),bw).forEach(function(l,k){doc.text(l,x,y+bw+4.5+k*3.8)})});y+=bw+capH+7}}
+   if(b.merk){doc.setFont("helvetica","bold");doc.setFontSize(10.5);var z=doc.splitTextToSize(T("Merke: "+b.merk),B-10),h=z.length*4.4+7;platz(h);doc.setFillColor(238,246,212);doc.roundedRect(M,y,B,h,3,3,"F");doc.setFont("helvetica","bold");farbe(ANT);z.forEach(function(l,i){doc.text(l,M+5,y+6+i*4.4)});y+=h+3}
+  });y+=3});
+ if(e.quellen){platz(14);doc.setDrawColor(LINIE[0],LINIE[1],LINIE[2]);doc.line(M,y,W-M,y);y+=6;text("Quellen",11,"bold");y+=1;e.quellen.forEach(function(q){text(q,9,"normal",GR);y+=1})}
+ // Quiz: jede Frage eine Seite
+ var L="ABCD",start=doc.getNumberOfPages()+1,loes=start+e.fragen.length;
+ e.fragen.forEach(function(q,n){neu();
+  doc.setFont("helvetica","bold");doc.setFontSize(9);farbe(GR);doc.text("QUIZ · FRAGE "+(n+1)+" VON "+e.fragen.length,M,y+3);
+  doc.setFillColor(LINIE[0],LINIE[1],LINIE[2]);doc.roundedRect(M,y+6,B,2,1,1,"F");doc.setFillColor(LIM[0],LIM[1],LIM[2]);doc.roundedRect(M,y+6,Math.max(2,B*(n+1)/e.fragen.length),2,1,1,"F");y+=18;
+  text(q[0],18,"bold");y+=6;
+  if(q[4]&&bilder[q[4]]){var s=Math.min(110,H-M-y-95);doc.addImage(bilder[q[4]],"JPEG",M+(B-s)/2,y,s,s);y+=s+8}
+  q[1].forEach(function(o,i){doc.setFontSize(12);var z=doc.splitTextToSize(T(o),B-22),h=Math.max(14,z.length*5.2+8);doc.setDrawColor(LINIE[0],LINIE[1],LINIE[2]);doc.setLineWidth(.5);doc.roundedRect(M,y,B,h,3.5,3.5,"S");doc.setFillColor(242,242,238);doc.roundedRect(M+4,y+h/2-4,8,8,2,2,"F");doc.setFont("helvetica","bold");doc.setFontSize(10);farbe(GR);doc.text(L[i],M+8,y+h/2+1.3,{align:"center"});doc.setFont("helvetica","normal");doc.setFontSize(12);farbe(ANT);z.forEach(function(l,k){doc.text(l,M+17,y+h/2+1.8-(z.length-1)*2.6+k*5.2)});y+=h+4});
+  doc.setFont("helvetica","normal");doc.setFontSize(9);farbe(GR);doc.text("Lösung ab Seite "+loes,M,H-M-6)});
+ // Lösungen
+ neu();text("Lösungen",20,"bold");y+=4;
+ e.fragen.forEach(function(q,n){doc.setFontSize(10.5);var z=doc.splitTextToSize(T(q[3]),B-12);platz(10+z.length*4.4);doc.setFillColor(LIM[0],LIM[1],LIM[2]);doc.circle(M+3.5,y+3.3,3.5,"F");doc.setFont("helvetica","bold");doc.setFontSize(9);farbe(ANT);doc.text(String(n+1),M+3.5,y+4.6,{align:"center"});doc.setFontSize(10.5);doc.text(doc.splitTextToSize(T(L[q[2]]+"  "+q[1][q[2]]),B-12),M+12,y+4.5);y+=6+4.4*(doc.splitTextToSize(T(q[1][q[2]]),B-18).length-1);doc.setFont("helvetica","normal");farbe(GR);z.forEach(function(l){doc.text(l,M+12,y+3.5);y+=4.4});y+=5});
+ // Fuß auf jeder Seite
+ var N=doc.getNumberOfPages();for(var i=1;i<=N;i++){doc.setPage(i);doc.setFont("helvetica","normal");doc.setFontSize(8);farbe(GR);doc.text(T("Doku-Fix · Wiederholung · "+e.titel),M,H-8);doc.text(i+" / "+N,W-M,H-8,{align:"right"});if(i===1)doc.text(T("Entwurf, fachlich prüfen. Bilder sind KI-erstellte Lehrbilder, keine echten Aufnahmen."),M,H-12)}
+ return doc.output("blob")}
+async function pdfTeilen(e,btn){btn.setAttribute("aria-busy","true");
+ try{var blob=await pdfBauen(e),name="Wiederholung_"+e.titel.replace(/[^A-Za-zÄÖÜäöüß0-9]+/g,"_").replace(/^_|_$/g,"")+".pdf",f=new File([blob],name,{type:"application/pdf"});
+  try{var cl=window.claude,dl=cl&&cl.use?await cl.use("downloads"):null;if(dl){await dl.save({filename:name,data:blob});return}}catch(x){if(x&&x.code==="declined")return}
+  try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:e.titel});return}}catch(x){if(x&&x.name==="AbortError")return}
+  var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.append(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},2000)}
+ catch(x){btn.style.color="#c4140b";btn.setAttribute("aria-label","PDF ging nicht");console.error(x)}
+ finally{btn.removeAttribute("aria-busy")}}
+window.WDH_pdf=pdfBauen;
 
 /* ---------- Quiz: eine Frage pro Bildschirm ---------- */
 var Quiz=(function(){
