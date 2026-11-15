@@ -8,6 +8,7 @@ Neue Versionen kommen oben dazu.
 
 | Version | Datum | Commit | Was sich geändert hat |
 |---|---|---|---|
+| v165 | 15.11.2026 | cd4cf74 | Wissen-Feinschliff: Tests ohne Bild zeigen keine graue „Bild folgt“-Fläche mehr, weder in der Liste noch im Test. Inhalt steht bündig unter der Überschrift WISSEN. Im iPad-Hochformat stehen Plakat und Legende nebeneinander. Karten in Verordnung & Abrechnung wie die anderen aufgebaut (Titel, darunter „Kapitel 1“). Unterzeile passt jetzt zum gewählten Bereich. Wischleisten blenden am Rand aus. Auf dem iPhone heißt der dritte Bereich kurz „Verordnung“. |
 | v164 | 15.11.2026 | 4a44a7e | Wissen: Im geöffneten Krankheitsbild, Test oder Kapitel aus Verordnung & Abrechnung irgendwo auf der Seite nach rechts wischen führt zurück zur Übersicht des Bereichs. Die Seite folgt dem Finger, kurzes Wischen springt zurück. Waagerecht scrollende Leisten wie die Bereichs-Chips sind ausgenommen. |
 | v163 | 15.11.2026 | 28ae463 | Wissen: Wer ein Krankheitsbild, einen Test oder ein Kapitel aus Verordnung & Abrechnung öffnet, landet jetzt immer am Anfang statt an der Stelle, wo vorher gescrollt war. Gilt auch für verlinkte Tests und Krankheitsbilder. |
 | v162 | 15.11.2026 | bf239b7 | iPad im Hochformat: Dienstplan, Patienten, Wissen und Anatomie nutzen jetzt die ganze Bildschirmbreite statt eines schmalen Streifens in der Mitte. Querformat bleibt wie bisher. |
