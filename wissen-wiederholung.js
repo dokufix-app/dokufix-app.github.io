@@ -209,15 +209,25 @@ async function pdfBauen(e){
    if(b.merk){doc.setFont("helvetica","bold");doc.setFontSize(10.5);var z=doc.splitTextToSize(T("Merke: "+b.merk),B-10),h=z.length*4.4+7;platz(h);doc.setFillColor(238,246,212);doc.roundedRect(M,y,B,h,3,3,"F");doc.setFont("helvetica","bold");farbe(ANT);z.forEach(function(l,i){doc.text(l,M+5,y+6+i*4.4)});y+=h+3}
   });y+=3});
  if(e.quellen){platz(14);doc.setDrawColor(LINIE[0],LINIE[1],LINIE[2]);doc.line(M,y,W-M,y);y+=6;text("Quellen",11,"bold");y+=1;e.quellen.forEach(function(q){text(q,9,"normal",GR);y+=1})}
- // Quiz: jede Frage eine Seite
- var L="ABCD",start=doc.getNumberOfPages()+1,loes=start+e.fragen.length;
- e.fragen.forEach(function(q,n){neu();
-  doc.setFont("helvetica","bold");doc.setFontSize(9);farbe(GR);doc.text("QUIZ · FRAGE "+(n+1)+" VON "+e.fragen.length,M,y+3);
-  doc.setFillColor(LINIE[0],LINIE[1],LINIE[2]);doc.roundedRect(M,y+6,B,2,1,1,"F");doc.setFillColor(LIM[0],LIM[1],LIM[2]);doc.roundedRect(M,y+6,Math.max(2,B*(n+1)/e.fragen.length),2,1,1,"F");y+=18;
-  text(q[0],18,"bold");y+=6;
-  if(q[4]&&bilder[q[4]]){var s=Math.min(110,H-M-y-95);doc.addImage(bilder[q[4]],"JPEG",M+(B-s)/2,y,s,s);y+=s+8}
-  q[1].forEach(function(o,i){doc.setFontSize(12);var z=doc.splitTextToSize(T(o),B-22),h=Math.max(14,z.length*5.2+8);doc.setDrawColor(LINIE[0],LINIE[1],LINIE[2]);doc.setLineWidth(.5);doc.roundedRect(M,y,B,h,3.5,3.5,"S");doc.setFillColor(242,242,238);doc.roundedRect(M+4,y+h/2-4,8,8,2,2,"F");doc.setFont("helvetica","bold");doc.setFontSize(10);farbe(GR);doc.text(L[i],M+8,y+h/2+1.3,{align:"center"});doc.setFont("helvetica","normal");doc.setFontSize(12);farbe(ANT);z.forEach(function(l,k){doc.text(l,M+17,y+h/2+1.8-(z.length-1)*2.6+k*5.2)});y+=h+4});
-  doc.setFont("helvetica","normal");doc.setFontSize(9);farbe(GR);doc.text("Lösung ab Seite "+loes,M,H-M-6)});
+ // Quiz: alle Fragen untereinander, Antworten als 2 × 2
+ var L="ABCD";neu();var qStart=doc.getNumberOfPages();
+ text("Quiz",20,"bold");y+=1;text(e.fragen.length+" Fragen. Die Lösungen stehen am Ende.",10,"normal",GR);y+=5;
+ e.fragen.forEach(function(q,n){
+  var img=q[4]&&bilder[q[4]],iw=img?36:0,x0=M+9+(img?iw+5:0),aw=W-M-x0,cw=(aw-4)/2;
+  doc.setFont("helvetica","bold");doc.setFontSize(10.5);var qz=doc.splitTextToSize(T(q[0]),aw);
+  doc.setFont("helvetica","normal");doc.setFontSize(9.5);
+  var zl=q[1].map(function(o){return doc.splitTextToSize(T(o),cw-10)}),rh=[0,1].map(function(r){return Math.max(zl[r*2].length,(zl[r*2+1]||[]).length)*3.9+4.2});
+  var h=Math.max(qz.length*4.6+2+rh[0]+rh[1]+3,iw)+7;platz(h);
+  doc.setDrawColor(LINIE[0],LINIE[1],LINIE[2]);doc.setLineWidth(.3);if(n)doc.line(M,y-3.5,W-M,y-3.5);
+  doc.setFillColor(LIM[0],LIM[1],LIM[2]);doc.circle(M+3.3,y+2.8,3.3,"F");doc.setFont("helvetica","bold");doc.setFontSize(8.5);farbe(ANT);doc.text(String(n+1),M+3.3,y+4,{align:"center"});
+  if(img)doc.addImage(img,"JPEG",M+9,y,iw,iw);
+  var yy=y;doc.setFontSize(10.5);qz.forEach(function(l){doc.text(l,x0,yy+3.8);yy+=4.6});yy+=2;
+  [0,1].forEach(function(r){[0,1].forEach(function(c){var i=r*2+c;if(!q[1][i])return;var x=x0+c*(cw+4);
+   doc.setDrawColor(LINIE[0],LINIE[1],LINIE[2]);doc.setLineWidth(.4);doc.roundedRect(x,yy,cw,rh[r]-1.5,2,2,"S");
+   doc.setFont("helvetica","bold");doc.setFontSize(8.5);farbe(GR);doc.text(L[i],x+3.5,yy+4.3);
+   doc.setFont("helvetica","normal");doc.setFontSize(9.5);farbe(ANT);zl[i].forEach(function(l,k){doc.text(l,x+8,yy+4.4+k*3.9)})});yy+=rh[r]});
+  y=Math.max(yy,y+iw)+7});
+ var loes=doc.getNumberOfPages()+1;for(var pg=qStart;pg<loes;pg++){doc.setPage(pg);doc.setFont("helvetica","normal");doc.setFontSize(8.5);farbe(GR);doc.text("Lösungen auf Seite "+loes,W-M,H-14,{align:"right"})}doc.setPage(loes-1);
  // Lösungen
  neu();text("Lösungen",20,"bold");y+=4;
  e.fragen.forEach(function(q,n){doc.setFontSize(10.5);var z=doc.splitTextToSize(T(q[3]),B-12);platz(10+z.length*4.4);doc.setFillColor(LIM[0],LIM[1],LIM[2]);doc.circle(M+3.5,y+3.3,3.5,"F");doc.setFont("helvetica","bold");doc.setFontSize(9);farbe(ANT);doc.text(String(n+1),M+3.5,y+4.6,{align:"center"});doc.setFontSize(10.5);doc.text(doc.splitTextToSize(T(L[q[2]]+"  "+q[1][q[2]]),B-12),M+12,y+4.5);y+=6+4.4*(doc.splitTextToSize(T(q[1][q[2]]),B-18).length-1);doc.setFont("helvetica","normal");farbe(GR);z.forEach(function(l){doc.text(l,M+12,y+3.5);y+=4.4});y+=5});
