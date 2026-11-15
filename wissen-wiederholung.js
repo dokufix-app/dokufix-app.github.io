@@ -11,11 +11,12 @@ function schreiben(x){try{localStorage.setItem(KEY,JSON.stringify(x))}catch(e){}
 function lade(src,cb){if(ladend[src])return;ladend[src]=1;var s=document.createElement("script");s.src=src;s.onload=cb||null;s.onerror=function(){ladend[src]=0};document.head.append(s)}
 function index(){if(window.WDH_INDEX){IDX=window.WDH_INDEX;return IDX}lade("fortbildung/index.js?t="+Date.now(),function(){IDX=window.WDH_INDEX||[];if(WI_st.modus==="wdh")WI_zeige()});return null}
 function woche(kw){var e=(IDX||[]).find(function(x){return x.kw===kw});if(!W[kw]&&e)lade(e.datei);return W[kw]}
+function alleE(w){return w?(w.einheiten||[]).concat(w.anatomie||[]):[]}
 function heuteKw(){var d=new Date(),t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())),n=t.getUTCDay()||7;t.setUTCDate(t.getUTCDate()+4-n);var j=new Date(Date.UTC(t.getUTCFullYear(),0,1));return t.getUTCFullYear()+"-W"+String(Math.ceil(((t-j)/864e5+1)/7)).padStart(2,"0")}
 function aktuelleKw(){var k=heuteKw(),l=IDX||[];if(l.some(function(x){return x.kw===k}))return k;var f=l.filter(function(x){return x.kw<=k});return(f[0]||l[0]||{}).kw}
 function tag(){return["so","mo","di","mi","do","fr","sa"][new Date().getDay()]}
 function datum(iso){var p=String(iso||"").split("-");return p.length===3?(+p[2])+"."+(+p[1])+".":""}
-var ART={kb:"Krankheitsbild",neu:"Neu aus der Forschung",wdh:"Wiederholung"};
+var ART={kb:"Krankheitsbild",neu:"Neu aus der Forschung",wdh:"Wiederholung",ana:"Anatomie"};
 var ICO={ok:'<svg viewBox="0 0 24 24" class="wq-mk"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',no:'<svg viewBox="0 0 24 24" class="wq-mk"><path d="M7 7l10 10M17 7L7 17"/></svg>',
  pfeil:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>',
  x:'<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>'};
@@ -26,7 +27,7 @@ var ICO={ok:'<svg viewBox="0 0 24 24" class="wq-mk"><path d="M5 12.5l4.5 4.5L19 
 .wi-portal .wk-seg::-webkit-scrollbar{display:none}
 .wi-portal .wk-seg button{flex:none;white-space:nowrap}
 .wd-kblink{border:0;background:none;padding:0;font:inherit;color:var(--tape);font-weight:600;cursor:pointer}
-.wd-toc{position:sticky;top:0;z-index:3;margin:14px calc(-1 * clamp(16px,4.5vw,56px)) 6px;padding:8px clamp(16px,4.5vw,56px) 0;background:color-mix(in srgb,var(--grund) 88%,transparent);-webkit-backdrop-filter:saturate(1.6) blur(14px);backdrop-filter:saturate(1.6) blur(14px)}
+.wd-toc{position:sticky;top:-8px;box-shadow:0 -12px 0 var(--grund);z-index:3;margin:14px calc(-1 * clamp(16px,4.5vw,56px)) 6px;padding:8px clamp(16px,4.5vw,56px) 0;background:color-mix(in srgb,var(--grund) 88%,transparent);-webkit-backdrop-filter:saturate(1.6) blur(14px);backdrop-filter:saturate(1.6) blur(14px)}
 .wd-toc-l{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:8px}
 .wd-toc-l::-webkit-scrollbar{display:none}
 .wd-toc-l button{flex:none;border:0;border-radius:999px;padding:8px 14px;min-height:36px;background:var(--flaeche);color:var(--schrift2);font:inherit;font-weight:600;font-size:.875rem;cursor:pointer;white-space:nowrap;transition:background-color 200ms ease,color 200ms ease,transform 140ms ease-out}
@@ -55,6 +56,22 @@ var ICO={ok:'<svg viewBox="0 0 24 24" class="wq-mk"><path d="M5 12.5l4.5 4.5L19 
 @keyframes wd-auf{from{opacity:0}}
 @keyframes wd-gross{from{opacity:0;transform:scale(.96)}}
 @media (prefers-reduced-motion:reduce){.wd-anim .wd-k{opacity:1;transform:none;transition:none}.wd-anim .wd-bars em{transform:none;transition:none}.wd-lupe,.wd-lupe img{animation:none}}
+.wd-zweig{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0 4px}
+.wd-zweig button{border:0;border-radius:16px;background:var(--flaeche);color:var(--schrift);font:inherit;text-align:left;padding:12px 14px;cursor:pointer;display:flex;flex-direction:column;gap:2px;box-shadow:inset 0 0 0 2px transparent;transition:box-shadow 180ms ease,transform 140ms ease-out}
+.wd-zweig button:active{transform:scale(.98)}
+.wd-zweig button b{font-size:1rem}.wd-zweig button small{color:var(--schrift2);font-size:.8125rem}
+.wd-zweig button[aria-selected="true"]{box-shadow:inset 0 0 0 2px var(--tape)}
+.wd-ende{background:var(--flaeche);border-radius:20px;padding:20px;margin:18px 0 0;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
+.wd-ende h2{margin:0 0 4px;font-size:1.25rem;font-weight:800}
+.wd-ende p{margin:0;color:var(--schrift2);font-size:.9375rem}
+.wd-ende-k{display:flex;flex-wrap:wrap;gap:10px}
+.wd-teil2{display:inline-flex;align-items:center;gap:8px}
+.wd-ana-tab div:nth-child(odd){font-style:italic}
+.wd-mus.nr{grid-template-columns:1fr}.wd-mus.nr .wd-mu{display:flex;gap:12px;align-items:flex-start;scroll-margin-top:90px;transition:background-color 200ms ease,box-shadow 200ms ease}.wd-mu.an{background:color-mix(in srgb,var(--lim,#c9e86b) 22%,var(--flaeche));box-shadow:inset 0 0 0 2.5px var(--tape)}.wd-mnr{flex:none;min-width:28px;height:28px;padding:0 6px;border-radius:99px;background:#c9e86b;color:#2a3a10;display:grid;place-items:center;font-weight:700;font-size:.8125rem;box-shadow:0 0 0 2px var(--flaeche)}.wd-mnr.leer{background:var(--linie);color:var(--schrift2)}.wd-muc{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}.wd-muc button{display:flex;align-items:center;gap:6px;border:0;border-radius:99px;background:var(--seite);color:var(--schrift);font:inherit;font-size:.875rem;font-weight:600;padding:4px 12px 4px 4px;min-height:34px;cursor:pointer;transition:transform 140ms ease-out,background-color 200ms ease}.wd-muc button:active{transform:scale(.97)}.wd-muc button.an{background:var(--tape);color:var(--flaeche)}.wd-muc .wd-mnr{min-width:24px;height:24px;font-size:.75rem;box-shadow:none}.wd-mus{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin:10px 0}
+.wd-mu{background:var(--seite);border-radius:14px;padding:12px 14px}
+.wd-mu b{display:block;font-size:1rem;margin-bottom:6px}
+.wd-mu dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;margin:0;font-size:.875rem;line-height:1.4}
+.wd-mu dt{color:var(--schrift2);font-weight:600;padding:1px 8px;margin-left:-8px;border-radius:7px;align-self:start}.wd-mu dt.u{background:rgba(38,88,168,.13);color:color-mix(in srgb,#2658a8 75%,var(--schrift))}.wd-mu dt.a{background:rgba(168,45,45,.12);color:color-mix(in srgb,#a82d2d 75%,var(--schrift))}.wd-mu dt.i{background:rgba(62,112,30,.14);color:color-mix(in srgb,#3e701e 75%,var(--schrift))}.wd-mu dd{padding:1px 0}.wd-mu dd{margin:0}
 .wd-woche{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:22px 0 10px}
 .wd-woche h2{font-size:1.25rem;font-weight:800;margin:0;letter-spacing:-.01em}
 .wd-woche span{color:var(--schrift2);font-size:.875rem;white-space:nowrap}
@@ -91,7 +108,7 @@ var ICO={ok:'<svg viewBox="0 0 24 24" class="wq-mk"><path d="M5 12.5l4.5 4.5L19 
 .wd-figs figcaption b{color:var(--schrift)}
 .wd-merk{background:color-mix(in srgb,#C9E86B 30%,var(--flaeche));border-radius:14px;padding:12px 14px;margin-top:10px;line-height:1.5}
 .wd-quellen{font-size:.8125rem;color:var(--schrift2);line-height:1.5}
-.wd-start{position:sticky;bottom:calc(84px + env(safe-area-inset-bottom));z-index:2;display:flex;align-items:center;gap:12px;background:var(--flaeche);border-radius:20px;padding:12px;margin:18px 0 0;box-shadow:0 6px 24px rgba(0,0,0,.12)}
+.wd-start{display:flex;align-items:center;gap:12px;background:var(--flaeche);border-radius:20px;padding:12px;margin:18px 0 0;box-shadow:0 6px 24px rgba(0,0,0,.12)}
 .wd-teil{flex:none;width:48px;height:48px;border:0;border-radius:14px;background:var(--seite);color:var(--schrift);display:grid;place-items:center;cursor:pointer;transition:transform 140ms ease-out}
 .wd-teil:active{transform:scale(.97)}
 .wd-teil[aria-busy="true"]{opacity:.5;pointer-events:none}
@@ -170,36 +187,39 @@ function status(id){var r=lesen()[id];return r?`${r.right}/${r.total} auf Anhieb
 function karte(e,i,w){var r=lesen()[e.id],heute=w&&w.plan&&w.plan[tag()]===e.id&&w.kw===heuteKw();
  return `<button class="wd-e${r?" fertig":""}" data-wdh="${E(e.id)}" data-kw="${E(w.kw)}"><span class="wd-nr">${r?'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>':i+1}</span><span class="wd-t"><small>${E(ART[e.art]||"")}${heute?'<span class="wd-heute">Heute dran</span>':""}</small><b>${E(e.titel)}</b><span>${r?E(status(e.id))+" · "+E(e.min||8)+" min":"ca. "+E(e.min||8)+" min lesen · "+E((e.fragen||[]).length)+" Fragen"}</span></span>${ICO.pfeil}</button>`}
 function seiteListe(){
- var l=index();
- var kopf=`<div class="wi-seite"><button class="wi-zur" data-a="zu">‹ Mehr</button><h1>Wissen</h1><p class="wi-unter">Wiederholung · jede Woche 5 Einheiten mit Quiz</p>${WI_umschWdh()}`;
+ var l=index(),z=WI_st.wdhZweig==="ana"?"ana":"kl",feld=z==="ana"?"anatomie":"einheiten";
+ var kopf=`<div class="wi-seite"><button class="wi-zur" data-a="zu">‹ Mehr</button><h1>Wissen</h1><p class="wi-unter">Wiederholung · jede Woche neue Einheiten mit Quiz</p>${WI_umschWdh()}
+ <div class="wd-zweig" role="tablist"><button role="tab" data-zweig="kl" aria-selected="${z==="kl"}"><b>Krankheitslehre</b><small>Krankheitsbilder und Forschung</small></button><button role="tab" data-zweig="ana" aria-selected="${z==="ana"}"><b>Anatomie</b><small>Gelenke und Regionen</small></button></div>`;
  if(!l)return kopf+`<p class="wd-hinweis">Lade die Einheiten …</p></div>`;
- if(!l.length)return kopf+`<p class="wd-hinweis">Noch keine Einheiten da.</p></div>`;
- var kw=aktuelleKw(),w=woche(kw),meta=l.find(function(x){return x.kw===kw})||{};
+ var kw=aktuelleKw(),w=woche(kw),meta=l.find(function(x){return x.kw===kw})||{},liste=w?(w[feld]||[]):null;
  var h=kopf+`<div class="wd-woche"><h2>Diese Woche</h2><span>${datum(meta.von)} – ${datum(meta.bis)}</span></div>`;
- h+=w?`<div class="wd-liste">${w.einheiten.map(function(e,i){return karte(e,i,w)}).join("")}</div>`:`<p class="wd-hinweis">Lade die Einheiten …</p>`;
- if(w&&w.plan)h+=`<p class="wd-hinweis">Montag und Mittwoch um 21 Uhr kommt eine Erinnerung. Die übrigen Einheiten machst du, wann es passt. Was du im Quiz falsch hattest, kommt am Ende nochmal.</p>`;
+ h+=!w?`<p class="wd-hinweis">Lade die Einheiten …</p>`:liste.length?`<div class="wd-liste">${liste.map(function(e,i){return karte(e,i,w)}).join("")}</div>`:`<p class="wd-hinweis">${z==="ana"?"Diese Woche gibt es noch keine Anatomie-Einheit.":"Noch keine Einheiten da."}</p>`;
+ if(w&&w.plan&&z==="kl")h+=`<p class="wd-hinweis">Montag und Mittwoch um 21 Uhr kommt eine Erinnerung. Die übrigen Einheiten machst du, wann es passt. Was du im Quiz falsch hattest, kommt am Ende nochmal.</p>`;
  var alt=l.filter(function(x){return x.kw!==kw});
- if(alt.length)h+=`<details class="wd-frueher"${WI_st.wdhAlt?" open":""}><summary>Frühere Wochen</summary>${alt.map(function(m){var a=woche(m.kw);return `<div class="wd-woche"><h2>KW ${E(m.kw.slice(-2))}</h2><span>${datum(m.von)} – ${datum(m.bis)}</span></div>`+(a?`<div class="wd-liste">${a.einheiten.map(function(e,i){return karte(e,i,a)}).join("")}</div>`:`<p class="wd-hinweis">${E((m.titel||[]).join(" · "))}</p>`)}).join("")}</details>`;
+ if(alt.length)h+=`<details class="wd-frueher"${WI_st.wdhAlt?" open":""}><summary>Frühere Wochen</summary>${alt.map(function(m){var a=woche(m.kw),L=a?(a[feld]||[]):null;if(L&&!L.length)return "";return `<div class="wd-woche"><h2>KW ${E(m.kw.slice(-2))}</h2><span>${datum(m.von)} – ${datum(m.bis)}</span></div>`+(L?`<div class="wd-liste">${L.map(function(e,i){return karte(e,i,a)}).join("")}</div>`:`<p class="wd-hinweis">${E((m.titel||[]).join(" · "))}</p>`)}).join("")}</details>`;
  return h+`</div>`}
-function block(b){var h=b.t?`<h3>${E(b.t)}</h3>`:"";
+var musN=0;function block(b){var h=b.t?`<h3>${E(b.t)}</h3>`:"";
  (b.p||[]).forEach(function(x){h+=`<p>${E(x)}</p>`});
  if(b.l)h+=`<ul>${b.l.map(function(x){return `<li>${E(x)}</li>`}).join("")}</ul>`;
+ if(b.mus){var mz=b.mus.some(function(m){return m.z!=null});musN++;
+  if(mz)h+=`<div class="wd-muc">${b.mus.map(function(m,k){return `<button data-mu="wdmu${musN}-${k}"><span class="wd-mnr${m.z?"":" leer"}">${E(m.z||"–")}</span>${E(String(m.n).replace(/^Mm?\. /,"").replace(/^./,function(c){return c.toUpperCase()}))}</button>`}).join("")}</div>`;
+  h+=`<div class="wd-mus${mz?" nr":""}">${b.mus.map(function(m,k){return `<div class="wd-mu" id="wdmu${musN}-${k}">${mz?`<span class="wd-mnr${m.z?"":" leer"}">${E(m.z||"–")}</span>`:""}<div><b>${E(m.n)}</b><dl><dt class="u">Ursprung</dt><dd>${E(m.u)}</dd><dt class="a">Ansatz</dt><dd>${E(m.a)}</dd><dt class="i">Nerv</dt><dd>${E(m.i)}</dd><dt>Funktion</dt><dd>${E(m.f)}</dd></dl></div></div>`}).join("")}</div>`}
  if(b.bars)h+=`<div class="wd-bars">${b.bars.map(function(r){return `<div><b><span>${E(r[0])}</span><span>${E(r[2]||"")}</span></b><i><em style="width:${+r[1]}%"></em></i></div>`}).join("")}</div>`;
  if(b.tab)h+=`<div class="wd-tab">${b.tab.map(function(r){return `<div>${E(r[0])}</div><div>${E(r[1])}</div>`}).join("")}</div>`;
  if(b.fig)h+=`<div class="wd-figs">${b.fig.map(function(f){return `<figure><img src="${E(f.src)}" alt="${E(f.alt||"")}" loading="lazy"><figcaption><b>${E(f.t)}</b> ${E(f.c||"")}</figcaption></figure>`}).join("")}</div>`;
  if(b.merk)h+=`<div class="wd-merk"><b>Merke:</b> ${E(b.merk)}</div>`;
  return h}
 function kurzTitel(t){return String(t).replace(/^\d+\.\s*/,"").replace(/[:?].*$/,"").replace(/^Was ist das eigentlich$/,"Grundlagen").replace(/^Was hilft laut Studienlage$/,"Studienlage")}
-function seiteEinheit(kw,id){var w=woche(kw),e=w&&w.einheiten.find(function(x){return x.id===id});
+function seiteEinheit(kw,id){var w=woche(kw),e=w&&alleE(w).find(function(x){return x.id===id});
  if(!e)return seiteListe();
  var r=lesen()[id],ab=e.abschnitte||[],merk=[];
  ab.forEach(function(a){(a.b||[a]).forEach(function(b){if(b.merk)merk.push(b.merk)})});
  var h=`<div class="wi-seite wd-einheit"><button class="wi-zur" data-a="wdh-liste">‹ Wiederholung</button><h1>${E(e.titel)}</h1><p class="wi-unter">${E(ART[e.art]||"")} · ca. ${E(e.min||8)} min · ${E(e.fragen.length)} Fragen${e.kb?` · <button class="wd-kblink" data-kbid="${E(e.kb)}">Zum Krankheitsbild</button>`:""}</p>`;
- h+=`<div class="wd-toc" role="navigation" aria-label="Kapitel"><div class="wd-toc-l">${ab.map(function(a,i){return `<button data-wdhgo="${i}">${E(kurzTitel(a.t))}</button>`}).join("")}<button class="wd-toc-q" data-wdhquiz="${E(id)}" data-kw="${E(kw)}">Quiz starten</button></div><i class="wd-lese"><em></em></i></div>`;
+ h+=`<div class="wd-toc" role="navigation" aria-label="Kapitel"><div class="wd-toc-l">${ab.map(function(a,i){return `<button data-wdhgo="${i}">${E(kurzTitel(a.t))}</button>`}).join("")}</div><i class="wd-lese"><em></em></i></div>`;
  if(merk.length)h+=`<section class="wd-kurz"><h2>Kurz gemerkt</h2><ul>${merk.map(function(m){return `<li>${E(m)}</li>`}).join("")}</ul></section>`;
  ab.forEach(function(a,i){h+=`<section class="wi-karte wd-k" id="wd-s${i}" data-i="${i}"><h2>${E(a.t)}</h2>${(a.b||[a]).map(function(b){return block(b===a?{p:a.p,l:a.l,tab:a.tab,fig:a.fig,merk:a.merk,bars:a.bars}:b)}).join("")}</section>`});
  if(e.quellen)h+=`<section class="wi-karte"><h2>Quellen</h2><p class="wd-quellen">${e.quellen.map(E).join("<br>")}</p></section>`;
- h+=`<div class="wd-start" id="wd-quiz"><button class="wd-teil" data-wdhpdf="${E(id)}" data-kw="${E(kw)}" aria-label="Als PDF teilen"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg></button><span><b>${r?"Quiz nochmal":"Quiz"}</b>${E(e.fragen.length)} Fragen · ca. 5 min${r?" · zuletzt "+E(status(id)):""}</span><button class="wq-go" data-wdhquiz="${E(id)}" data-kw="${E(kw)}">Quiz starten</button></div>`;
+ h+=`<section class="wd-ende" id="wd-quiz"><div class="wd-ende-t"><h2>${r?"Nochmal testen?":"Alles gelesen? Dann ins Quiz."}</h2><p>${E(e.fragen.length)} Fragen · ca. 5 min${r?" · zuletzt "+E(status(id)):" · falsche Antworten kommen am Ende nochmal"}</p></div><div class="wd-ende-k"><button class="wq-go" data-wdhquiz="${E(id)}" data-kw="${E(kw)}">Quiz starten</button><button class="wq-ghost wd-teil2" data-wdhpdf="${E(id)}" data-kw="${E(kw)}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>Als PDF teilen</button></div></section>`;
  return h+`</div>`}
 /* Lernseite: Kapitel mitlaufen lassen, sanft einblenden, Balken füllen */
 var beob=null;
@@ -230,11 +250,12 @@ WI_zeige=function(){var el=WI_st.el;
 document.addEventListener("click",function(ev){var b=ev.target.closest(".wi-portal button,.wi-portal summary");if(!b)return;var d=b.dataset;
  if(b.tagName==="SUMMARY"){setTimeout(function(){WI_st.wdhAlt=b.parentElement.open},0);return}
  if(d.modus==="wdh"){WI_st.wdh=null}
+ if(d.zweig){ev.stopImmediatePropagation();WI_st.wdhZweig=d.zweig;WI_zeige();return}
  if(d.wdh){ev.stopImmediatePropagation();WI_st.wdh=d.wdh;WI_st.wdhKw=d.kw;WI_zeige();return}
  if(d.wdhgo!=null){ev.stopImmediatePropagation();var z=document.getElementById("wd-s"+d.wdhgo);if(z)z.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});return}
  if(d.a==="wdh-liste"){ev.stopImmediatePropagation();WI_st.wdh=null;WI_zeige();return}
- if(d.wdhpdf){ev.stopImmediatePropagation();var w2=woche(d.kw),e2=w2&&w2.einheiten.find(function(x){return x.id===d.wdhpdf});if(e2)pdfTeilen(e2,b);return}
- if(d.wdhquiz){ev.stopImmediatePropagation();var w=woche(d.kw),e=w&&w.einheiten.find(function(x){return x.id===d.wdhquiz});if(e)Quiz.auf(e);return}
+ if(d.wdhpdf){ev.stopImmediatePropagation();var w2=woche(d.kw),e2=w2&&alleE(w2).find(function(x){return x.id===d.wdhpdf});if(e2)pdfTeilen(e2,b);return}
+ if(d.wdhquiz){ev.stopImmediatePropagation();var w=woche(d.kw),e=w&&alleE(w).find(function(x){return x.id===d.wdhquiz});if(e)Quiz.auf(e);return}
 },true);
 
 
@@ -261,6 +282,7 @@ async function pdfBauen(e){
    if(b.t){y+=1;text(b.t,11,"bold");y+=1}
    (b.p||[]).forEach(function(x){text(x,10.5);y+=2});
    if(b.l)b.l.forEach(function(x){doc.setFontSize(10.5);var z=doc.splitTextToSize(T(x),B-6);platz(z.length*4.4);doc.setFillColor(ANT[0],ANT[1],ANT[2]);doc.circle(M+1.5,y+2.5,.8,"F");farbe(ANT);doc.setFont("helvetica","normal");z.forEach(function(l){doc.text(l,M+6,y+3.6);y+=4.4});y+=1.2});
+   if(b.mus){b.mus.forEach(function(m){var BL=[223,234,250],RO=[251,226,226],GN=[228,243,212],z=[["Ursprung",m.u,BL,[38,88,168]],["Ansatz",m.a,RO,[168,45,45]],["Nerv",m.i,GN,[62,112,30]],["Funktion",m.f,null,GR]],h=6;doc.setFontSize(9.5);z.forEach(function(r){h+=doc.splitTextToSize(T(r[1]),B-28).length*4+1.6});platz(h+3);doc.setFont("helvetica","bold");doc.setFontSize(10.5);farbe(ANT);doc.text(T(m.n),M,y+4);y+=6.5;z.forEach(function(r){var l=doc.splitTextToSize(T(r[1]),B-28);if(r[2]){doc.setFillColor(r[2][0],r[2][1],r[2][2]);doc.roundedRect(M,y-.2,23,l.length*4+1.4,1.2,1.2,"F")}y+=.6;doc.setFont("helvetica","bold");doc.setFontSize(9);farbe(r[3]);doc.text(r[0],M+2,y+3);doc.setFont("helvetica","normal");doc.setFontSize(9.5);farbe(ANT);l.forEach(function(t,k){doc.text(t,M+26,y+3+k*4)});y+=l.length*4+1.4});y+=3});y+=2}
    if(b.bars){b.bars.forEach(function(r){platz(11);doc.setFont("helvetica","bold");doc.setFontSize(10);farbe(ANT);doc.text(T(r[0]),M,y+3.5);doc.setFont("helvetica","normal");farbe(GR);doc.text(T(r[2]||""),W-M,y+3.5,{align:"right"});doc.setFillColor(LINIE[0],LINIE[1],LINIE[2]);doc.roundedRect(M,y+5.5,B,3,1.5,1.5,"F");doc.setFillColor(LIM[0],LIM[1],LIM[2]);doc.roundedRect(M,y+5.5,B*r[1]/100,3,1.5,1.5,"F");y+=12});y+=2}
    if(b.tab){y+=1;b.tab.forEach(function(r){doc.setFontSize(10);var k=doc.splitTextToSize(T(r[0]),52),v=doc.splitTextToSize(T(r[1]),B-58),h=Math.max(k.length,v.length)*4.2+3;platz(h);doc.setFont("helvetica","bold");farbe(ANT);k.forEach(function(l,i){doc.text(l,M,y+4+i*4.2)});doc.setFont("helvetica","normal");v.forEach(function(l,i){doc.text(l,M+58,y+4+i*4.2)});y+=h;doc.setDrawColor(LINIE[0],LINIE[1],LINIE[2]);doc.line(M,y-.5,W-M,y-.5)});y+=3}
    if(b.fig&&b.fig.length===1){var f1=b.fig[0],iw=72;doc.setFont("helvetica","normal");doc.setFontSize(9.5);var cz=doc.splitTextToSize(T(f1.t+" "+(f1.c||"")),B-iw-6);platz(iw+4);if(bilder[f1.src])doc.addImage(bilder[f1.src],"JPEG",M,y,iw,iw);farbe(GR);cz.forEach(function(l,k){doc.text(l,M+iw+6,y+4+k*4.2)});y+=iw+5}
@@ -361,6 +383,9 @@ var Quiz=(function(){
  return{auf:auf}})();
 window.WDH_Quiz=Quiz;
 document.addEventListener("click",function(ev){var im=ev.target.closest(".wd-figs img");if(im)lupe(im)});
+document.addEventListener("click",function(ev){var b=ev.target.closest(".wd-muc button");if(!b)return;var k=document.getElementById(b.dataset.mu);if(!k)return;
+ b.parentNode.querySelectorAll("button").forEach(function(x){x.classList.toggle("an",x===b)});document.querySelectorAll(".wd-mu.an").forEach(function(x){x.classList.remove("an")});k.classList.add("an");
+ k.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"})});
 index();
-if(WI_st&&WI_st.el&&WI_st.modus==="wdh")WI_zeige();
+if(window.WI_st&&WI_st.el)WI_zeige();
 })();
