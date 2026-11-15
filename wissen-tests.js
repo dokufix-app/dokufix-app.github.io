@@ -586,3 +586,21 @@ function schluessel(){return [WI_st.modus,WI_st.id,WI_st.tid,WI_st.kap].join("|"
 WI_zeige=function(){var k=schluessel();vorZeige.apply(this,arguments);if(k===letzter)return;letzter=k;var el=WI_st.el;if(!el)return;
 var n=el;while(n&&n!==document.documentElement){if(n.scrollTop)n.scrollTop=0;n=n.parentElement}
 try{window.scrollTo(0,0)}catch(e){}};})();
+
+/* Zurückwischen: im geöffneten Kapitel, Test oder Karteikapitel von überall nach rechts wischen = zurück zur Übersicht */
+(function(){if(window.__wiWisch)return;window.__wiWisch=1;var s=null;
+function zurueck(){var el=WI_st&&WI_st.el;return el?el.querySelector('.wi-zur:not([data-a="zu"])'):null}
+function seite(){var el=WI_st&&WI_st.el;return el?el.querySelector(".wi-seite"):null}
+function quer(n){while(n&&n!==document.body){if(n.scrollWidth>n.clientWidth+2){var o=getComputedStyle(n).overflowX;if(o==="auto"||o==="scroll")return true}if(n.tagName==="INPUT"||n.tagName==="TEXTAREA"||n.tagName==="SELECT")return true;n=n.parentElement}return false}
+document.addEventListener("touchstart",function(e){s=null;var el=WI_st&&WI_st.el;if(!el||e.touches.length!==1||!el.contains(e.target)||!zurueck()||quer(e.target))return;var t=e.touches[0];s={x:t.clientX,y:t.clientY,t:Date.now(),an:false}},{passive:true});
+document.addEventListener("touchmove",function(e){if(!s)return;var t=e.touches[0],dx=t.clientX-s.x,dy=t.clientY-s.y;
+if(!s.an){if(Math.abs(dy)>12&&Math.abs(dy)>Math.abs(dx)){s=null;return}if(dx>12&&dx>Math.abs(dy)*1.4)s.an=true;else return}
+var p=seite();if(p){p.style.transition="none";p.style.transform="translateX("+Math.max(0,dx*.85)+"px)";p.style.opacity=String(Math.max(.4,1-dx/900))}},{passive:true});
+document.addEventListener("touchend",function(e){if(!s)return;var a=s;s=null;var t=e.changedTouches[0],dx=t.clientX-a.x,dt=Date.now()-a.t,p=seite();
+var los=a.an&&(dx>Math.min(140,innerWidth*.22)||(dx>50&&dx/dt>.45));
+if(!p){if(los){var b=zurueck();b&&b.click()}return}
+if(los){p.style.transition="transform .18s cubic-bezier(.23,1,.32,1),opacity .18s";p.style.transform="translateX("+innerWidth*.6+"px)";p.style.opacity="0";
+setTimeout(function(){var b=zurueck();if(b)b.click();var n=seite();if(n){n.style.transition="none";n.style.transform="";n.style.opacity=""}},170)}
+else{p.style.transition="transform .2s cubic-bezier(.23,1,.32,1),opacity .2s";p.style.transform="";p.style.opacity=""}},{passive:true});
+document.addEventListener("touchcancel",function(){if(!s)return;s=null;var p=seite();if(p){p.style.transform="";p.style.opacity=""}},{passive:true});
+})();
