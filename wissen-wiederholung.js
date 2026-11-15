@@ -203,7 +203,7 @@ var musN=0;function block(b){var h=b.t?`<h3>${E(b.t)}</h3>`:"";
  if(b.l)h+=`<ul>${b.l.map(function(x){return `<li>${E(x)}</li>`}).join("")}</ul>`;
  if(b.mus){var mz=b.mus.some(function(m){return m.z!=null});musN++;
   if(mz)h+=`<div class="wd-muc">${b.mus.map(function(m,k){return `<button data-mu="wdmu${musN}-${k}"><span class="wd-mnr${m.z?"":" leer"}">${E(m.z||"–")}</span>${E(String(m.n).replace(/^Mm?\. /,"").replace(/^./,function(c){return c.toUpperCase()}))}</button>`}).join("")}</div>`;
-  h+=`<div class="wd-mus${mz?" nr":""}">${b.mus.map(function(m,k){return `<div class="wd-mu" id="wdmu${musN}-${k}"${m.p?` data-p="${E(JSON.stringify(m.p))}" role="button" tabindex="0" aria-pressed="false"`:""}>${mz?`<span class="wd-mnr${m.z?"":" leer"}">${E(m.z||"–")}</span>`:""}<div><b>${E(m.n)}</b><dl><dt class="u">Ursprung</dt><dd>${E(m.u)}</dd><dt class="a">Ansatz</dt><dd>${E(m.a)}</dd><dt class="i">Nerv</dt><dd>${E(m.i)}</dd><dt>Funktion</dt><dd>${E(m.f)}</dd></dl>${m.p?`<div class="wd-zoom"><div><i></i></div></div>`:""}</div></div>`}).join("")}</div>`}
+  h+=`<div class="wd-mus${mz?" nr":""}">${b.mus.map(function(m,k){return `<div class="wd-mu" id="wdmu${musN}-${k}"${m.p?` data-p="${E(JSON.stringify(m.p))}"${m.b?` data-b="${E(m.b)}"`:""} role="button" tabindex="0" aria-pressed="false"`:""}>${mz?`<span class="wd-mnr${m.z?"":" leer"}">${E(m.z||"–")}</span>`:""}<div><b>${E(m.n)}</b><dl><dt class="u">Ursprung</dt><dd>${E(m.u)}</dd><dt class="a">Ansatz</dt><dd>${E(m.a)}</dd><dt class="i">Nerv</dt><dd>${E(m.i)}</dd><dt>Funktion</dt><dd>${E(m.f)}</dd></dl>${m.p?`<div class="wd-zoom"><div><i></i></div></div>`:""}</div></div>`}).join("")}</div>`}
  if(b.bars)h+=`<div class="wd-bars">${b.bars.map(function(r){return `<div><b><span>${E(r[0])}</span><span>${E(r[2]||"")}</span></b><i><em style="width:${+r[1]}%"></em></i></div>`}).join("")}</div>`;
  if(b.tab)h+=`<div class="wd-tab">${b.tab.map(function(r){return `<div>${E(r[0])}</div><div>${E(r[1])}</div>`}).join("")}</div>`;
  if(b.fig)h+=`<div class="wd-figs">${b.fig.map(function(f){return `<figure><img src="${E(f.src)}" alt="${E(f.alt||"")}" loading="lazy"><figcaption><b>${E(f.t)}</b> ${E(f.c||"")}</figcaption></figure>`}).join("")}</div>`;
@@ -387,7 +387,7 @@ document.addEventListener("click",function(ev){var im=ev.target.closest(".wd-fig
 function muWahl(k,ausChip){if(!k)return;var war=k.classList.contains("an");var sec=k.closest(".wd-k")||document;
  sec.querySelectorAll(".wd-mu.an").forEach(function(x){x.classList.remove("an");x.setAttribute("aria-pressed","false")});
  sec.querySelectorAll(".wd-muc button").forEach(function(x){x.classList.toggle("an",!war&&x.dataset.mu===k.id)});
- var fig=sec.querySelector(".wd-figs figure"),img=fig&&fig.querySelector("img");
+ var figs=[].slice.call(sec.querySelectorAll(".wd-figs figure"));figs.forEach(function(f){f.classList.remove("spot");f.querySelectorAll(".wd-ring").forEach(function(r){r.remove()})});var fig=(k.dataset.b&&figs.filter(function(f){var i=f.querySelector("img");return i&&i.getAttribute("src").indexOf(k.dataset.b)>=0})[0])||figs[0],img=fig&&fig.querySelector("img");
  if(fig){fig.classList.remove("spot");fig.querySelectorAll(".wd-ring").forEach(function(r){r.remove()})}
  if(war&&!ausChip)return;
  k.classList.add("an");k.setAttribute("aria-pressed","true");
