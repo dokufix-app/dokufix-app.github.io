@@ -8,6 +8,7 @@ Neue Versionen kommen oben dazu.
 
 | Version | Datum | Commit | Was sich geändert hat |
 |---|---|---|---|
+| v182 | 16.11.2026 | 140792c | Wissen › Tests: sechs neue Bilder (Paket 1B, Warnzeichen): Sharp-Purser, Tandemgang, inverses Supinatorzeichen, Rückenlage-Zeichen, Faustschlag-Perkussion, Thompson. |
 | v181 | 16.11.2026 | 5e6ef50 | Wissen › Tests: Bild zur HWS-Rotation neu, der Therapeut steht sichtbar hinter dem Patienten (vorher schwebte ein Arm). |
 | v180 | 16.11.2026 | 2e9e74f | Wissen › Tests: acht neue Bilder (Paket 1A): Lift-off, Belly-Press, Außenrotations-Lag-Sign, Slump, Spurling, Distraktion HWS, HWS-Rotation, Flexions-Rotations-Test. |
 | v179 | 16.11.2026 | fe087c0 | Neues Krankheitsbild KN11 Habituelle Patellaluxation (Knie) mit Plakat, Befund, Behandlung vor und nach OP, Verordnungsdaten. Wiederholung KW 47 um die passende Einheit ergänzt: MPFL-Zeichnung, MRT, Röntgen, Schema der Gleitrinne, 14 Fragen mit 4 Bildfragen. Plakat-Platzhalter wird ausgeblendet, wenn eine Legende da ist. |
