@@ -11,7 +11,8 @@ window.WDH_INDEX=[
    "Achillessehnen-Tendinopathie",
    "Karpaltunnelsyndrom: neue Leitlinie 2026",
    "Gonarthrose",
-   "Gewebeheilung: wann ist was belastbar?"
+   "Gewebeheilung: wann ist was belastbar?",
+   "Habituelle Patellaluxation"
   ]
  }
 ];
