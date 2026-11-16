@@ -8,6 +8,7 @@ Neue Versionen kommen oben dazu.
 
 | Version | Datum | Commit | Was sich geändert hat |
 |---|---|---|---|
+| v173 | 16.11.2026 | dd7764b | Gewebeheilung: Block „Heilung und Belastbarkeit“ in 36 Krankheitsbildern mit Vergleich aller Gewebe, Heilungsuhr im Verlauf (nur zur Orientierung, nicht im Text), Wiederholung „Gewebeheilung“ (Grundlagen) |
 | v172 | 16.11.2026 | 41ecdf0 | Fahrtkosten/Hausbesuche: Jeder Monat lässt sich als „abgerechnet“ abhaken (mit Datum, zum Zurücknehmen erneut antippen). Darunter eine Jahresübersicht Jan–Dez: grün mit Haken = abgerechnet, orangener Punkt = Fahrten, aber noch nicht abgerechnet, blass = keine Fahrten oder Zukunft; antippen springt zum Monat. Haken sind in der Sicherung enthalten. |
 | v171 | 16.11.2026 | bcd40ef | Wissen › Wiederholung › Anatomie: Jeder Muskel lässt sich jetzt antippen und wird im Bild markiert. Dafür je Gelenk ein zweites Muskelbild (Knie: Quadrizeps, Popliteus, Pes anserinus; Hüfte: Iliopsoas, Adduktoren; Schulter: Deltoideus, Serratus anterior; LWS: Transversus abdominis; HWS: Longus colli, suboccipitale Muskeln). Der Ausschnitt in der Karte kommt aus dem Bild, in dem der Muskel zu sehen ist. |
 | v170 | 15.11.2026 | fb8d424 | Wissen › Wiederholung: Jedes Thema hat ein Titelbild aus seinen eigenen Bildern, klein in der Liste und breit oben in der Einheit. Der Bildausschnitt in der angetippten Muskelkarte ist kleiner und nur leicht vergrößert, dadurch scharf und der Muskel mit Umgebung erkennbar. |
