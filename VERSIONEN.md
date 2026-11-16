@@ -8,6 +8,7 @@ Neue Versionen kommen oben dazu.
 
 | Version | Datum | Commit | Was sich geändert hat |
 |---|---|---|---|
+| v178 | 16.11.2026 | 47cf725 | Therapiebericht-Werkstatt: Felder auf das neue W&W-Formular eingemessen, Knopf „Formular ersetzen“ unter der Vorschau (Handschrift bleibt) |
 | v177 | 16.11.2026 | 24d03e5 | Therapiebericht: Feldpositionen auf das neue W&W-Formular umgestellt (eine Diagnosezeile, erste Zeile je Feld hinter der Beschriftung) |
 | v176 | 16.11.2026 | 1991ef9 | Dienstplan: „Nicht erschienen“ oben neben dem Werkzeug; Werkzeug enthält nur noch „Patienten zuordnen“, Bearbeiten einzelner Termine entfernt |
 | v175 | 16.11.2026 | e4b9f6d | Dienstplan: Termin ohne Doku „Vorhandenem Patienten zuordnen“ (falsch erkannter Name, gilt für alle Tage und künftige Importe) |
