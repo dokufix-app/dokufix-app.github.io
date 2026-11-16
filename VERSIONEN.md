@@ -8,6 +8,7 @@ Neue Versionen kommen oben dazu.
 
 | Version | Datum | Commit | Was sich geändert hat |
 |---|---|---|---|
+| v181 | 16.11.2026 | 5e6ef50 | Wissen › Tests: Bild zur HWS-Rotation neu, der Therapeut steht sichtbar hinter dem Patienten (vorher schwebte ein Arm). |
 | v180 | 16.11.2026 | 2e9e74f | Wissen › Tests: acht neue Bilder (Paket 1A): Lift-off, Belly-Press, Außenrotations-Lag-Sign, Slump, Spurling, Distraktion HWS, HWS-Rotation, Flexions-Rotations-Test. |
 | v179 | 16.11.2026 | fe087c0 | Neues Krankheitsbild KN11 Habituelle Patellaluxation (Knie) mit Plakat, Befund, Behandlung vor und nach OP, Verordnungsdaten. Wiederholung KW 47 um die passende Einheit ergänzt: MPFL-Zeichnung, MRT, Röntgen, Schema der Gleitrinne, 14 Fragen mit 4 Bildfragen. Plakat-Platzhalter wird ausgeblendet, wenn eine Legende da ist. |
 | v178 | 16.11.2026 | 47cf725 | Therapiebericht-Werkstatt: Felder auf das neue W&W-Formular eingemessen, Knopf „Formular ersetzen“ unter der Vorschau (Handschrift bleibt) |
