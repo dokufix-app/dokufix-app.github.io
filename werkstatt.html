@@ -250,6 +250,7 @@ html[data-theme="light"] .dk-ta{background:#262626}
         </div>
         <div class="paper"><canvas id="cv" width="2482" height="3510" aria-label="Therapiebericht als Vorschau"></canvas></div>
         <div class="warn" id="warn"></div>
+        <label class="form-ersetzen">Formular ersetzen<input type="file" id="form-datei" accept="image/*" hidden></label>
         <div class="acts">
           <button class="btn" id="dl-jpg">Als JPEG sichern</button>
           <button class="btn ghost" id="dl-pdf">Als PDF sichern</button>
@@ -764,18 +765,20 @@ const L=(x0,x1,y)=>[x0,x1,y];
 /* Koordinaten auf dem sauberen Vordruck, Basis 1241 × 1755 (A4 bei 150 dpi) */
 const FW=1241,FH=1755;
 const zl=(ys,x0=375,x1=1154)=>ys.map(y=>L(x0,x1,y));
+/* Neues W&W-Formular (Stand 16.11.2026): erste Zeile je Feld beginnt hinter der Beschriftung */
+const zl2=(ys,x0erst,x0=178,x1=1180)=>ys.map((y,i)=>L(i===0?x0erst:x0,x1,y));
 const FELDER={
-  patient:[L(209,676,392)], geburt:[L(892,1154,392)],
-  verordnung:[L(287,676,454)], zeitraum:[L(972,1154,454)],
-  diagnosen:zl([535,579]),
-  ziele:zl([661,704,748]),
-  massnahmen:zl([829,873,917,961,1004,1048,1092]),
-  empfehlungen:zl([1173,1217]),
-  begruendung:[L(894,1154,1358),L(744,1154,1398),L(744,1154,1439),L(744,1154,1479)],
-  sonstiges:[L(520,735,1552)],
-  ortdatum:[L(88,669,1625)]
+  patient:[L(180,714,311)], geburt:[L(889,1183,310)],
+  verordnung:[L(254,714,350)], zeitraum:[L(963,1183,349)],
+  diagnosen:zl2([526],178),
+  ziele:zl2([629,665,698],212),
+  massnahmen:zl2([779,813.5,847,881,915,949,982],368),
+  empfehlungen:zl2([1053,1087],227),
+  begruendung:[L(878,1179,1249.3),L(744,1179,1282.6),L(744,1179,1316),L(744,1179,1349.3)],
+  sonstiges:[L(506,700,1394)],
+  ortdatum:[L(62,710,1574)]
 };
-const BOX={ja:[386.5,1280],nein:[756.5,1280],physio:[386.5,1334],ergo:[386.5,1376],reha:[386.5,1418],ruecken:[386.5,1460],wasser:[386.5,1502],sonstiges:[386.5,1545]};
+const BOX={ja:[368.7,1183],nein:[722.4,1183.3],physio:[367.9,1236.6],ergo:[367.9,1264.9],reha:[367.9,1293.1],ruecken:[367.9,1321.4],wasser:[367.9,1349.7],sonstiges:[367.9,1377.2]};
 const ARTEN=[["physio","Physiotherapie"],["ergo","Ergotherapie/Logopädie"],["reha","Reha-Sport"],["ruecken","Rückenschule"],["wasser","Wassergymnastik"],["sonstiges","Sonstiges"]];
 const FELDNAME={patient:"Patient*In",geburt:"Geburtsdatum",verordnung:"Verordnung vom",zeitraum:"Behandlungszeitraum",diagnosen:"Diagnosen",ziele:"Therapieziele",massnahmen:"Maßnahmen",empfehlungen:"Empfehlungen",begruendung:"Begründung",sonstiges:"Sonstiges",ortdatum:"Ort, Datum"};
 
@@ -1360,11 +1363,16 @@ $("vorl-datei").onchange=async e=>{const d=e.target.files&&e.target.files[0];e.t
   try{const j=JSON.parse(await d.text());if(j.typ!=="doku-fix-ww-vorlage"||!/^data:image\//.test(j.form||"")||!/^data:font\//.test(j.font||""))throw 0;
     VORL={form:j.form,font:j.font};LSX.setItem(VORL_KEY,JSON.stringify(VORL));vorlageAnwenden();setModus(LSX.getItem(MODUS)==="klar"?"klar":"hand");toast("Vorlage geladen. Sie bleibt nur auf diesem Gerät.")}
   catch(x){toast(x&&x.name==="QuotaExceededError"?"Kein Platz mehr im Speicher. Vorlage nicht geladen.":"Das ist nicht die Therapiebericht-Vorlage.")}};
+$("form-datei").onchange=async e=>{const d=e.target.files&&e.target.files[0];e.target.value="";if(!d)return;
+  try{const url=URL.createObjectURL(d),im=new Image();im.src=url;await im.decode();const c=document.createElement("canvas");c.width=1655;c.height=2340;const g=c.getContext("2d");g.fillStyle="#fff";g.fillRect(0,0,c.width,c.height);g.drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(url);
+    VORL={...(VORL||{}),form:c.toDataURL("image/jpeg",0.85)};LSX.setItem(VORL_KEY,JSON.stringify(VORL));vorlageAnwenden();zeichne();toast("Formular ersetzt. Es bleibt nur auf diesem Gerät.")}
+  catch(x){toast(x&&x.name==="QuotaExceededError"?"Kein Platz mehr im Speicher.":"Das Bild konnte nicht gelesen werden.")}};
 vorlageAnwenden();
 Promise.all([document.fonts.load("40px Brunos"),document.fonts.load('500 40px "IBM Plex Sans"')]).then(zeichne,zeichne);
 </script>
 
 <style>
+.form-ersetzen{display:inline-flex;align-items:center;min-height:40px;margin-top:10px;padding:0 14px;border-radius:999px;border:1px solid var(--line,#d9d9d2);background:var(--surface);font-size:14px;font-weight:600;cursor:pointer;transition:transform .14s cubic-bezier(.23,1,.32,1)}.form-ersetzen:active{transform:scale(.97)}.form-ersetzen:focus-within{outline:2px solid currentColor;outline-offset:2px}
 .vorl{margin:0 0 16px;padding:14px 16px;border-radius:16px;background:var(--surface);border:1px solid var(--red)}
 .vorl b{display:block;font-size:15px}.vorl p{margin:4px 0 10px;font-size:14px;color:var(--muted)}
 .vorl-knopf{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:999px;background:var(--red);color:#1a1a1a;font-weight:700;cursor:pointer}
