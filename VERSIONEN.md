@@ -8,6 +8,7 @@ Neue Versionen kommen oben dazu.
 
 | Version | Datum | Commit | Was sich geändert hat |
 |---|---|---|---|
+| v183 | 16.11.2026 | (dieser) | Wissen › Tests: 8 neue Testbilder (RALDT, Schüttelzeichen, Foveazeichen, Daumen-Valgusstress, Morton-Kompression, Kaumuskulatur, Kiefergelenk, Mundöffnung) |
 | v182 | 16.11.2026 | 140792c | Wissen › Tests: sechs neue Bilder (Paket 1B, Warnzeichen): Sharp-Purser, Tandemgang, inverses Supinatorzeichen, Rückenlage-Zeichen, Faustschlag-Perkussion, Thompson. |
 | v181 | 16.11.2026 | 5e6ef50 | Wissen › Tests: Bild zur HWS-Rotation neu, der Therapeut steht sichtbar hinter dem Patienten (vorher schwebte ein Arm). |
 | v180 | 16.11.2026 | 2e9e74f | Wissen › Tests: acht neue Bilder (Paket 1A): Lift-off, Belly-Press, Außenrotations-Lag-Sign, Slump, Spurling, Distraktion HWS, HWS-Rotation, Flexions-Rotations-Test. |
