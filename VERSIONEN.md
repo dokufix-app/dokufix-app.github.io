@@ -8,6 +8,7 @@ Neue Versionen kommen oben dazu.
 
 | Version | Datum | Commit | Was sich geändert hat |
 |---|---|---|---|
+| v176 | 16.11.2026 | 1991ef9 | Dienstplan: „Nicht erschienen“ oben neben dem Werkzeug; Werkzeug enthält nur noch „Patienten zuordnen“, Bearbeiten einzelner Termine entfernt |
 | v175 | 16.11.2026 | e4b9f6d | Dienstplan: Termin ohne Doku „Vorhandenem Patienten zuordnen“ (falsch erkannter Name, gilt für alle Tage und künftige Importe) |
 | v174 | 16.11.2026 | bbb3723 | Kartei: Patienten zusammenführen (Einheiten wandern mit, falsch erkannter Name wird künftig automatisch zugeordnet); doppelter Vorname wird zu „Vorname Z. N.“ |
 | v173 | 16.11.2026 | dd7764b | Gewebeheilung: Block „Heilung und Belastbarkeit“ in 36 Krankheitsbildern mit Vergleich aller Gewebe, Heilungsuhr im Verlauf (nur zur Orientierung, nicht im Text), Wiederholung „Gewebeheilung“ (Grundlagen) |
