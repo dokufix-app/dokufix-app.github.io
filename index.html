@@ -9427,8 +9427,8 @@ PX_kurzName = (praxxoName) => {
   // praxxo: "Nachname, Vorname [Zusatz]" -> "Vorname N."
   let [nn, vn] = (praxxoName ?? "").split(",").map((s) => s.trim());
   if (!vn) return "";
-  let v = vn.split(/\s+/).filter((w) => !/^(von|van|de|zu|der|den|vom|zum)$/i.test(w))[0] ?? "";
-  return v && nn ? `${v} ${nn.replace(/^(von|van|de|zu)\s+/i, "")[0].toUpperCase()}.` : "";
+  let ws = vn.split(/\s+/).filter((w) => !/^(von|van|de|zu|der|den|vom|zum)$/i.test(w)), v = ws[0] ?? "", z2 = ws[1] && /^[A-ZÄÖÜ]/.test(ws[1]) ? ` ${ws[1][0].toUpperCase()}.` : "";
+  return v && nn ? `${v}${z2} ${nn.replace(/^(von|van|de|zu)\s+/i, "")[0].toUpperCase()}.` : "";
 };
 var PX_BSP = "",
 // Texterkennung für Doku-Seiten. Die Tabelle wird an der senkrechten Linie zwischen Feldname und Inhalt geteilt
@@ -10256,8 +10256,11 @@ DP_schreiben=(x)=>{try{window.DFS?.dpVorher(x)}catch{}try{TRESOR.setItem(DP_KEY,
 DP_min=(t)=>{let m=/^(\d{1,2}):(\d{2})/.exec(t??"");return m?+m[1]*60+ +m[2]:null},
 DP_hhmm=(n)=>`${String(Math.floor(n/60)).padStart(2,"0")}:${String(n%60).padStart(2,"0")}`,
 DP_tok=(name)=>PV_norm(name).replace(/[^a-z0-9\s.\-]/g," ").trim().split(/\s+/).filter(Boolean),
-DP_schluessel=(name)=>{let t=DP_tok(name);if(!t.length)return"";return t[0]+"|"+(t.length>1?t[t.length-1][0]:"")},
-DP_kurz=(name)=>{let t=(name??"").trim().split(/\s+/).filter(Boolean);if(t.length<2)return t[0]??"";return`${t[0]} ${t[t.length-1][0].toUpperCase()}.`},
+NA_KEY="doku-fix-namen-zuordnung",NA_c=null,NA_map=()=>{if(NA_c)return NA_c;try{let x=JSON.parse(TRESOR.getItem(NA_KEY)??"{}");NA_c=x&&typeof x==="object"?x:{};return NA_c}catch{return{}}},
+NA_setze=(von,nach)=>{if(!von||!nach||von===nach)return;let m={...NA_map()};m[von]=nach;for(let k of Object.keys(m))if(m[k]===von)m[k]=nach;delete m[nach];NA_c=m;try{TRESOR.setItem(NA_KEY,JSON.stringify(m))}catch{}},
+DP_rohSchluessel=(name)=>{let t=DP_tok(name);if(!t.length)return"";return t[0]+"|"+(t.length>1?t[t.length-1][0]:"")},
+DP_schluessel=(name)=>{let k=DP_rohSchluessel(name);return k&&NA_map()[k]||k},
+DP_kurz=(name)=>{let t=(name??"").trim().split(/\s+/).filter(Boolean);if(t.length<2)return t[0]??"";let L=t[t.length-1][0].toUpperCase();if(t.length>=3&&/^[A-ZÄÖÜ]/.test(t[1])&&!/^(von|van|de|zu|der|den|vom|zum)$/i.test(t[1]))return`${t[0]} ${t[1][0].toUpperCase()}. ${L}.`;return`${t[0]} ${L}.`},
 DP_tagPlus=(d,n)=>{let x=new Date(d+"T12:00:00");x.setDate(x.getDate()+n);return`${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,"0")}-${String(x.getDate()).padStart(2,"0")}`},
 DP_WT=["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"],
 DP_id=()=>Math.random().toString(36).slice(2,9),
@@ -10530,7 +10533,19 @@ var PK_ORD={name:"A–Z",kb:"Krankheitsbild",region:"Region"},
 PK_BEREICHE=["Wirbelsäule","Kiefer","Schulter","Ellenbogen","Handgelenk","Finger","Hüfte","Knie","Sprunggelenk","Fuß","Zehen","Neurologie","Innere Medizin"],
 PK_kbs=(PL)=>PL.map((X)=>{let e=X.erstbefund??{},d=(e.diagnose??"").trim(),kb=mr(e.krankheitsbild)??(d?eu(d,1)[0]?.kb:void 0),reg=null;if(!kb){let ids=(e.stellen??[]).map((st)=>st.region);reg=Object.entries(jz).find(([,v])=>v.some((r)=>ids.includes(r)))?.[0]??(e.diagnoseKat==="neuro"?"Neurologie":e.diagnoseKat==="innere"?"Innere Medizin":null)}return{kb,reg,d}}),
 PK_gruppen=(liste,ord)=>{let M=new Map,rang=(b)=>{let i=PK_BEREICHE.indexOf(b);return i<0?98:i},neu=(key,o)=>{if(!M.has(key))M.set(key,{...o,L:[]});return M.get(key)};for(let p of liste){let schon=new Set;for(let x of p.kbs.length?p.kbs:[{kb:null,reg:null,d:""}]){let b=x.kb?.bereich??x.reg,key,o;if(ord==="kb"){if(x.kb){key="kb:"+x.kb.id;o={b:x.kb.titel,kb:x.kb.id,bereich:b,r:rang(b),t:x.kb.titel}}else if(x.d){key="kb:_ohne";o={b:"Ohne passendes Krankheitsbild",kb:"",bereich:"",r:99,t:""}}else{key="kb:_offen";o={b:"Diagnose noch offen",kb:"",bereich:"",r:100,t:""}}}else{if(b){key="r:"+b;o={b,r:rang(b),t:""}}else{key="r:_ohne";o={b:x.d?"Ohne Zuordnung":"Diagnose noch offen",r:99,t:""}}}if(schon.has(key))continue;schon.add(key);neu(key,o).L.push(p.kbs.length>1&&x.d?{...p,diagHier:x.d}:p)}}let A=[...M.values()].sort((a,b)=>a.r-b.r||a.t.localeCompare(b.t,"de"));if(ord==="kb"){let vor=null;for(let a of A){if(a.bereich&&a.bereich!==vor)a.ober=a.bereich;vor=a.bereich||vor}}return A};
-function PK_Kartei({z,mutiere:c,neu:N,wechsel:o}){let[q,setQ]=H(""),[fil,setFil]=H("alle"),ord=PK_ORD[z.kartOrd]?z.kartOrd:"name",setOrd=(v)=>{c((Q)=>{Q.kartOrd=v});setAuf(null)},[auf,setAuf]=H(z.kartAuf??null),[neuAuf,setNeuAuf]=H(!1),[nm,setNm]=H(""),[weg,setWeg]=H(null),[fa,setFa]=H(null);
+function PK_merge(Q,quellIds,zielId){let Z=Q.patienten.find((x)=>x.id===zielId);if(!Z)return;let zName=Z.name,qk=new Set(quellIds.map((id)=>Q.patienten.find((x)=>x.id===id)).filter(Boolean).map((X)=>DP_rohSchluessel(X.name)));Z.namenAlt=[...new Set([...(Z.namenAlt??[]),...qk])].filter((k)=>k!==DP_rohSchluessel(zName));
+for(let id of quellIds){let X=Q.patienten.find((x)=>x.id===id);if(!X||X===Z)continue;NA_setze(DP_rohSchluessel(X.name),DP_rohSchluessel(zName));
+let beideBefund=X.art!=="nurVerlauf"&&Z.art!=="nurVerlauf";if(beideBefund){X.name=zName;continue}
+let haupt=Z.art==="nurVerlauf"&&X.art!=="nurVerlauf"?X:Z,neben=haupt===X?Z:X;haupt.verlauf??={einheiten:[],offen:null};haupt.verlauf.einheiten??=[];
+let ids=new Set(haupt.verlauf.einheiten.map((e)=>e.id));for(let e of neben.verlauf?.einheiten??[]){let n=structuredClone(e);if(ids.has(n.id))n.id=Math.random().toString(36).slice(2,9);ids.add(n.id);haupt.verlauf.einheiten.push(n)}
+haupt.verlauf.einheiten.sort((a,b)=>(a.datum??"").localeCompare(b.datum??""));haupt.name=zName;if(neben.erstellt&&(!haupt.erstellt||neben.erstellt<haupt.erstellt))haupt.erstellt=neben.erstellt;
+Q.patienten=Q.patienten.filter((x)=>x!==neben);for(let k of["aktiv","aktivKurz"])if(Q[k]===neben.id)Q[k]=null;Z=haupt}
+Z.namenAlt=[...new Set([...(Z.namenAlt??[]),...qk])].filter((k)=>k!==DP_rohSchluessel(Z.name));let A0=DP_lesen(),gaendert=!1;for(let d of Object.keys(A0))for(let e of A0[d]?.eintraege??[])if(e.name&&qk.has(DP_rohSchluessel(e.name))){e.name=zName;gaendert=!0}if(gaendert)DP_schreiben(A0)}
+function PK_Zusammen({p,personen,c,ziel,setZiel,fertig}){let vn=PV_norm(p.name.split(/\s+/)[0]??""),L=personen.filter((x)=>x.k!==p.k).sort((a,b)=>{let A=PV_norm(a.name.split(/\s+/)[0])===vn?0:1,B=PV_norm(b.name.split(/\s+/)[0])===vn?0:1;return A-B||a.name.localeCompare(b.name,"de")}),zp=ziel&&personen.find((x)=>x.k===ziel);
+return f("div",{className:"dph-panel pk-mg",children:[u("p",{className:"hinweis klein",style:{margin:"0 0 8px"},children:zp?`„${p.name}“ wird zu „${zp.name}“. Alle Einheiten wandern mit, nichts geht verloren. Wird „${p.name}“ wieder so erkannt, ordnet Doku-Fix es künftig automatisch „${zp.name}“ zu.`:`Zu wem gehört „${p.name}“ wirklich? Gleicher Vorname steht oben.`}),
+zp?f("div",{className:"dp-zwei",children:[u("button",{type:"button",className:"weiter",style:{marginTop:0},onClick:()=>{let ids=p.L.map((X)=>X.id),zid=zp.PL[0].id;c((Q)=>PK_merge(Q,ids,zid));fertig(zp.k)},children:"Zusammenführen"}),u("button",{type:"button",className:"sekundaer",style:{marginTop:0},onClick:()=>setZiel(null),children:"Andere Person"})]}):
+u("div",{className:"pk-mg-liste",role:"list",children:L.length?L.map((x)=>f("button",{type:"button",role:"listitem",className:"pk-mg-wahl",onClick:()=>setZiel(x.k),children:[u("span",{className:"pk-avatar"+(x.art?" art-"+x.art:" ohne-art"),"aria-hidden":"true",children:PK_init(x.name)}),f("span",{className:"pk-mg-t",children:[u("b",{children:x.name}),u("small",{children:[x.diag[0]??"Diagnose offen",` · ${x.n} ${x.n===1?"Einheit":"Einh."}`].join("")})]})]},x.k)):u("p",{className:"hinweis klein",children:"Keine weiteren Patienten in der Kartei."})})]})}
+function PK_Kartei({z,mutiere:c,neu:N,wechsel:o}){for(let P of z.patienten)for(let k of P.namenAlt??[])if(NA_map()[k]!==DP_rohSchluessel(P.name))NA_setze(k,DP_rohSchluessel(P.name));let[q,setQ]=H(""),[fil,setFil]=H("alle"),ord=PK_ORD[z.kartOrd]?z.kartOrd:"name",setOrd=(v)=>{c((Q)=>{Q.kartOrd=v});setAuf(null)},[auf,setAuf]=H(z.kartAuf??null),[neuAuf,setNeuAuf]=H(!1),[nm,setNm]=H(""),[weg,setWeg]=H(null),[fa,setFa]=H(null),[mg,setMg]=H(null),[mgZiel,setMgZiel]=H(null);
 mt(()=>{if(!z.kartAuf&&!z.zurueck)return;let zurueckDa=!!z.kartAuf;c((Q)=>{delete Q.kartAuf;delete Q.zurueck});if(!zurueckDa)return;let t=setTimeout(()=>document.querySelector(".pk-karte.offen")?.scrollIntoView({block:"start",behavior:"smooth"}),120);return()=>clearTimeout(t)},[]);
 let heute=dt(),hz=new Map;for(let x of DP_lesen()[heute]?.eintraege??[]){if(x.frei||!x.name)continue;let k=DP_schluessel(x.name);if(k&&!hz.has(k))hz.set(k,x.zeit)}let pa=new Map;{let A0=DP_lesen();for(let d of Object.keys(A0).filter((x)=>/^\d{4}-\d{2}-\d{2}$/.test(x)).sort())for(let x of A0[d]?.eintraege??[]){if(x.frei||!x.name)continue;let a=DP_art(x.kz);if(a)pa.set(DP_schluessel(x.name),a)}}
 let G=new Map;for(let P of z.patienten){let k=DP_schluessel(P.name)||P.id;if(!G.has(k))G.set(k,[]);G.get(k).push(P)}
@@ -10552,6 +10567,8 @@ u("span",{className:"pk-meta",children:[p.nurKurz?"Schnell-Doku":"Erstbefund",p.
 u("span",{className:"pk-pfeil",children:DPM_ICON.pfeil})]}),
 o0&&f("div",{className:"pk-aktionen dp-aktionen-menue",children:[u(C3_Karte,{q:{name:p.name},PL:p.PL,L:p.L,mutiere:c,datum:p.heute?dt():"",starte:(X,z)=>oeffne(X,X.art==="nurVerlauf"?"kurz":(z??"verlauf")),oeffne,px:u(PX_Knopf,{P:p.PL[0],alle:p.PL,wurzel:c,mutiere:(fn)=>c((Q)=>{let X=Q.patienten.find((y)=>y.id===p.PL[0].id);if(X)fn(X)}),klein:!0,text:"Aus Doku"}),extra:f("div",{className:"dp-menue",role:"menu","aria-label":`Verwalten ${p.name}`,children:[!p.zu&&DPM_zeile({icon:"plus",text:"Weitere Diagnose",offen:fa===p.k,klick:()=>setFa(fa===p.k?null:p.k)},"fa"),
 !p.zu&&fa===p.k&&f("div",{className:"dph-panel",children:[u("p",{className:"hinweis klein",style:{margin:"0 0 8px"},children:"Jede Diagnose bekommt eigenen Befund und eigenen Verlauf. Name und Sozialanamnese bleiben gleich."}),u("button",{type:"button",className:"weiter",style:{marginTop:0,width:"100%"},onClick:()=>{c((Q)=>FA_neu(Q,p.PL[0].id,"parallel"));setFa(null)},children:"Zusätzlich, gleichzeitig behandeln"}),u("button",{type:"button",className:"sekundaer",style:{marginTop:8,width:"100%"},onClick:()=>{c((Q)=>FA_neu(Q,p.PL[0].id,"episode"));setFa(null)},children:"Neue Episode, bisherige abschließen"})]},"fap"),
+DPM_zeile({icon:"neu",text:"Mit anderem Patienten zusammenführen",sub:mg===p.k?"":"Wenn jemand doppelt angelegt oder falsch erkannt wurde",offen:mg===p.k,klick:()=>{setMg(mg===p.k?null:p.k);setMgZiel(null)}},"mg"),
+mg===p.k&&u(PK_Zusammen,{p,personen,c,ziel:mgZiel,setZiel:setMgZiel,fertig:(k)=>{setMg(null);setMgZiel(null);setAuf(k)}},"mgp"),
 p.zu&&DPM_zeile({icon:"auf",text:"Wieder aufnehmen",klick:()=>c((Q)=>{let x=Q.patienten.find((y)=>y.id===p.PL[0].id);if(x)delete x.abgeschlossen})},"wa"),
 DPM_zeile({icon:"weg",gefahr:!0,text:weg===p.k?"Wirklich löschen? Nochmal tippen":p.L.length>1?`Patient löschen (${p.L.length} Diagnosen)`:"Patient löschen",sub:weg===p.k?"Befund und Verlauf sind dann weg":"",klick:()=>{if(weg!==p.k){setWeg(p.k);return}let ids=new Set(p.L.map((X)=>X.id));c((Q)=>{Q.patienten=Q.patienten.filter((X)=>!ids.has(X.id));if(ids.has(Q.aktiv))Q.aktiv=null;if(ids.has(Q.aktivKurz))Q.aktivKurz=null});setWeg(null);setAuf(null)}},"del")]})},"c3")]})]},ak)};
 return f("div",{className:"schritt pk",children:[
@@ -11053,6 +11070,13 @@ img.wi-pl-b{aspect-ratio:4/5;object-fit:cover;background:#EFEAE7}
 }
 @media (max-width:599px){.wi-plakat{max-width:none}}
 @media (max-width:480px){.wk-lang{display:none}}
+</style>
+<style id="zusammen">
+.pk-mg-liste{display:flex;flex-direction:column;gap:6px;max-height:min(46vh,360px);overflow-y:auto;overscroll-behavior:contain}
+.pk-mg-wahl{display:flex;align-items:center;gap:12px;width:100%;min-height:54px;border:0;border-radius:14px;background:var(--grund);color:var(--schrift);font:inherit;text-align:left;padding:6px 12px;cursor:pointer;transition:transform .16s cubic-bezier(.23,1,.32,1)}
+.pk-mg-wahl:active{transform:scale(.97)}.pk-mg-wahl:focus-visible{outline:3px solid var(--tape);outline-offset:2px}
+.pk-mg-wahl .pk-avatar{flex:none}.pk-mg-t{display:flex;flex-direction:column;min-width:0}.pk-mg-t b{font-weight:600}.pk-mg-t small{color:var(--schrift2);font-size:.8125rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (prefers-reduced-motion:reduce){.pk-mg-wahl{transition:none}}
 </style>
 <style id="heilung">
 :root{--hl-e:#D9653F;--hl-p:#D6A11F;--hl-k:#8DAE45;--hl-r:#557F2B;--hl-ease:cubic-bezier(.23,1,.32,1);--hl-drawer:cubic-bezier(.32,.72,0,1)}
