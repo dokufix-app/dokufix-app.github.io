@@ -10,7 +10,8 @@ window.WDH_INDEX=[
    "Nicht-spezifischer Kreuzschmerz",
    "Achillessehnen-Tendinopathie",
    "Karpaltunnelsyndrom: neue Leitlinie 2026",
-   "Gonarthrose"
+   "Gonarthrose",
+   "Gewebeheilung: wann ist was belastbar?"
   ]
  }
 ];

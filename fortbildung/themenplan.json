@@ -646,6 +646,13 @@
      "kb": "KN01",
      "art": "kb",
      "titel": "Gonarthrose"
+    },
+    {
+     "id": "w47-gh",
+     "kb": "",
+     "art": "grund",
+     "titel": "Gewebeheilung: wann ist was belastbar?",
+     "thema": "Grundlagen Gewebeheilung"
     }
    ]
   }
@@ -677,6 +684,12 @@
    "zuerst": "2026-W47",
    "wiederholt": [],
    "faellig": "2026-W50"
+  },
+  "GEWEBEHEILUNG": {
+   "zuerst": "2026-W47",
+   "wiederholt": [],
+   "faellig": "2026-W50",
+   "notiz": "Grundlagen-Einheit (kein Krankheitsbild), Zusatz zu den 5 Einheiten. Wiederholung nach 3, 8, 20 Wochen wie die anderen."
   }
  },
  "forschung": [

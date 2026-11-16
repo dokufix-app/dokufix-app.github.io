@@ -16,7 +16,7 @@ function heuteKw(){var d=new Date(),t=new Date(Date.UTC(d.getFullYear(),d.getMon
 function aktuelleKw(){var k=heuteKw(),l=IDX||[];if(l.some(function(x){return x.kw===k}))return k;var f=l.filter(function(x){return x.kw<=k});return(f[0]||l[0]||{}).kw}
 function tag(){return["so","mo","di","mi","do","fr","sa"][new Date().getDay()]}
 function datum(iso){var p=String(iso||"").split("-");return p.length===3?(+p[2])+"."+(+p[1])+".":""}
-var ART={kb:"Krankheitsbild",neu:"Neu aus der Forschung",wdh:"Wiederholung",ana:"Anatomie"};
+var ART={kb:"Krankheitsbild",neu:"Neu aus der Forschung",wdh:"Wiederholung",ana:"Anatomie",grund:"Grundlagen"};
 var ICO={ok:'<svg viewBox="0 0 24 24" class="wq-mk"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',no:'<svg viewBox="0 0 24 24" class="wq-mk"><path d="M7 7l10 10M17 7L7 17"/></svg>',
  pfeil:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>',
  x:'<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>'};
