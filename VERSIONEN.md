@@ -8,6 +8,7 @@ Neue Versionen kommen oben dazu.
 
 | Version | Datum | Commit | Was sich geändert hat |
 |---|---|---|---|
+| v185 | 17.11.2026 | (dieser) | Wissen › Tests: 6 neue Testbilder (Drop-Arm, Infraspinatus, O'Brien, Cross-Body, Hook-Test, Moving-Valgus) |
 | v184 | 16.11.2026 | (dieser) | Wissen › Tests: Sharp-Purser-Bild neu (richtige Hand an der Stirn) |
 | v183 | 16.11.2026 | (dieser) | Wissen › Tests: 8 neue Testbilder (RALDT, Schüttelzeichen, Foveazeichen, Daumen-Valgusstress, Morton-Kompression, Kaumuskulatur, Kiefergelenk, Mundöffnung) |
 | v182 | 16.11.2026 | 140792c | Wissen › Tests: sechs neue Bilder (Paket 1B, Warnzeichen): Sharp-Purser, Tandemgang, inverses Supinatorzeichen, Rückenlage-Zeichen, Faustschlag-Perkussion, Thompson. |
