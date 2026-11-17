@@ -8,6 +8,7 @@ Neue Versionen kommen oben dazu.
 
 | Version | Datum | Commit | Was sich geändert hat |
 |---|---|---|---|
+| v186 | 17.11.2026 | 7b1bd0b | Dienstplan-Import: Doppeltermine werden über Jahrgang und Namensteile zusammengeführt (z. B. nur Nachname erkannt, zweiter Vorname fehlt, Name unleserlich); Namen aus dem Rohtext als Rückfall |
 | v185 | 17.11.2026 | (dieser) | Wissen › Tests: 6 neue Testbilder (Drop-Arm, Infraspinatus, O'Brien, Cross-Body, Hook-Test, Moving-Valgus) |
 | v184 | 16.11.2026 | (dieser) | Wissen › Tests: Sharp-Purser-Bild neu (richtige Hand an der Stirn) |
 | v183 | 16.11.2026 | (dieser) | Wissen › Tests: 8 neue Testbilder (RALDT, Schüttelzeichen, Foveazeichen, Daumen-Valgusstress, Morton-Kompression, Kaumuskulatur, Kiefergelenk, Mundöffnung) |
