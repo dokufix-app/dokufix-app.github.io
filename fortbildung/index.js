@@ -13,7 +13,8 @@ window.WDH_INDEX=[
    "Gonarthrose",
    "Gewebeheilung: wann ist was belastbar?",
    "Habituelle Patellaluxation",
-   "Querschnitt: was ist je Höhe möglich?"
+   "Querschnitt: was ist je Höhe möglich?",
+   "Schwindel: einordnen, testen, behandeln"
   ]
  }
 ];

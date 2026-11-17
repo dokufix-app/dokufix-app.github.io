@@ -666,6 +666,12 @@
      "kb": "NE06",
      "art": "kb",
      "titel": "Querschnitt: was ist je Höhe möglich?"
+    },
+    {
+     "id": "w47-sw",
+     "kb": "NE07",
+     "art": "kb",
+     "titel": "Schwindel: einordnen, testen, behandeln"
     }
    ]
   }
@@ -710,6 +716,11 @@
    "faellig": "2026-W50"
   },
   "NE06": {
+   "zuerst": "2026-W47",
+   "wiederholt": [],
+   "faellig": "2026-W50"
+  },
+  "NE07": {
    "zuerst": "2026-W47",
    "wiederholt": [],
    "faellig": "2026-W50"
