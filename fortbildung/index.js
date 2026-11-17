@@ -12,7 +12,8 @@ window.WDH_INDEX=[
    "Karpaltunnelsyndrom: neue Leitlinie 2026",
    "Gonarthrose",
    "Gewebeheilung: wann ist was belastbar?",
-   "Habituelle Patellaluxation"
+   "Habituelle Patellaluxation",
+   "Querschnitt: was ist je Höhe möglich?"
   ]
  }
 ];

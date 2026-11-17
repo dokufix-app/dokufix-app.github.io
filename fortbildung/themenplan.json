@@ -660,6 +660,12 @@
      "kb": "KN11",
      "art": "kb",
      "titel": "Habituelle Patellaluxation"
+    },
+    {
+     "id": "w47-qs",
+     "kb": "NE06",
+     "art": "kb",
+     "titel": "Querschnitt: was ist je Höhe möglich?"
     }
    ]
   }
@@ -699,6 +705,11 @@
    "notiz": "Grundlagen-Einheit (kein Krankheitsbild), Zusatz zu den 5 Einheiten. Wiederholung nach 3, 8, 20 Wochen wie die anderen."
   },
   "KN11": {
+   "zuerst": "2026-W47",
+   "wiederholt": [],
+   "faellig": "2026-W50"
+  },
+  "NE06": {
    "zuerst": "2026-W47",
    "wiederholt": [],
    "faellig": "2026-W50"
