@@ -106,7 +106,15 @@
     ['gewichtsverlagerung', 'Gewicht seitlich verlagern', 'vor der Küchenzeile', 'gg hue', 'stand', 'ohne', 'Etwas breiter als hüftbreit stehen. Das Gewicht langsam auf ein Bein verlagern, das Becken schiebt sich über den Fuß, der Oberkörper bleibt aufrecht. Zur anderen Seite im Wechsel.'],
     ['hindernis-steigen', 'Über ein Hindernis steigen', 'Handtuch, Küchenzeile', 'gg', 'stand', 'ohne', 'Ein gerolltes Handtuch quer auf den Boden legen, an der Küchenzeile festhalten. Mit gebeugtem Knie darüber steigen und zurück, im Wechsel rechts und links.'],
     ['zehengang', 'Zehengang', 'an der Küchenzeile', 'gg fuss', 'stand', 'ohne', 'An der Küchenzeile auf den Zehenspitzen entlang gehen, die Fersen bleiben oben. Aufrecht bleiben, 10 Schritte, zurück.'],
-    ['kopfdrehen-stand', 'Kopf drehen im Stand', 'vor der Küchenzeile', 'gg', 'stand', 'ohne', 'Mit eng geschlossenen Füßen vor der Küchenzeile stehen. Den Kopf langsam nach rechts und links drehen, der Rumpf bleibt gerade. Bei Schwindel kurz pausieren.']
+    ['kopfdrehen-stand', 'Kopf drehen im Stand', 'vor der Küchenzeile', 'gg', 'stand', 'ohne', 'Mit eng geschlossenen Füßen vor der Küchenzeile stehen. Den Kopf langsam nach rechts und links drehen, der Rumpf bleibt gerade. Bei Schwindel kurz pausieren.'],
+    ['seitwaerts-gehen', 'Seitwärts gehen', 'an der Küchenzeile', 'gg hue', 'stand', 'ohne', 'Hände in die Hüften, vor der Küchenzeile stehen. 10 Schritte zur Seite gehen, die Fußspitzen zeigen nach vorn, dann 10 Schritte zurück.'],
+    ['rueckwaerts-gehen', 'Rückwärts gehen', 'an der Küchenzeile', 'gg', 'stand', 'ohne', 'Eine Hand an der Küchenzeile. 10 Schritte rückwärts gehen, zuerst den Vorfuß aufsetzen, Blick nach vorn. Umdrehen, Hand wechseln, zurück.'],
+    ['tandemgang-rueckwaerts', 'Tandemgang rückwärts', 'an der Küchenzeile', 'gg', 'stand', 'ohne', 'An der Küchenzeile festhalten. Rückwärts gehen und jeden Fuß direkt hinter den anderen setzen, die Zehen berühren die Ferse. 10 Schritte, zurück.'],
+    ['achterlauf', 'Gehen und Wenden (Achterlauf)', 'zwei Stühle', 'gg', 'stand', 'ohne', 'Zwei Stühle etwa zwei Meter auseinanderstellen. In normalem Tempo eine Acht um die Stühle gehen, einmal im und einmal gegen den Uhrzeigersinn wenden.'],
+    ['blickstabilisation', 'Blick halten, Kopf drehen', 'Stuhl, Karte', 'gg hws', 'sitz', 'ohne', 'Eine Karte mit einem Punkt auf Augenhöhe halten. Den Punkt fest anschauen und den Kopf zügig nach rechts und links drehen, der Punkt bleibt scharf. 1 Minute, 3-mal täglich. Leichter Schwindel ist erlaubt, er soll nach der Übung abklingen.'],
+    ['gehen-kopfdrehen', 'Gehen mit Kopfdrehen', 'Flur', 'gg', 'stand', 'ohne', 'Im Flur geradeaus gehen und dabei den Kopf im Wechsel nach rechts und links drehen, der Körper geht gerade weiter. Anfangs nah an der Wand gehen.'],
+    ['greifen-stand', 'Weit greifen im Stand', 'an der Küchenzeile', 'gg', 'stand', 'ohne', 'Vor der Küchenzeile stehen. Weit nach vorn über die Platte greifen, als würden Sie einen Becher holen, die Fersen bleiben am Boden. Langsam zurück in den aufrechten Stand.'],
+    ['schritte-alle-richtungen', 'Schritte in alle Richtungen', 'an der Küchenzeile', 'gg', 'stand', 'ohne', 'Eine Hand an der Küchenzeile. Mit einem Bein zügig einen großen Schritt nach vorn, zur Seite, schräg nach hinten und nach hinten machen und jeweils zurück, wie die Zeiger einer Uhr. Seite wechseln.']
   ];
   const KAT = K.map(([id, n, z, r, p, h, t]) => ({ id, n, z, r: r.split(' '), p, h, t }));
   const BY = Object.fromEntries(KAT.map((x) => [x.id, x]));
@@ -128,6 +136,9 @@
   const bild = (id, s) => window.HA_BILD?.[`${id}-${s}`] || `heimuebungen/heim-${id}-${s}.webp`;
   const dos = (x) => `${x.s} × ${x.w}`;
   const liste = (prog) => (prog ?? []).filter((x) => BY[x.id]).map((x) => `${BY[x.id].n} ${dos(x)}${x.h ? ` (${x.h})` : ''}`);
+  // Kleiner Clip (Start → Ende → Start, 4 s) für die Kacheln im Fenster „Übung hinzufügen“
+  const clip = (id) => window.HA_CLIP?.[id] || `heimuebungen/clip-${id}.mp4`;
+  const clipKachel = (id) => `<div class="ha-paar hc"><video muted loop playsinline autoplay preload="auto" poster="${bild(id, 'start')}" src="${clip(id)}" aria-hidden="true"></video></div>`;
   const paarZwei = (id) => `<div class="ha-paar"><img src="${bild(id, 'start')}" alt="" loading="lazy"><img src="${bild(id, 'ende')}" alt="" loading="lazy"></div>`;
   // Ein Bild, das langsam zwischen Start und Ende wechselt (Druck nutzt paarZwei)
   const paar = (id) => window.HA_EIN !== false
@@ -206,7 +217,7 @@
     document.addEventListener('keydown', taste);
     const hat = (id) => prog.some((x) => x.id === id);
     const dv = 'd2';
-    const kachel = (k) => `<div class="ha-ka hz-ka${hat(k.id) ? ' drin' : ''}${ST.info === k.id ? ' offen' : ''}"><button type="button" class="hz-auf" data-a="info" data-id="${k.id}" aria-expanded="${ST.info === k.id}" aria-label="Details zu ${esc(k.n)}">${paar(k.id)}<span class="ha-ue-n">${esc(k.n)}<small>${esc(k.z)}</small></span></button><button type="button" class="hz-plus" data-a="add" data-id="${k.id}" aria-label="${hat(k.id) ? 'Aus dem Programm nehmen' : 'Zum Programm'}">${hat(k.id) ? '✓' : '+'}</button></div>`;
+    const kachel = (k) => `<div class="ha-ka hz-ka${hat(k.id) ? ' drin' : ''}${ST.info === k.id ? ' offen' : ''}"><button type="button" class="hz-auf" data-a="info" data-id="${k.id}" aria-expanded="${ST.info === k.id}" aria-label="Details zu ${esc(k.n)}">${clipKachel(k.id)}<span class="ha-ue-n">${esc(k.n)}<small>${esc(k.z)}</small></span></button><button type="button" class="hz-plus" data-a="add" data-id="${k.id}" aria-label="${hat(k.id) ? 'Aus dem Programm nehmen' : 'Zum Programm'}">${hat(k.id) ? '✓' : '+'}</button></div>`;
     const regName = (r) => REG.find((x) => x[0] === r)?.[1] ?? r;
     const detail = (k, cls, nav) => { const d = hat(k.id), inV = VORL.filter((t) => t.ids.includes(k.id)).map((t) => t.n);
       return `<section class="hz ${cls}" aria-label="${esc(k.n)}">
@@ -245,6 +256,8 @@
         inhalt = `<div class="hx-kopf"><b>Übung hinzufügen</b><button type="button" class="hx-text" data-a="zu">Schließen</button></div><div class="hx2">${nav}<div class="hx2-rechts">${such}${q ? '' : vorBox}<p class="ha-zahl">${titel}</p><div class="ha-liste">${L.map(kachel).join('') || leer}</div></div></div>${dv === 'd2' && ST.info && BY[ST.info] ? (() => { const i = L.findIndex((x) => x.id === ST.info), vo = L[i - 1], na = L[i + 1]; return `<div class="hz2-dim" data-a="info" data-id="${ST.info}"></div>${detail(BY[ST.info], 'hz2', `<span class="hz2-nav"><button type="button" class="hp-ic" data-a="info2" data-id="${vo?.id ?? ''}"${vo ? '' : ' disabled'} aria-label="Vorherige Übung">${IC.zurueck}</button><button type="button" class="hp-ic hz-vor" data-a="info2" data-id="${na?.id ?? ''}"${na ? '' : ' disabled'} aria-label="Nächste Übung">${IC.zurueck}</button></span>`)}`; })() : ''}<div class="hx2-leiste"><span class="hx2-stapel">${stapel}</span><span class="hx2-n">${prog.length ? `<b>${prog.length}</b> im Programm` : 'Noch keine Übung gewählt'}</span><button type="button" class="hx2-ok" data-a="zu"${prog.length ? '' : ' disabled'}>Fertig</button></div>`;
       }
       huelle.innerHTML = `<div class="ha-dim" data-a="zu"></div><div class="ha-sheet hx hx-${bv} hz-${dv}${ST.info ? ' hz-auf-an' : ''}" role="dialog" aria-label="Übung hinzufügen"><div class="ha-griff"></div>${inhalt}</div>`;
+      if (!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) huelle.querySelectorAll('.hc video').forEach((v) => { v.muted = true; v.play?.().catch(() => {}); });
+      else huelle.querySelectorAll('.hc video').forEach((v) => { v.removeAttribute('autoplay'); v.pause?.(); });
       const nv = huelle.querySelector('.hx2-nav'), akt = nv?.querySelector('[aria-current="true"]');
       if (nv && akt && nv.scrollWidth > nv.clientWidth) nv.scrollLeft = akt.offsetLeft - (nv.clientWidth - akt.offsetWidth) / 2;
       const s = huelle.querySelector('.ha-such');
@@ -448,7 +461,7 @@ ${frei.length ? `<div class="hy-chips"><span>Vorlage dazu</span>${alleV.map((t) 
 .ha-paar .hw-l i{right:auto;bottom:auto;width:auto;height:auto;display:block;border-radius:8px;background:rgba(255,255,255,.88);color:var(--schrift,#1a1a1a);font-size:.6875rem;line-height:1.3}
 .ha-paar .hw-l i:last-child{left:6px}
 @keyframes hw-inv{0%,35%{opacity:1}50%,85%{opacity:0}100%{opacity:1}}
-.ha-paar.hw::after{display:none!important}
+.ha-paar.hw::after,.ha-paar.hc::after{display:none!important}
 @media (prefers-reduced-motion:reduce){.ha-paar.hw .hw-e,.hw-l i{animation:none}.hw-l i:last-child{display:none}}
 .hz-ka{padding:0;display:block;transition:transform 160ms ease-out,box-shadow 200ms ease}
 .hz-ka .hz-auf{display:block;width:100%;padding:7px 7px 9px;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;border-radius:12px}
@@ -475,7 +488,7 @@ ${frei.length ? `<div class="hy-chips"><span>Vorlage dazu</span>${alleV.map((t) 
 @keyframes hz-dim{from{opacity:0}}
 .hz2{position:fixed;z-index:6;left:50%;top:50%;width:min(640px,92vw);max-height:86vh;overflow:auto;transform:translate(-50%,-50%);animation:hz-pop .26s cubic-bezier(.23,1,.32,1)}
 @keyframes hz-pop{from{opacity:0;transform:translate(-50%,-48%) scale(.96)}}
-.hz2 .hz-bilder{display:none}.hz2 .hz-film{display:block}
+.hz2 .hz-bilder{display:grid}.hz2 .hz-film{display:none}
 .hz2-nav{display:flex;gap:4px;order:3}.hz2 .hz-kopf{align-items:center}.hz-vor svg{transform:rotate(180deg)}.hz2-nav button:disabled{opacity:.3}
 .hy-2 .hy-top{position:sticky;top:64px;z-index:3;margin:0 -12px;padding:10px 12px;border-radius:18px;background:color-mix(in srgb,var(--grund,#f3f5ee) 88%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
 .hy-sp{flex:1}
@@ -591,6 +604,7 @@ ${frei.length ? `<div class="hy-chips"><span>Vorlage dazu</span>${alleV.map((t) 
 .ha-ue-k{all:unset;display:block;width:100%;cursor:pointer}
 .ha-paar{display:grid;grid-template-columns:1fr 1fr;gap:3px;border-radius:8px;overflow:hidden;position:relative;background:#e9e4e1}
 .ha-paar img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
+.ha-paar.hc{display:block}.ha-paar.hc video{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:#e9e4e1}
 .ha-paar:after{content:'›';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:20px;height:20px;border-radius:10px;background:#fff;color:var(--tape,#4f6d10);font-weight:700;display:grid;place-items:center;font-size:15px;box-shadow:0 1px 3px rgba(0,0,0,.2)}
 .ha-ue-n{display:block;font-size:.875rem;margin-top:6px;line-height:1.25;color:var(--schrift,#1a1a1a)}
 .ha-ue-n b{color:var(--tape,#4f6d10);font-weight:650;margin-left:6px}
