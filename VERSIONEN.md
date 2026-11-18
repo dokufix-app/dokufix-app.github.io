@@ -8,6 +8,7 @@ Neue Versionen kommen oben dazu.
 
 | Version | Datum | Commit | Was sich geändert hat |
 |---|---|---|---|
+| v191 | 18.11.2026 | 143d775 | Dienstplan: Tage mit Krank, Kind krank, Urlaub, Fortbildung, Ausgleich oder Frei in den Stunden zeigen einen Hinweis, Termine ausgegraut, keine offene Doku |
 | v190 | 18.11.2026 | (dieser) | Hausaufgaben: 4 neue Übungen bei Epicondylitis (Tyler Twist mit Flexbar, Unterarm drehen mit Kurzhantel, Hammer heben, Finger spreizen gegen Gummiband) und die Vorlagen Tennisellenbogen und Golferellenbogen (Entwurf, fachlich prüfen). |
 | v189 | 18.11.2026 | 09e7335 | Neues Werkzeug Hausaufgaben (Heimübungsprogramm): 77 Übungen mit Start- und Endbild (Hüfte, Knie, Fuß, Rücken, HWS, Schulter, Ellenbogen/Hand). Mehr › Hausaufgaben öffnet sich als ganze Seite: Vorlagen, Plus/Minus und Schnellwahl 3 × 8/10/15, Häufigkeit, Hinweis für den Patienten, Reihenfolge, eigene Vorlagen, Text kopieren, A4-Blatt zum Drucken/Teilen. Fenster „Übung hinzufügen“ mit Regionen, Filtern und Suche. Im Verlauf (Reaktion und Heimübungen) und in der Kurz-Doku die Karte mit Bildern und Dosis; Vorschläge passend zum Erstbefund. Vorlagen sind Entwurf, fachlich prüfen. |
 | v188 | 17.11.2026 | (dieser) | Wissen: Krankheitsbild NE07 zu „Schwindel“ erweitert (Warnzeichen, alle BPPV-Varianten, SémontPLUS, Reha-Dosierung, DEGAM 2025); neue Wiederholung „Schwindel: einordnen, testen, behandeln“ mit 4 Bildern und 14 Fragen |
