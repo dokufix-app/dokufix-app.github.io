@@ -8,6 +8,24 @@ var KEY="df-wdh",W={},IDX=null,ladend={};
 window.WDH_woche=function(w){W[w.kw]=w;if(window.WI_st&&WI_st.modus==="wdh")WI_zeige()};
 function lesen(){try{return JSON.parse(localStorage.getItem(KEY)||"{}")||{}}catch(e){return{}}}
 function schreiben(x){try{localStorage.setItem(KEY,JSON.stringify(x))}catch(e){}}
+/* Verlauf aller Durchläufe ("df-wdh-log") und angefangene Quizze ("df-wdh-lauf"), nur auf diesem Gerät */
+var LKEY="df-wdh-log",PKEY="df-wdh-lauf",MON=["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
+function jLes(k,d){try{var v=JSON.parse(localStorage.getItem(k)||"null");return v==null?d:v}catch(e){return d}}
+function jSchr(k,x){try{localStorage.setItem(k,JSON.stringify(x))}catch(e){}}
+function laeufe(){var L=jLes(LKEY,null);if(!Array.isArray(L)){L=[];var R=lesen();Object.keys(R).forEach(function(id){var r=R[id];if(r&&r.datum&&r.total)L.push({d:r.datum,id:id,t:"",r:r.right||0,n:r.total,w:r.reps||0})});L.sort(function(a,b){return a.d<b.d?-1:1});jSchr(LKEY,L)}return L}
+function offen(id){var P=jLes(PKEY,{});return P&&P[id]||null}
+function offenWeg(id){var P=jLes(PKEY,{});if(P&&P[id]){delete P[id];jSchr(PKEY,P)}}
+function offenText(o){return o.f?"Angefangen, Frage "+o.f+" von "+o.n:"Angefangen, in der Wiederholung"}
+function monatStat(m){var L=laeufe(),M=[],s={l:0,e:{},n:0,r:0,w:0,wd:0,u:{}};
+ L.forEach(function(x,i){if(!x.d||x.d.slice(0,7)!==m)return;s.l++;s.e[x.id]=1;s.n+=x.n;s.r+=x.r;s.w+=x.w;
+  if(L.slice(0,i).some(function(y){return y.id===x.id}))s.wd++;
+  var u=s.u[x.id]||(s.u[x.id]={t:x.t,n:0,r:0});u.n+=x.n;u.r+=x.r;if(x.t)u.t=x.t});
+ if(!s.l)return null;s.ein=Object.keys(s.e).length;s.f=s.n-s.r;s.pct=Math.round(100*s.r/Math.max(s.n,1));
+ s.schwach=Object.keys(s.u).map(function(k){return s.u[k]}).filter(function(u){return u.t&&u.r<u.n}).sort(function(a,b){return a.r/a.n-b.r/b.n}).slice(0,3);return s}
+function monatName(m){return MON[+m.slice(5,7)-1]+" "+m.slice(0,4)}
+function monatBlock(m,titel,cls){var s=monatStat(m);
+ if(!s)return `<section class="wd-mon${cls||""}"><h2>${E(titel)}</h2><p class="wd-mon-s">In diesem Monat noch kein Quiz beendet.</p></section>`;
+ return `<section class="wd-mon${cls||""}"><h2>${E(titel)}</h2><div class="wd-mon-g"><div><b>${s.l}</b><small>Durchläufe</small></div><div><b>${s.ein}</b><small>Einheiten</small></div><div><b>${s.pct} %</b><small>auf Anhieb richtig</small></div><div><b>${s.f}</b><small>Fehler in Runde 1</small></div><div><b>${s.w}</b><small>Wiederholungen nötig</small></div><div><b>${s.wd}</b><small>Einheiten erneut gemacht</small></div></div>${s.schwach.length?`<p class="wd-mon-s">Am meisten Fehler: ${s.schwach.map(function(u){return E(u.t)+" ("+u.r+"/"+u.n+")"}).join(" · ")}</p>`:""}</section>`}
 function lade(src,cb){if(ladend[src])return;ladend[src]=1;var s=document.createElement("script");s.src=src;s.onload=cb||null;s.onerror=function(){ladend[src]=0};document.head.append(s)}
 function index(){if(window.WDH_INDEX){IDX=window.WDH_INDEX;return IDX}lade("fortbildung/index.js?t="+Date.now(),function(){IDX=window.WDH_INDEX||[];if(WI_st.modus==="wdh")WI_zeige()});return null}
 function woche(kw){var e=(IDX||[]).find(function(x){return x.kw===kw});if(!W[kw]&&e)lade(e.datei);return W[kw]}
@@ -87,6 +105,17 @@ var ICO={ok:'<svg viewBox="0 0 24 24" class="wq-mk"><path d="M5 12.5l4.5 4.5L19 
 .wd-e>svg{color:var(--schrift2)}
 .wd-heute{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;background:var(--tape);color:var(--flaeche);font-size:.75rem;font-weight:700;vertical-align:1px}
 .wd-frueher{margin-top:26px}
+.wd-mon{margin-top:26px;padding:18px;border-radius:18px;background:var(--flaeche);box-shadow:inset 0 0 0 1px var(--linie)}
+.wd-mon.neu{margin:18px 0 0;box-shadow:inset 0 0 0 2px var(--tape)}
+.wd-mon h2{font-size:1.125rem;margin:0 0 12px}
+.wd-mon-g,.wq-zahl{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.wd-mon-g div,.wq-zahl div{background:var(--grund);border-radius:12px;padding:10px 12px}
+.wd-mon-g b,.wq-zahl b{display:block;font-size:1.5rem;font-weight:800;line-height:1.15;font-variant-numeric:tabular-nums}
+.wd-mon-g small,.wq-zahl small{color:var(--schrift2);font-size:.75rem}
+.wd-mon-s{font-size:.875rem;color:var(--schrift2);margin:12px 0 0}
+.wq-zahl{margin:14px 0 4px}
+.wd-offen{display:block;font-style:normal;color:var(--tape);font-weight:700}
+@media(max-width:520px){.wd-mon-g{grid-template-columns:repeat(2,1fr)}}
 .wd-frueher summary{cursor:pointer;font-weight:700;color:var(--tape);padding:6px 0;list-style:none}
 .wd-frueher summary::-webkit-details-marker{display:none}
 .wd-hinweis{color:var(--schrift2);font-size:.875rem;margin:14px 0 0;max-width:62ch}
@@ -184,8 +213,8 @@ var ICO={ok:'<svg viewBox="0 0 24 24" class="wq-mk"><path d="M5 12.5l4.5 4.5L19 
 
 /* ---------- Seiten im Reiter Wissen ---------- */
 function status(id){var r=lesen()[id];return r?`${r.right}/${r.total} auf Anhieb`:""}
-function karte(e,i,w){var r=lesen()[e.id],heute=w&&w.plan&&w.plan[tag()]===e.id&&w.kw===heuteKw();
- return `<button class="wd-e${r?" fertig":""}" data-wdh="${E(e.id)}" data-kw="${E(w.kw)}"><span class="wd-nr">${r?'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>':i+1}</span>${titelBild(e)?`<img class="wd-th" src="${E(titelBild(e))}" alt="" loading="lazy">`:`<i class="wd-th"></i>`}<span class="wd-t"><small>${E(ART[e.art]||"")}${heute?'<span class="wd-heute">Heute dran</span>':""}</small><b>${E(e.titel)}</b><span>${r?E(status(e.id))+" · "+E(e.min||8)+" min":"ca. "+E(e.min||8)+" min lesen · "+E((e.fragen||[]).length)+" Fragen"}</span></span>${ICO.pfeil}</button>`}
+function karte(e,i,w){var r=lesen()[e.id],o=offen(e.id),heute=w&&w.plan&&w.plan[tag()]===e.id&&w.kw===heuteKw();
+ return `<button class="wd-e${r?" fertig":""}" data-wdh="${E(e.id)}" data-kw="${E(w.kw)}"><span class="wd-nr">${r?'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>':i+1}</span>${titelBild(e)?`<img class="wd-th" src="${E(titelBild(e))}" alt="" loading="lazy">`:`<i class="wd-th"></i>`}<span class="wd-t"><small>${E(ART[e.art]||"")}${heute?'<span class="wd-heute">Heute dran</span>':""}</small><b>${E(e.titel)}</b><span>${o?`<em class="wd-offen">${E(offenText(o))}</em>`:""}${r?E(status(e.id))+" · "+E(e.min||8)+" min":"ca. "+E(e.min||8)+" min lesen · "+E((e.fragen||[]).length)+" Fragen"}</span></span>${ICO.pfeil}</button>`}
 function seiteListe(){
  var l=index(),z=WI_st.wdhZweig==="ana"?"ana":"kl",feld=z==="ana"?"anatomie":"einheiten";
  var kopf=`<div class="wi-seite"><button class="wi-zur" data-a="zu">‹ Mehr</button><h1>Wissen</h1><p class="wi-unter">Wiederholung · jede Woche neue Einheiten mit Quiz</p>${WI_umschWdh()}
@@ -195,8 +224,13 @@ function seiteListe(){
  var h=kopf+`<div class="wd-woche"><h2>Diese Woche</h2><span>${datum(meta.von)} – ${datum(meta.bis)}</span></div>`;
  h+=!w?`<p class="wd-hinweis">Lade die Einheiten …</p>`:liste.length?`<div class="wd-liste">${liste.map(function(e,i){return karte(e,i,w)}).join("")}</div>`:`<p class="wd-hinweis">${z==="ana"?"Diese Woche gibt es noch keine Anatomie-Einheit.":"Noch keine Einheiten da."}</p>`;
  if(w&&w.plan&&z==="kl")h+=`<p class="wd-hinweis">Montag und Mittwoch um 21 Uhr kommt eine Erinnerung. Die übrigen Einheiten machst du, wann es passt. Was du im Quiz falsch hattest, kommt am Ende nochmal.</p>`;
+ var jetzt=new Date(),mJ=jetzt.getFullYear()+"-"+String(jetzt.getMonth()+1).padStart(2,"0"),vd=new Date(jetzt.getFullYear(),jetzt.getMonth()-1,1),mV=vd.getFullYear()+"-"+String(vd.getMonth()+1).padStart(2,"0");
+ if(jetzt.getDate()<=7&&monatStat(mV))h=h.replace('<div class="wd-woche">',monatBlock(mV,"Bilanz "+monatName(mV)," neu")+'<div class="wd-woche">');
  var alt=l.filter(function(x){return x.kw!==kw});
  if(alt.length)h+=`<details class="wd-frueher"${WI_st.wdhAlt?" open":""}><summary>Frühere Wochen</summary>${alt.map(function(m){var a=woche(m.kw),L=a?(a[feld]||[]):null;if(L&&!L.length)return "";return `<div class="wd-woche"><h2>KW ${E(m.kw.slice(-2))}</h2><span>${datum(m.von)} – ${datum(m.bis)}</span></div>`+(L?`<div class="wd-liste">${L.map(function(e,i){return karte(e,i,a)}).join("")}</div>`:`<p class="wd-hinweis">${E((m.titel||[]).join(" · "))}</p>`)}).join("")}</details>`;
+ h+=monatBlock(mJ,"Auswertung "+monatName(mJ));
+ var fm={};laeufe().forEach(function(x){var m=x.d&&x.d.slice(0,7);if(m&&m!==mJ&&!(jetzt.getDate()<=7&&m===mV))fm[m]=1});var fl=Object.keys(fm).sort().reverse();
+ if(fl.length)h+=`<details class="wd-frueher"><summary>Frühere Monate</summary>${fl.map(function(m){return monatBlock(m,monatName(m))}).join("")}</details>`;
  return h+`</div>`}
 var musN=0;function block(b){var h=b.t?`<h3>${E(b.t)}</h3>`:"";
  (b.p||[]).forEach(function(x){h+=`<p>${E(x)}</p>`});
@@ -213,14 +247,14 @@ function kurzTitel(t){return String(t).replace(/^\d+\.\s*/,"").replace(/[:?].*$/
 function titelBild(e){if(e.bild)return e.bild;var f=null;(e.abschnitte||[]).some(function(a){return (a.b||[a]).some(function(b){if(b.fig&&b.fig[0]){f=b.fig[0].src;return true}})});return f}
 function seiteEinheit(kw,id){var w=woche(kw),e=w&&alleE(w).find(function(x){return x.id===id});
  if(!e)return seiteListe();
- var r=lesen()[id],ab=e.abschnitte||[],merk=[];
+ var r=lesen()[id],o=offen(id),ab=e.abschnitte||[],merk=[];
  ab.forEach(function(a){(a.b||[a]).forEach(function(b){if(b.merk)merk.push(b.merk)})});
  var h=`<div class="wi-seite wd-einheit"><button class="wi-zur" data-a="wdh-liste">‹ Wiederholung</button>${titelBild(e)?`<div class="wd-hero"><img src="${E(titelBild(e))}" alt=""></div>`:""}<h1>${E(e.titel)}</h1><p class="wi-unter">${E(ART[e.art]||"")} · ca. ${E(e.min||8)} min · ${E(e.fragen.length)} Fragen${e.kb?` · <button class="wd-kblink" data-kbid="${E(e.kb)}">Zum Krankheitsbild</button>`:""}</p>`;
  h+=`<div class="wd-toc" role="navigation" aria-label="Kapitel"><div class="wd-toc-l">${ab.map(function(a,i){return `<button data-wdhgo="${i}">${E(kurzTitel(a.t))}</button>`}).join("")}</div><i class="wd-lese"><em></em></i></div>`;
  if(merk.length)h+=`<section class="wd-kurz"><h2>Kurz gemerkt</h2><ul>${merk.map(function(m){return `<li>${E(m)}</li>`}).join("")}</ul></section>`;
  ab.forEach(function(a,i){h+=`<section class="wi-karte wd-k" id="wd-s${i}" data-i="${i}"><h2>${E(a.t)}</h2>${(a.b||[a]).map(function(b){return block(b===a?{p:a.p,l:a.l,tab:a.tab,fig:a.fig,merk:a.merk,bars:a.bars}:b)}).join("")}</section>`});
  if(e.quellen)h+=`<section class="wi-karte"><h2>Quellen</h2><p class="wd-quellen">${e.quellen.map(E).join("<br>")}</p></section>`;
- h+=`<section class="wd-ende" id="wd-quiz"><div class="wd-ende-t"><h2>${r?"Nochmal testen?":"Alles gelesen? Dann ins Quiz."}</h2><p>${E(e.fragen.length)} Fragen · ca. 5 min${r?" · zuletzt "+E(status(id)):" · falsche Antworten kommen am Ende nochmal"}</p></div><div class="wd-ende-k"><button class="wq-go" data-wdhquiz="${E(id)}" data-kw="${E(kw)}">Quiz starten</button><button class="wq-ghost wd-teil2" data-wdhpdf="${E(id)}" data-kw="${E(kw)}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>Als PDF teilen</button></div></section>`;
+ h+=`<section class="wd-ende" id="wd-quiz"><div class="wd-ende-t"><h2>${r?"Nochmal testen?":"Alles gelesen? Dann ins Quiz."}</h2><p>${E(e.fragen.length)} Fragen · ca. 5 min${r?" · zuletzt "+E(status(id)):" · falsche Antworten kommen am Ende nochmal"}</p></div><div class="wd-ende-k"><button class="wq-go" data-wdhquiz="${E(id)}" data-kw="${E(kw)}">${o?"Quiz fortsetzen":"Quiz starten"}</button><button class="wq-ghost wd-teil2" data-wdhpdf="${E(id)}" data-kw="${E(kw)}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>Als PDF teilen</button></div></section>`;
  return h+`</div>`}
 /* Lernseite: Kapitel mitlaufen lassen, sanft einblenden, Balken füllen */
 var beob=null;
@@ -334,7 +368,7 @@ var Quiz=(function(){
   document.body.append(st);view=$(".wq-view");sheet=$(".wq-sheet");bar=$(".wq-bar i");cnt=$(".wq-cnt");
   st.addEventListener("click",function(ev){var b=ev.target.closest("button");if(!b)return;
    if(b.classList.contains("wq-opt"))return pick(b);
-   var q=b.dataset.q;if(q==="zu")zu();else if(q==="weiter")next();else if(q==="rep")ask();else if(q==="neu"){reset();ask()}});
+   var q=b.dataset.q;if(q==="zu")zu();else if(q==="weiter")next();else if(q==="rep")ask();else if(q==="neu"){offenWeg(unit.id);reset();ask()}else if(q==="fort")fort()});
   document.addEventListener("keydown",function(e){if(st.hidden)return;if(e.key==="Escape"){zu();return}
    var k="1234abcd".indexOf(String(e.key).toLowerCase());
    if(k>-1&&!answered){var o=view.lastElementChild&&view.lastElementChild.querySelectorAll(".wq-opt")[k%4];if(o)pick(o)}
@@ -362,24 +396,37 @@ var Quiz=(function(){
   var last=pos+1>=queue.length;$('[data-q="weiter"]').textContent=last?"Zur Auswertung":(pos+1===Q.length&&round===1&&queue.length>Q.length?"Zu den Wiederholungen":"Weiter");
   sheet.classList.add("on",ok?"ok":"no");
   requestAnimationFrame(function(){var sh=sheet.offsetHeight;st.style.setProperty("--sh",sh+"px");var o=card.querySelector(".wq-opts"),t=o.offsetTop+o.offsetHeight-(view.clientHeight-sh)+20;if(t>view.scrollTop)setTimeout(function(){view.scrollTo({top:t,behavior:RM?"auto":"smooth"})},60)});
-  progress();setTimeout(function(){$('[data-q="weiter"]').focus({preventScroll:true})},60)}
- function next(){if(!answered)return;pos++;
-  if(pos<queue.length&&pos===Q.length&&round===1){queue=queue.slice(pos);pos=0;round=2;pause();return}
-  if(pos>=queue.length){ende();return}ask()}
+  progress();sichern(true);setTimeout(function(){$('[data-q="weiter"]').focus({preventScroll:true})},60)}
+ /* Stand nach jeder Antwort sichern, damit ein unterbrochenes Quiz an derselben Stelle weitergeht */
+ function sichern(ans){var P=jLes(PKEY,{});if(!P||typeof P!=="object")P={};
+  var f=round===1?Math.min(pos+(ans?2:1),Q.length):0;
+  P[unit.id]={n:Q.length,queue:queue,pos:pos,round:round,att:att,right:right,firstWrong:firstWrong,done:done,streak:streak,ans:!!ans,f:f,t:Date.now()};jSchr(PKEY,P)}
+ function next(){if(!answered)return;weiter()}
+ function weiter(){pos++;
+  if(pos<queue.length&&pos===Q.length&&round===1){queue=queue.slice(pos);pos=0;round=2;sichern(false);pause();return}
+  if(pos>=queue.length){ende();return}sichern(false);ask()}
+ function fort(){var o=offen(unit.id);if(!o){reset();ask();return}
+  queue=o.queue;pos=o.pos;round=o.round;att=o.att;right=o.right;firstWrong=o.firstWrong||[];done=o.done;streak=o.streak||0;answered=false;
+  if(o.ans)weiter();else ask()}
+ function fortFrage(o){sheetZu();progress();cnt.textContent="Pause";
+  swap(`<div class="wq-mid"><div class="wq-big">${o.right}<span>/${o.n}</span></div><h3 class="wq-q">Du warst mittendrin.</h3><p>${E(offenText(o))}. ${o.right} ${o.right===1?"Frage":"Fragen"} hattest du bis dahin auf Anhieb richtig.</p><div class="wq-ends"><button class="wq-go" data-q="fort" type="button">Weitermachen</button><button class="wq-ghost" data-q="neu" type="button">Neu anfangen</button></div></div>`)}
  function pause(){sheetZu();progress();cnt.textContent="Pause";var n=queue.length;
   swap(`<div class="wq-mid"><div class="wq-big">${right}<span>/${Q.length}</span></div><h3 class="wq-q">Erste Runde geschafft.</h3><p>${n===1?"Eine Frage kommt":n+" Fragen kommen"} jetzt nochmal, mit neu gemischten Antworten. Was wieder falsch ist, kommt so lange, bis es sitzt.</p><button class="wq-go" data-q="rep" type="button">Wiederholung starten</button></div>`)}
  function ende(){sheetZu();bar.style.transform="scaleX(1)";cnt.textContent="Fertig";
   var reps=att.reduce(function(s,a){return s+a-1},0),R=lesen(),alt=R[unit.id];
-  R[unit.id]={right:right,total:Q.length,reps:reps,datum:new Date().toISOString().slice(0,10),mal:(alt&&alt.mal||0)+1,best:Math.max(right,alt&&alt.best||0)};schreiben(R);
+  var heute=new Date(),dat=heute.getFullYear()+"-"+String(heute.getMonth()+1).padStart(2,"0")+"-"+String(heute.getDate()).padStart(2,"0"),fehler=Q.length-right;
+  R[unit.id]={right:right,total:Q.length,reps:reps,datum:dat,mal:(alt&&alt.mal||0)+1,best:Math.max(right,alt&&alt.best||0)};schreiben(R);
+  var LG=laeufe();LG.push({d:dat,id:unit.id,t:unit.titel,r:right,n:Q.length,w:reps});jSchr(LKEY,LG);offenWeg(unit.id);
+  var ms=monatStat(dat.slice(0,7)),zahl=`<div class="wq-zahl"><div><b>${right}/${Q.length}</b><small>auf Anhieb</small></div><div><b>${fehler}</b><small>Fehler</small></div><div><b>${reps}</b><small>${reps===1?"Wiederholung":"Wiederholungen"}</small></div></div>`+(ms?`<p class="wq-note">Im ${E(MON[heute.getMonth()])} bisher: ${ms.l} ${ms.l===1?"Durchlauf":"Durchläufe"}, ${ms.pct} % auf Anhieb richtig, ${ms.w} Wiederholungen.</p>`:"");
   var miss=firstWrong.length?`<div class="wq-miss"><h4>Diese Fragen hatten dich erwischt</h4><ol>${firstWrong.filter(function(v,i,a){return a.indexOf(v)===i}).map(function(i){return `<li><span>${E(Q[i][0])}</span><b>${E(Q[i][1][Q[i][2]])}</b></li>`}).join("")}</ol></div>`:"";
-  swap(`<h3 class="wq-q">Auswertung</h3><div class="wq-ausw"></div><p class="wq-note">Antippen spielt die Auswertung nochmal ab.</p>${miss}<div class="wq-ends"><button class="wq-go" data-q="neu" type="button">Quiz neu starten</button><button class="wq-ghost" data-q="zu" type="button">Zurück zur Einheit</button></div>`,function(nu){
+  swap(`<h3 class="wq-q">Auswertung</h3><div class="wq-ausw"></div><p class="wq-note">Antippen spielt die Auswertung nochmal ab.</p>${zahl}${miss}<div class="wq-ends"><button class="wq-go" data-q="neu" type="button">Quiz neu starten</button><button class="wq-ghost" data-q="zu" type="button">Zurück zur Einheit</button></div>`,function(nu){
    var el=nu.querySelector(".wq-ausw"),p={right:right,total:Q.length,attempts:att.slice()};
    var fb=function(){el.style.cssText="padding:20px;color:#fff";el.textContent=right+" von "+Q.length+" auf Anhieb, "+reps+(reps===1?" Wiederholung":" Wiederholungen")+"."};
    var go=function(){try{window.zeigeAuswertung(el,p)}catch(e){fb()}};
    if(window.zeigeAuswertung)go();else{var s=document.createElement("script");s.src="fortbildung/auswertung.js";s.onload=go;s.onerror=fb;document.head.append(s)}})}
  function auf(e){bauen();unit=e;Q=e.fragen;reset();st.hidden=false;document.documentElement.classList.add("wi-auf");
   if(!RM)st.animate([{opacity:0,transform:"translateY(16px)"},{opacity:1,transform:"none"}],{duration:320,easing:"cubic-bezier(.23,1,.32,1)"});
-  view.innerHTML="";ask()}
+  view.innerHTML="";var o=offen(e.id);if(o&&o.n===Q.length&&Array.isArray(o.queue))fortFrage(o);else{offenWeg(e.id);ask()}}
  function zu(){st.hidden=true;sheetZu();document.documentElement.classList.remove("wi-auf");if(WI_st.modus==="wdh")WI_zeige()}
  return{auf:auf}})();
 window.WDH_Quiz=Quiz;

@@ -8,6 +8,7 @@ Neue Versionen kommen oben dazu.
 
 | Version | Datum | Commit | Was sich geändert hat |
 |---|---|---|---|
+| v203 | 18.11.2026 | (dieser) | Wissen › Wiederholung: Quiz geht nach Unterbrechung an derselben Stelle weiter; Auswertung am Ende mit Fehlern und Wiederholungen; Monatsauswertung (Durchläufe, Fehler, Wiederholungen, erneut gemachte Einheiten), Vormonatsbilanz in der ersten Monatswoche |
 | v202 | 18.11.2026 | (dieser) | Hausaufgaben: drei neue Übungen mit Bildern und Clip: Seitstütz auf den Knien (Rücken, Hüfte), Sleeper Stretch (Schulter), Unterarme an der Wand hochschieben (Schulter) (129 Übungen, Entwurf, fachlich prüfen). |
 | v201 | 18.11.2026 | c69c3cf | Hausaufgaben: 18 statt 8 Vorlagen. Neu: Gleichgewicht fortgeschritten, Schwindel, Nackenschmerz, Kiefer (CMD), Atemnot/COPD, Atmung nach OP, Achillessehne, Fersenschmerz, Sprunggelenk nach Umknicken, Ischias; „Gleichgewicht und Sturzvorbeugung“ nach Otago neu zusammengestellt (Entwurf, fachlich prüfen). |
 | v200 | 18.11.2026 | aa09435 | Hausaufgaben: neue Region Kiefer (CMD) mit 8 Übungen (Kieferruhelage, kontrolliert öffnen mit Zunge am Gaumen, öffnen mit Fingern an den Kiefergelenken, Mund öffnen gegen die Faust, Kiefer seitlich gegen die Hand, Unterkiefer zur Seite schieben, Unterkiefer vorschieben, Kaumuskel lockern) plus Kinn einziehen; Vorschlag Kiefer bei CMD, Kiefer, Bruxismus (126 Übungen). |
