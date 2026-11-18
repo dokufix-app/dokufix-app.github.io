@@ -114,11 +114,19 @@
     ['blickstabilisation', 'Blick halten, Kopf drehen', 'Stuhl, Karte', 'gg hws', 'sitz', 'ohne', 'Eine Karte mit einem Punkt auf Augenhöhe halten. Den Punkt fest anschauen und den Kopf zügig nach rechts und links drehen, der Punkt bleibt scharf. 1 Minute, 3-mal täglich. Leichter Schwindel ist erlaubt, er soll nach der Übung abklingen.'],
     ['gehen-kopfdrehen', 'Gehen mit Kopfdrehen', 'Flur', 'gg', 'stand', 'ohne', 'Im Flur geradeaus gehen und dabei den Kopf im Wechsel nach rechts und links drehen, der Körper geht gerade weiter. Anfangs nah an der Wand gehen.'],
     ['greifen-stand', 'Weit greifen im Stand', 'an der Küchenzeile', 'gg', 'stand', 'ohne', 'Vor der Küchenzeile stehen. Weit nach vorn über die Platte greifen, als würden Sie einen Becher holen, die Fersen bleiben am Boden. Langsam zurück in den aufrechten Stand.'],
-    ['schritte-alle-richtungen', 'Schritte in alle Richtungen', 'an der Küchenzeile', 'gg', 'stand', 'ohne', 'Eine Hand an der Küchenzeile. Mit einem Bein zügig einen großen Schritt nach vorn, zur Seite, schräg nach hinten und nach hinten machen und jeweils zurück, wie die Zeiger einer Uhr. Seite wechseln.']
+    ['schritte-alle-richtungen', 'Schritte in alle Richtungen', 'an der Küchenzeile', 'gg', 'stand', 'ohne', 'Eine Hand an der Küchenzeile. Mit einem Bein zügig einen großen Schritt nach vorn, zur Seite, schräg nach hinten und nach hinten machen und jeweils zurück, wie die Zeiger einer Uhr. Seite wechseln.'],
+    ['lippenbremse', 'Lippenbremse', 'Sitz', 'atem', 'sitz', 'ohne', 'Durch die Nase einatmen. Dann langsam durch die locker aufeinanderliegenden Lippen ausatmen, ohne die Wangen aufzublasen. Die Ausatmung ist etwa doppelt so lang wie die Einatmung. Auch bei Belastung und Atemnot anwenden.'],
+    ['kutschersitz', 'Kutschersitz', 'Stuhl', 'atem', 'sitz', 'ohne', 'Vorn auf dem Stuhl sitzen, Oberkörper locker nach vorn, beide Unterarme auf die Oberschenkel stützen. Schultern hängen lassen und mit der Lippenbremse ausatmen. Hilft bei Atemnot.'],
+    ['torwartstellung', 'Torwartstellung', 'Stand', 'atem', 'stand', 'ohne', 'Knie leicht beugen, Oberkörper mit geradem Rücken nach vorn neigen, die Hände oberhalb der Knie auf die Oberschenkel stützen. Mit der Lippenbremse ausatmen. Gut unterwegs, wenn die Luft knapp wird.'],
+    ['abstuetzen-tisch', 'Abstützen am Tisch', 'Tisch', 'atem', 'stand', 'ohne', 'Vor einen Tisch stellen, den Oberkörper leicht nach vorn neigen und beide Unterarme auf die Tischplatte stützen. Schultern locker lassen und mit der Lippenbremse ausatmen.'],
+    ['bauchatmung', 'Bauchatmung in Rückenlage', 'Matte oder Bett', 'atem', 'liegen', 'ohne', 'Rückenlage, Knie angestellt. Eine Hand auf den Bauch, eine auf die Brust. Durch die Nase einatmen, sodass sich die Bauchhand hebt und die Brusthand fast ruhig bleibt. Langsam ausatmen.'],
+    ['flankenatmung', 'Tief in die Flanken atmen', 'Stuhl', 'atem', 'sitz', 'ohne', 'Aufrecht sitzen, die Hände seitlich auf die unteren Rippen legen. Tief durch die Nase einatmen und die Rippen gegen die Hände weiten, kurz halten, langsam ausatmen. 3 bis 4 tiefe Atemzüge, dann ruhig weiteratmen.'],
+    ['huffing-kissen', 'Huffing und Abhusten mit Kissen', 'Stuhl, Kissen', 'atem', 'sitz', 'ohne', 'Ein Kissen fest gegen den Bauch oder die Narbe drücken. Tief einatmen und mit weit offenem Mund kräftig aushauchen, wie beim Anhauchen einer Brille. Ein- bis zweimal wiederholen, dann bei Bedarf abhusten.'],
+    ['halbmond-dehnlage', 'Halbmond-Dehnlage', 'Matte oder Bett', 'atem ruecken', 'liegen', 'ohne', 'Rückenlage. Arme über den Kopf und Beine zur selben Seite legen, sodass der Körper einen Bogen bildet. Ruhig in die gedehnte Flanke atmen, 30 bis 60 Sekunden, Seite wechseln.']
   ];
   const KAT = K.map(([id, n, z, r, p, h, t]) => ({ id, n, z, r: r.split(' '), p, h, t }));
   const BY = Object.fromEntries(KAT.map((x) => [x.id, x]));
-  const REG = [['hue', 'Hüfte'], ['knie', 'Knie'], ['fuss', 'Fuß'], ['ruecken', 'Rücken'], ['hws', 'HWS'], ['schulter', 'Schulter'], ['hand', 'Ellenbogen/Hand'], ['gg', 'Gleichgewicht']];
+  const REG = [['hue', 'Hüfte'], ['knie', 'Knie'], ['fuss', 'Fuß'], ['ruecken', 'Rücken'], ['hws', 'HWS'], ['schulter', 'Schulter'], ['hand', 'Ellenbogen/Hand'], ['gg', 'Gleichgewicht'], ['atem', 'Atmung']];
   const POS = [['liegen', 'Liegen'], ['vierf', 'Vierfüßler'], ['sitz', 'Sitz'], ['stand', 'Stand']];
   const HM = [['ohne', 'ohne'], ['band', 'Band'], ['ball', 'Ball'], ['hantel', 'Hantel'], ['stab', 'Stab']];
   const SER = [1, 2, 3], WDH = [8, 10, 12, 15, 20];
@@ -129,6 +137,7 @@
     ruecken: ['becken-kippen', 'knie-brust', 'katzenbuckel', 'offenes-buch', 'bws-ball', 'hochdruecken-bauchlage'],
     hws: ['kinn-einziehen', 'kopfnicken', 'trapez-dehnung', 'levator-dehnung', 'nacken-halten'],
     hand: ['unterarm-drehen', 'faust', 'ball-druecken', 'dehnung-unterarm-strecker', 'handgelenk-senken'],
+    atem: ['lippenbremse', 'kutschersitz', 'bauchatmung', 'flankenatmung', 'huffing-kissen'],
     gg: ['einbeinstand', 'tandemstand', 'gewichtsverlagerung', 'tandemgang', 'hindernis-steigen', 'einbeinstand-kissen'],
     schulter: ['pendeln', 'tisch-gleiten', 'wand-hochwandern', 'stab-rueckenlage', 'aussenrotation-stab']
   };
@@ -155,6 +164,7 @@
     }
     const d = String(P?.erstbefund?.diagnose ?? '').toUpperCase();
     if (/(SCHWINDEL|STURZ|GLEICHGEWICHT|GANGUNSICHER|ATAXIE|POLYNEURO|PARKINSON)/.test(d) && !out.includes('gg')) out.push('gg');
+    if (/(COPD|ASTHMA|LUNGE|PNEUMO|EMPHYSEM|BRONCH|ATEM|DYSPNO|MUKOVISZ|THORAKOTOM|STERNOTOM|BYPASS)/.test(d) && !out.includes('atem')) out.push('atem');
     return out;
   }
   function letztes(P, o) {
