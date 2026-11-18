@@ -138,7 +138,7 @@
   const liste = (prog) => (prog ?? []).filter((x) => BY[x.id]).map((x) => `${BY[x.id].n} ${dos(x)}${x.h ? ` (${x.h})` : ''}`);
   // Kleiner Clip (Start → Ende → Start, 4 s) für die Kacheln im Fenster „Übung hinzufügen“
   const clip = (id) => window.HA_CLIP?.[id] || `heimuebungen/clip-${id}.mp4`;
-  const clipKachel = (id) => `<div class="ha-paar hc"><video muted loop playsinline autoplay preload="auto" poster="${bild(id, 'start')}" src="${clip(id)}" aria-hidden="true"></video></div>`;
+  const clipKachel = (id) => `<div class="ha-paar hc"><video muted loop playsinline preload="auto" poster="${bild(id, 'start')}" src="${clip(id)}" aria-hidden="true"></video></div>`;
   const paarZwei = (id) => `<div class="ha-paar"><img src="${bild(id, 'start')}" alt="" loading="lazy"><img src="${bild(id, 'ende')}" alt="" loading="lazy"></div>`;
   // Ein Bild, das langsam zwischen Start und Ende wechselt (Druck nutzt paarZwei)
   const paar = (id) => window.HA_EIN !== false
@@ -217,7 +217,7 @@
     document.addEventListener('keydown', taste);
     const hat = (id) => prog.some((x) => x.id === id);
     const dv = 'd2';
-    const kachel = (k) => `<div class="ha-ka hz-ka${hat(k.id) ? ' drin' : ''}${ST.info === k.id ? ' offen' : ''}"><button type="button" class="hz-auf" data-a="info" data-id="${k.id}" aria-expanded="${ST.info === k.id}" aria-label="Details zu ${esc(k.n)}">${clipKachel(k.id)}<span class="ha-ue-n">${esc(k.n)}<small>${esc(k.z)}</small></span></button><button type="button" class="hz-plus" data-a="add" data-id="${k.id}" aria-label="${hat(k.id) ? 'Aus dem Programm nehmen' : 'Zum Programm'}">${hat(k.id) ? '✓' : '+'}</button></div>`;
+    const kachel = (k) => `<div class="ha-ka hz-ka${hat(k.id) ? ' drin' : ''}${ST.info === k.id ? ' offen' : ''}"><button type="button" class="hz-auf" data-a="info" data-id="${k.id}" aria-expanded="${ST.info === k.id}" aria-label="Details zu ${esc(k.n)}">${clipKachel(k.id)}<span class="ha-ue-n">${esc(k.n)}<small>${esc(k.z)}</small></span></button><button type="button" class="hz-play" aria-label="Bewegung von ${esc(k.n)} abspielen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg></button><button type="button" class="hz-plus" data-a="add" data-id="${k.id}" aria-label="${hat(k.id) ? 'Aus dem Programm nehmen' : 'Zum Programm'}">${hat(k.id) ? '✓' : '+'}</button></div>`;
     const regName = (r) => REG.find((x) => x[0] === r)?.[1] ?? r;
     const detail = (k, cls, nav) => { const d = hat(k.id), inV = VORL.filter((t) => t.ids.includes(k.id)).map((t) => t.n);
       return `<section class="hz ${cls}" aria-label="${esc(k.n)}">
@@ -256,8 +256,22 @@
         inhalt = `<div class="hx-kopf"><b>Übung hinzufügen</b><button type="button" class="hx-text" data-a="zu">Schließen</button></div><div class="hx2">${nav}<div class="hx2-rechts">${such}${q ? '' : vorBox}<p class="ha-zahl">${titel}</p><div class="ha-liste">${L.map(kachel).join('') || leer}</div></div></div>${dv === 'd2' && ST.info && BY[ST.info] ? (() => { const i = L.findIndex((x) => x.id === ST.info), vo = L[i - 1], na = L[i + 1]; return `<div class="hz2-dim" data-a="info" data-id="${ST.info}"></div>${detail(BY[ST.info], 'hz2', `<span class="hz2-nav"><button type="button" class="hp-ic" data-a="info2" data-id="${vo?.id ?? ''}"${vo ? '' : ' disabled'} aria-label="Vorherige Übung">${IC.zurueck}</button><button type="button" class="hp-ic hz-vor" data-a="info2" data-id="${na?.id ?? ''}"${na ? '' : ' disabled'} aria-label="Nächste Übung">${IC.zurueck}</button></span>`)}`; })() : ''}<div class="hx2-leiste"><span class="hx2-stapel">${stapel}</span><span class="hx2-n">${prog.length ? `<b>${prog.length}</b> im Programm` : 'Noch keine Übung gewählt'}</span><button type="button" class="hx2-ok" data-a="zu"${prog.length ? '' : ' disabled'}>Fertig</button></div>`;
       }
       huelle.innerHTML = `<div class="ha-dim" data-a="zu"></div><div class="ha-sheet hx hx-${bv} hz-${dv}${ST.info ? ' hz-auf-an' : ''}" role="dialog" aria-label="Übung hinzufügen"><div class="ha-griff"></div>${inhalt}</div>`;
-      if (!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) huelle.querySelectorAll('.hc video').forEach((v) => { v.muted = true; v.play?.().catch(() => {}); });
-      else huelle.querySelectorAll('.hc video').forEach((v) => { v.removeAttribute('autoplay'); v.pause?.(); });
+      // Clip läuft nur, solange Maus oder Stift über der Kachel ist; sonst steht das Startbild
+      if (!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) huelle.querySelectorAll('.hz-ka').forEach((ka) => {
+        const v = ka.querySelector('.hc video'); if (!v) return; v.muted = true;
+        const an = () => { v.play?.().catch(() => {}); }, aus = () => { v.pause?.(); try { v.currentTime = 0 } catch { } };
+        // nur Maus und Stift: mit dem Finger würde das Antippen zugleich die Details öffnen
+        ka.addEventListener('pointerenter', (e) => { if (e.pointerType !== 'touch') an(); }); ka.addEventListener('pointerleave', aus); ka.addEventListener('pointercancel', aus);
+        // Abspielknopf (Finger): Clip einmal abspielen, nochmal tippen stoppt
+        const pk = ka.querySelector('.hz-play');
+        if (pk) pk.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation();
+          if (!v.paused) { aus(); pk.classList.remove('an'); return; }
+          v.loop = false; try { v.currentTime = 0 } catch { } an(); pk.classList.add('an');
+          v.onended = () => { pk.classList.remove('an'); v.loop = true; try { v.currentTime = 0 } catch { } }; });
+      });
+      // Detailkarte aus dem verschobenen, scrollenden Fenster lösen, damit sie in der Bildschirmmitte steht
+      huelle.querySelectorAll('.ha-sheet .hz2-dim, .ha-sheet .hz2').forEach((x) => huelle.appendChild(x));
+      { const sh = huelle.querySelector('.ha-sheet'); if (sh) { sh.scrollTop = sc; requestAnimationFrame(() => { sh.scrollTop = sc; }); } }
       const nv = huelle.querySelector('.hx2-nav'), akt = nv?.querySelector('[aria-current="true"]');
       if (nv && akt && nv.scrollWidth > nv.clientWidth) nv.scrollLeft = akt.offsetLeft - (nv.clientWidth - akt.offsetWidth) / 2;
       const s = huelle.querySelector('.ha-such');
@@ -276,7 +290,10 @@
       const a = b.dataset.a;
       if (a === 'zu') return zu();
       if (a === 'fo') { ST.fOffen = !ST.fOffen; return male(); }
-      if (a === 'info') { ST.info = ST.info === b.dataset.id ? null : b.dataset.id; return male(); }
+      if (a === 'info') {
+        // iPad schickt nach dem Öffnen manchmal einen zweiten Klick hinterher, der auf dem Abdunkler landet: kurz danach nicht schließen
+        if (ST.info && Date.now() - (ST.infoAuf || 0) < 500) return;
+        ST.info = ST.info === b.dataset.id ? null : b.dataset.id; if (ST.info) ST.infoAuf = Date.now(); return male(); }
       if (a === 'info2') { ST.info = b.dataset.id || ST.info; return male(); }
       if (a === 'f') { const g = b.dataset.g, v = b.dataset.v || null; ST[g] = g === 'reg' ? v : (ST[g] === v ? null : v); if (g === 'reg') { ST.q = ''; } return male(); }
       if (a === 'raus' || /^[sw][+-]$/.test(a)) {
@@ -467,6 +484,10 @@ ${frei.length ? `<div class="hy-chips"><span>Vorlage dazu</span>${alleV.map((t) 
 .hz-ka .hz-auf{display:block;width:100%;padding:7px 7px 9px;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;border-radius:12px}
 .hz-ka:active{transform:scale(.98)}.hz-ka.offen{box-shadow:0 0 0 2px var(--tape,#4f6d10)}
 .hz-ka .ha-ue-n{padding-right:36px}
+.hz-play{display:none;position:absolute;top:13px;right:13px;width:38px;height:38px;border-radius:19px;border:0;background:rgba(255,255,255,.9);color:var(--tape,#4f6d10);place-items:center;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.12);transition:transform 160ms ease-out}
+.hz-play svg{width:18px;height:18px;fill:currentColor;margin-left:2px}.hz-play:active{transform:scale(.92)}.hz-play.an{background:var(--tape,#4f6d10);color:#fff}
+@media (hover:none){.hz-ka{position:relative}.hz-play{display:grid}}
+@media (prefers-reduced-motion:reduce){.hz-play{display:none!important}}
 .hz-plus{position:absolute;right:10px;bottom:10px;width:30px;height:30px;border-radius:15px;border:0;background:var(--tape,#4f6d10);color:#fff;font:inherit;font-size:18px;display:grid;place-items:center;cursor:pointer;transition:transform 160ms ease-out}
 .hz-plus:active{transform:scale(.92)}.hz-ka.drin .hz-plus{background:#ddf6a2;color:#2f4208;font-size:15px}
 .hz{background:var(--flaeche,#fff);border-radius:18px;padding:16px;display:grid;gap:12px;box-shadow:0 1px 2px rgba(0,0,0,.06),0 12px 32px -18px rgba(30,45,10,.35)}
@@ -604,7 +625,7 @@ ${frei.length ? `<div class="hy-chips"><span>Vorlage dazu</span>${alleV.map((t) 
 .ha-ue-k{all:unset;display:block;width:100%;cursor:pointer}
 .ha-paar{display:grid;grid-template-columns:1fr 1fr;gap:3px;border-radius:8px;overflow:hidden;position:relative;background:#e9e4e1}
 .ha-paar img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
-.ha-paar.hc{display:block}.ha-paar.hc video{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:#e9e4e1}
+.ha-paar.hc{display:block}.ha-paar.hc video{pointer-events:none;width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:#e9e4e1}
 .ha-paar:after{content:'›';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:20px;height:20px;border-radius:10px;background:#fff;color:var(--tape,#4f6d10);font-weight:700;display:grid;place-items:center;font-size:15px;box-shadow:0 1px 3px rgba(0,0,0,.2)}
 .ha-ue-n{display:block;font-size:.875rem;margin-top:6px;line-height:1.25;color:var(--schrift,#1a1a1a)}
 .ha-ue-n b{color:var(--tape,#4f6d10);font-weight:650;margin-left:6px}
