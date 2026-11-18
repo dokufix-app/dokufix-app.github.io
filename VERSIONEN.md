@@ -8,7 +8,8 @@ Neue Versionen kommen oben dazu.
 
 | Version | Datum | Commit | Was sich geändert hat |
 |---|---|---|---|
-| v193 | 18.11.2026 | (dieser) | Hausaufgaben: Jede Übung zeigt ein größeres Bild, das langsam zwischen Start und Ende wechselt (Fenster „Übung hinzufügen“, Hausaufgaben-Seite, Karte im Verlauf). Auf dem gedruckten Blatt bleiben beide Bilder nebeneinander; bei „Bewegung reduzieren“ bleibt das Startbild stehen. |
+| v194 | 18.11.2026 | (dieser) | Hausaufgaben: 5 neue Fuß-Übungen (Fußpumpe, Wadenheben exzentrisch an der Stufe, Fußsohle dehnen, Kurzfuß, Fuß nach außen drehen gegen Band); Vorschläge Fuß ergänzt (87 Übungen). |
+| v193 | 18.11.2026 | 9ae5d1b | Hausaufgaben: Jede Übung zeigt ein größeres Bild, das langsam zwischen Start und Ende wechselt (Fenster „Übung hinzufügen“, Hausaufgaben-Seite, Karte im Verlauf). Auf dem gedruckten Blatt bleiben beide Bilder nebeneinander; bei „Bewegung reduzieren“ bleibt das Startbild stehen. |
 | v192 | 18.11.2026 | 5588eff | Hausaufgaben: Übung antippen öffnet Details als Karte (ein großes Bild wechselt langsam zwischen Start und Ende, Region, Ausgangsstellung, Hilfsmittel, „So geht’s“, Startdosis, Vorlagen, ‹ › zur nächsten Übung, „Zum Programm“); das + auf der Karte nimmt die Übung direkt auf. Neue LWS-Übung „Ferse rausschieben im Wechsel“ (82 Übungen). |
 | v191 | 18.11.2026 | 143d775 | Dienstplan: Tage mit Krank, Kind krank, Urlaub, Fortbildung, Ausgleich oder Frei in den Stunden zeigen einen Hinweis, Termine ausgegraut, keine offene Doku |
 | v190 | 18.11.2026 | 85bc278 | Hausaufgaben: 4 neue Übungen bei Epicondylitis (Tyler Twist mit Flexbar, Unterarm drehen mit Kurzhantel, Hammer heben, Finger spreizen gegen Gummiband) und die Vorlagen Tennisellenbogen und Golferellenbogen (Entwurf, fachlich prüfen). |
