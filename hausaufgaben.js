@@ -91,7 +91,16 @@
     ['tyler-twist', 'Tyler Twist mit Flexbar', 'Stuhl, Flexbar', 'hand', 'sitz', 'stab', 'Den Stab vor dem Körper halten: betroffene Hand mit gestrecktem Handgelenk, die andere Hand dreht den Stab ein. Arme nach vorn strecken und die betroffene Hand ganz langsam nachgeben lassen, bis der Stab gerade ist.'],
     ['unterarm-drehen-hantel', 'Unterarm drehen mit Kurzhantel', 'Tisch, Kurzhantel', 'hand', 'sitz', 'hantel', 'Unterarm auf dem Tisch, Handfläche oben, die Hantel nur an einem Ende halten. Langsam nach innen drehen, bis die Handfläche zum Boden zeigt, und zurück. Der Unterarm bleibt liegen.'],
     ['hammer-heben', 'Hammer heben', 'Tisch, Hammer', 'hand', 'sitz', 'ohne', 'Unterarm auf dem Tisch, Daumenseite oben, Hammer am Stielende halten. Den Hammerkopf im Handgelenk anheben und langsam wieder senken.'],
-    ['finger-spreizen-band', 'Finger spreizen gegen Gummiband', 'Tisch, Gummiband', 'hand', 'sitz', 'band', 'Ein Gummiband um die Fingerspitzen legen. Die Finger gegen den Zug weit auseinanderspreizen, kurz halten, langsam zurück.']
+    ['finger-spreizen-band', 'Finger spreizen gegen Gummiband', 'Tisch, Gummiband', 'hand', 'sitz', 'band', 'Ein Gummiband um die Fingerspitzen legen. Die Finger gegen den Zug weit auseinanderspreizen, kurz halten, langsam zurück.'],
+    ['wandsitz', 'Wandsitz', 'Wand', 'knie', 'stand', 'ohne', 'Rücken an die Wand, Füße etwa eine Fußlänge vor der Wand. An der Wand nach unten rutschen, bis die Knie etwa 60 Grad gebeugt sind, die Knie bleiben über den Füßen. 20 bis 30 Sekunden halten.'],
+    ['kniestreckung-band', 'Kniestreckung gegen Band', 'Tischbein, Theraband', 'knie', 'stand', 'band', 'Band um ein schweres Tischbein und hinten um die Kniekehle. Das Band zieht das Knie leicht nach vorn. Knie gegen das Band ganz durchstrecken, kurz halten, langsam lösen.'],
+    ['ausfallschritt', 'Ausfallschritt nach vorn', 'Stand', 'knie hue', 'stand', 'ohne', 'Hände in die Hüften. Einen großen Schritt nach vorn machen und das hintere Knie Richtung Boden senken. Das vordere Knie bleibt über dem Fuß, der Oberkörper aufrecht. Zurück in den Stand.'],
+    ['oberschenkel-rueckseite-dehnen', 'Oberschenkelrückseite dehnen', 'Stuhl', 'knie hue', 'sitz', 'ohne', 'Vorn auf der Stuhlkante sitzen, ein Bein gestreckt, Ferse am Boden, Fußspitze hoch. Mit geradem Rücken aus der Hüfte nach vorn neigen, bis es hinten im Oberschenkel zieht. 30 Sekunden halten.'],
+    ['oberschenkel-vorderseite-dehnen', 'Oberschenkelvorderseite dehnen', 'an der Küchenzeile', 'knie hue', 'stand', 'ohne', 'An der Küchenzeile festhalten. Den Fuß hinter dem Körper greifen und die Ferse Richtung Gesäß ziehen. Knie bleiben nebeneinander, kein Hohlkreuz. 30 Sekunden halten.'],
+    ['hochdruecken-bauchlage', 'Hochdrücken in Bauchlage', 'Matte', 'ruecken', 'liegen', 'ohne', 'Bauchlage, Hände neben den Schultern. Mit den Armen den Oberkörper hochdrücken, Becken und Beine bleiben auf der Matte, der untere Rücken hängt locker durch. Kurz oben bleiben, langsam ablegen.'],
+    ['nervengleiten-sitz', 'Nervengleiten im Sitz', 'Stuhl', 'ruecken', 'sitz', 'ohne', 'Locker gerundet sitzen, Kopf nach vorn gebeugt. Gleichzeitig den Kopf heben und ein Knie strecken, dann gleichzeitig Kopf senken und Knie beugen. Locker im Wechsel, ohne Schmerz.'],
+    ['tandemstand', 'Tandemstand', 'an der Küchenzeile', 'fuss hue', 'stand', 'ohne', 'An der Küchenzeile stehen. Die Füße genau hintereinander stellen, die Ferse berührt die Zehen des hinteren Fußes. 20 bis 30 Sekunden stehen, möglichst wenig festhalten.'],
+    ['einbeinstand-kissen', 'Einbeinstand auf dem Kissen', 'Kissen, Küchenzeile', 'fuss hue', 'stand', 'ohne', 'Auf ein dickes Kissen stellen, an der Küchenzeile festhalten. Ein Bein anheben und 20 bis 30 Sekunden stehen, das Becken bleibt waagerecht.']
   ];
   const KAT = K.map(([id, n, z, r, p, h, t]) => ({ id, n, z, r: r.split(' '), p, h, t }));
   const BY = Object.fromEntries(KAT.map((x) => [x.id, x]));
@@ -101,9 +110,9 @@
   const SER = [1, 2, 3], WDH = [8, 10, 12, 15, 20];
   const VOR = {
     hue: ['bruecke', 'seitlage-abspreizen', 'bein-abspreizen', 'aufstehen-stuhl', 'muschel-loopband', 'hueftstreckung-stand'],
-    knie: ['kniestreckung-sitz', 'quadrizeps-rolle', 'mini-kniebeuge', 'stufe-hoch', 'fersenschub'],
+    knie: ['kniestreckung-sitz', 'quadrizeps-rolle', 'mini-kniebeuge', 'stufe-hoch', 'fersenschub', 'kniestreckung-band', 'wandsitz'],
     fuss: ['zehenstand', 'einbeinstand', 'fusswippe', 'wadendehnung-wand', 'sprunggelenk-band', 'kurzfuss'],
-    ruecken: ['becken-kippen', 'knie-brust', 'katzenbuckel', 'offenes-buch', 'bws-ball'],
+    ruecken: ['becken-kippen', 'knie-brust', 'katzenbuckel', 'offenes-buch', 'bws-ball', 'hochdruecken-bauchlage'],
     hws: ['kinn-einziehen', 'kopfnicken', 'trapez-dehnung', 'levator-dehnung', 'nacken-halten'],
     hand: ['unterarm-drehen', 'faust', 'ball-druecken', 'dehnung-unterarm-strecker', 'handgelenk-senken'],
     schulter: ['pendeln', 'tisch-gleiten', 'wand-hochwandern', 'stab-rueckenlage', 'aussenrotation-stab']
