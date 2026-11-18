@@ -81,7 +81,11 @@
     ['faust', 'Faust schließen und öffnen', 'Tisch', 'hand', 'sitz', 'ohne', 'Unterarm auf dem Tisch. Die Finger weit spreizen, dann eine feste Faust machen, Daumen außen. Langsam abwechseln.'],
     ['ball-druecken', 'Ball drücken', 'Tisch, weicher Ball', 'hand', 'sitz', 'ball', 'Einen weichen Ball in die Hand nehmen. Mit der ganzen Hand fest zusammendrücken, kurz halten, locker lassen.'],
     ['daumen-finger', 'Daumen zu den Fingerkuppen', 'Tisch', 'hand', 'sitz', 'ohne', 'Ellenbogen auf dem Tisch, Hand offen. Mit der Daumenkuppe nacheinander jede Fingerkuppe berühren, zuletzt den kleinen Finger.'],
-    ['sehnengleiten', 'Sehnengleiten', 'Tisch', 'hand', 'sitz', 'ohne', 'Ellenbogen auf dem Tisch, Hand gerade nach oben. Die Finger zur Hakenfaust einrollen, die Grundgelenke bleiben gestreckt. Wieder strecken.']
+    ['sehnengleiten', 'Sehnengleiten', 'Tisch', 'hand', 'sitz', 'ohne', 'Ellenbogen auf dem Tisch, Hand gerade nach oben. Die Finger zur Hakenfaust einrollen, die Grundgelenke bleiben gestreckt. Wieder strecken.'],
+    ['tyler-twist', 'Tyler Twist mit Flexbar', 'Stuhl, Flexbar', 'hand', 'sitz', 'stab', 'Den Stab vor dem Körper halten: betroffene Hand mit gestrecktem Handgelenk, die andere Hand dreht den Stab ein. Arme nach vorn strecken und die betroffene Hand ganz langsam nachgeben lassen, bis der Stab gerade ist.'],
+    ['unterarm-drehen-hantel', 'Unterarm drehen mit Kurzhantel', 'Tisch, Kurzhantel', 'hand', 'sitz', 'hantel', 'Unterarm auf dem Tisch, Handfläche oben, die Hantel nur an einem Ende halten. Langsam nach innen drehen, bis die Handfläche zum Boden zeigt, und zurück. Der Unterarm bleibt liegen.'],
+    ['hammer-heben', 'Hammer heben', 'Tisch, Hammer', 'hand', 'sitz', 'ohne', 'Unterarm auf dem Tisch, Daumenseite oben, Hammer am Stielende halten. Den Hammerkopf im Handgelenk anheben und langsam wieder senken.'],
+    ['finger-spreizen-band', 'Finger spreizen gegen Gummiband', 'Tisch, Gummiband', 'hand', 'sitz', 'band', 'Ein Gummiband um die Fingerspitzen legen. Die Finger gegen den Zug weit auseinanderspreizen, kurz halten, langsam zurück.']
   ];
   const KAT = K.map(([id, n, z, r, p, h, t]) => ({ id, n, z, r: r.split(' '), p, h, t }));
   const BY = Object.fromEntries(KAT.map((x) => [x.id, x]));
@@ -259,7 +263,9 @@ ${prog.filter((x) => BY[x.id]).map((x, i) => { const k = BY[x.id]; return `<div 
     ['Kreuzschmerz', ['becken-kippen', 'knie-brust', 'katzenbuckel', 'bruecke', 'vierfuessler-diagonal']],
     ['Schulter, eingeschränkte Beweglichkeit', ['pendeln', 'tisch-gleiten', 'wand-hochwandern', 'stab-rueckenlage', 'aussenrotation-stab']],
     ['Gleichgewicht und Sturzvorbeugung', ['aufstehen-stuhl', 'zehenstand', 'fersenstand', 'einbeinstand', 'seitschritte-loopband']],
-    ['Haltung und Brustwirbelsäule', ['bws-ball', 'rudern-tuer', 'offenes-buch', 'bws-aufrichtung-hantel']]
+    ['Haltung und Brustwirbelsäule', ['bws-ball', 'rudern-tuer', 'offenes-buch', 'bws-aufrichtung-hantel']],
+    ['Tennisellenbogen', ['handgelenk-senken', 'tyler-twist', 'dehnung-unterarm-strecker', 'unterarm-drehen-hantel', 'hammer-heben', 'finger-spreizen-band']],
+    ['Golferellenbogen', ['dehnung-unterarm-beuger', 'ball-druecken', 'faust', 'unterarm-drehen-hantel', 'hammer-heben']]
   ].map(([n, ids]) => ({ n, ids: ids.filter((id) => BY[id]) }));
   const IC = {
     lupe: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg>',
