@@ -107,7 +107,11 @@
   const bild = (id, s) => window.HA_BILD?.[`${id}-${s}`] || `heimuebungen/heim-${id}-${s}.webp`;
   const dos = (x) => `${x.s} × ${x.w}`;
   const liste = (prog) => (prog ?? []).filter((x) => BY[x.id]).map((x) => `${BY[x.id].n} ${dos(x)}${x.h ? ` (${x.h})` : ''}`);
-  const paar = (id) => `<div class="ha-paar"><img src="${bild(id, 'start')}" alt="" loading="lazy"><img src="${bild(id, 'ende')}" alt="" loading="lazy"></div>`;
+  const paarZwei = (id) => `<div class="ha-paar"><img src="${bild(id, 'start')}" alt="" loading="lazy"><img src="${bild(id, 'ende')}" alt="" loading="lazy"></div>`;
+  // Ein Bild, das langsam zwischen Start und Ende wechselt (Druck nutzt paarZwei)
+  const paar = (id) => window.HA_EIN !== false
+    ? `<div class="ha-paar hw"><img src="${bild(id, 'start')}" alt="" loading="lazy"><img class="hw-e" src="${bild(id, 'ende')}" alt="" loading="lazy"><span class="hw-l" aria-hidden="true"><i>Start</i><i>Ende</i></span></div>`
+    : `<div class="ha-paar"><img src="${bild(id, 'start')}" alt="" loading="lazy"><img src="${bild(id, 'ende')}" alt="" loading="lazy"></div>`;
 
   // Regionen aus dem Erstbefund des Patienten (für Vorschläge)
   function regionen(P) {
@@ -263,7 +267,7 @@
     w.innerHTML = `<div class="ha-druck-leiste"><button type="button" class="ha-kn" data-a="p">Drucken / Teilen</button><button type="button" class="ha-kn zwei" data-a="zu">Schließen</button></div>
 <div class="ha-a4"><div class="ha-a4-kopf"><div><small>Physiotherapie</small><h1>Ihr Heimprogramm</h1></div><div class="ha-a4-dat">${dat}<br><span>Name: ____________________</span></div></div>
 <p class="ha-a4-intro">Bitte üben Sie ${esc(oft || 'täglich')} in Ruhe. Die Bilder zeigen die Ausgangsstellung links und die Endstellung rechts.</p>
-${prog.filter((x) => BY[x.id]).map((x, i) => { const k = BY[x.id]; return `<div class="ha-a4-ue"><div class="ha-a4-bild">${paar(x.id)}</div><div class="ha-a4-txt"><h2>${i + 1}. ${esc(k.n)}</h2><p class="ha-a4-dos">${x.s} Serien × ${x.w} Wiederholungen</p><p>${esc(k.t)}</p>${x.h ? `<p class="ha-a4-hinw">${esc(x.h)}</p>` : ''}<div class="ha-a4-wo">${['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'].map((t) => `<span>${t}</span>`).join('')}</div></div></div>` }).join('')}
+${prog.filter((x) => BY[x.id]).map((x, i) => { const k = BY[x.id]; return `<div class="ha-a4-ue"><div class="ha-a4-bild">${paarZwei(x.id)}</div><div class="ha-a4-txt"><h2>${i + 1}. ${esc(k.n)}</h2><p class="ha-a4-dos">${x.s} Serien × ${x.w} Wiederholungen</p><p>${esc(k.t)}</p>${x.h ? `<p class="ha-a4-hinw">${esc(x.h)}</p>` : ''}<div class="ha-a4-wo">${['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'].map((t) => `<span>${t}</span>`).join('')}</div></div></div>` }).join('')}
 <div class="ha-a4-fuss"><p><b>Sicherheit:</b> Langsam und kontrolliert üben, ruhig weiteratmen. Bei Schwindel oder Unsicherheit eine feste Stütze nutzen.</p><p><b>Schmerz:</b> Leichtes Ziehen ist in Ordnung. Stärkere Schmerzen, die nach dem Üben anhalten, bitte beim nächsten Termin ansprechen.</p></div></div>`;
     document.body.append(w);
     document.body.classList.add('ha-print');
@@ -415,7 +419,15 @@ ${frei.length ? `<div class="hy-chips"><span>Vorlage dazu</span>${alleV.map((t) 
   window.HA = { vollbild, KAT, BY, REG, liste, letztes, regionen, karte, panel, blatt, druck, anzahl: KAT.length };
 
   // ---------- Stil ----------
-  const css = `.hz-ka{padding:0;display:block;transition:transform 160ms ease-out,box-shadow 200ms ease}
+  const css = `.ha-paar.hw{display:block;position:relative}.ha-paar.hw img{width:100%}.ha-paar.hw .hw-e{position:absolute;inset:0;height:100%;animation:hz-film 3.2s ease-in-out infinite}
+.hw-l i{position:absolute;left:6px;top:6px;padding:2px 7px;border-radius:8px;background:rgba(255,255,255,.88);font-size:.6875rem;font-weight:650;font-style:normal;color:var(--schrift,#1a1a1a);animation:hw-inv 3.2s ease-in-out infinite}.hw-l i:last-child{animation-name:hz-film}
+
+.ha-paar .hw-l i{right:auto;bottom:auto;width:auto;height:auto;display:block;border-radius:8px;background:rgba(255,255,255,.88);color:var(--schrift,#1a1a1a);font-size:.6875rem;line-height:1.3}
+.ha-paar .hw-l i:last-child{left:6px}
+@keyframes hw-inv{0%,35%{opacity:1}50%,85%{opacity:0}100%{opacity:1}}
+.ha-paar.hw::after{display:none!important}
+@media (prefers-reduced-motion:reduce){.ha-paar.hw .hw-e,.hw-l i{animation:none}.hw-l i:last-child{display:none}}
+.hz-ka{padding:0;display:block;transition:transform 160ms ease-out,box-shadow 200ms ease}
 .hz-ka .hz-auf{display:block;width:100%;padding:7px 7px 9px;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;border-radius:12px}
 .hz-ka:active{transform:scale(.98)}.hz-ka.offen{box-shadow:0 0 0 2px var(--tape,#4f6d10)}
 .hz-ka .ha-ue-n{padding-right:36px}
