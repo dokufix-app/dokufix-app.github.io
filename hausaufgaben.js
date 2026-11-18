@@ -355,10 +355,20 @@ ${prog.filter((x) => BY[x.id]).map((x, i) => { const k = BY[x.id]; return `<div 
     ['Knie-Arthrose', ['kniestreckung-sitz', 'quadrizeps-rolle', 'aufstehen-stuhl', 'mini-kniebeuge', 'stufe-hoch']],
     ['Kreuzschmerz', ['becken-kippen', 'knie-brust', 'katzenbuckel', 'bruecke', 'vierfuessler-diagonal']],
     ['Schulter, eingeschränkte Beweglichkeit', ['pendeln', 'tisch-gleiten', 'wand-hochwandern', 'stab-rueckenlage', 'aussenrotation-stab']],
-    ['Gleichgewicht und Sturzvorbeugung', ['aufstehen-stuhl', 'zehenstand', 'fersenstand', 'einbeinstand', 'seitschritte-loopband']],
+    ['Gleichgewicht und Sturzvorbeugung', ['aufstehen-stuhl', 'tandemstand', 'einbeinstand', 'seitwaerts-gehen', 'tandemgang', 'zehenstand']],
+    ['Gleichgewicht, fortgeschritten', ['einbeinstand-kissen', 'einbeinstand-augen-zu', 'tandemgang-rueckwaerts', 'achterlauf', 'schritte-alle-richtungen', 'hindernis-steigen']],
+    ['Schwindel', ['blickstabilisation', 'kopfdrehen-stand', 'gehen-kopfdrehen', 'tandemstand', 'einbeinstand']],
     ['Haltung und Brustwirbelsäule', ['bws-ball', 'rudern-tuer', 'offenes-buch', 'bws-aufrichtung-hantel']],
     ['Tennisellenbogen', ['handgelenk-senken', 'tyler-twist', 'dehnung-unterarm-strecker', 'unterarm-drehen-hantel', 'hammer-heben', 'finger-spreizen-band']],
-    ['Golferellenbogen', ['dehnung-unterarm-beuger', 'ball-druecken', 'faust', 'unterarm-drehen-hantel', 'hammer-heben']]
+    ['Golferellenbogen', ['dehnung-unterarm-beuger', 'ball-druecken', 'faust', 'unterarm-drehen-hantel', 'hammer-heben']],
+    ['Nackenschmerz', ['kinn-einziehen', 'kopfnicken', 'trapez-dehnung', 'levator-dehnung', 'nacken-halten']],
+    ['Kiefer (CMD)', ['kiefer-ruhelage', 'oeffnen-zunge-gaumen', 'oeffnen-finger-gelenk', 'isometrisch-oeffnen', 'masseter-lockern', 'kinn-einziehen']],
+    ['Atemnot, COPD', ['lippenbremse', 'kutschersitz', 'torwartstellung', 'abstuetzen-tisch', 'bauchatmung']],
+    ['Atmung nach OP', ['flankenatmung', 'huffing-kissen', 'bauchatmung', 'fusspumpe', 'halbmond-dehnlage']],
+    ['Achillessehne', ['wadenheben-exzentrisch', 'wadendehnung-wand', 'zehenstand', 'einbeinstand']],
+    ['Fersenschmerz (Plantarfasziitis)', ['plantarfaszie-dehnen', 'wadendehnung-wand', 'kurzfuss', 'handtuch-zehen', 'zehenstand']],
+    ['Sprunggelenk nach Umknicken', ['fusswippe', 'sprunggelenk-band', 'zehenstand', 'einbeinstand', 'einbeinstand-kissen']],
+    ['Ischias', ['nervengleiten-sitz', 'hochdruecken-bauchlage', 'becken-kippen', 'knie-brust', 'katzenbuckel']]
   ].map(([n, ids]) => ({ n, ids: ids.filter((id) => BY[id]) }));
   const IC = {
     lupe: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg>',
