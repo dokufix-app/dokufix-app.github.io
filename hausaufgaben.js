@@ -27,9 +27,9 @@
     ['mini-kniebeuge', 'Mini-Kniebeuge', 'an der Küchenzeile', 'knie hue', 'stand', 'ohne', 'Hüftbreit stehen. Gesäß nach hinten schieben und leicht in die Knie gehen, die Knie zeigen über die Füße.'],
     ['stufe-hoch', 'Stufe hoch am Geländer', 'Treppenstufe', 'knie hue', 'stand', 'ohne', 'Am Geländer festhalten. Mit einem Fuß auf die Stufe steigen und das andere Bein nachziehen, langsam zurück.'],
     ['stufe-abwaerts', 'Stufe abwärts', 'Treppenstufe', 'knie', 'stand', 'ohne', 'Auf der Stufe stehen, festhalten. Ein Bein langsam nach unten führen und die Ferse antippen, das Knie zeigt über den Fuß.'],
-    ['zehenstand', 'Zehenstand', 'an der Küchenzeile', 'fuss', 'stand', 'ohne', 'Hüftbreit stehen, möglichst wenig festhalten. Langsam auf die Zehen hoch und langsam absenken.'],
-    ['fersenstand', 'Fersenstand', 'an der Küchenzeile', 'fuss', 'stand', 'ohne', 'An der Küchenzeile stehen. Beide Fußspitzen anheben, sodass Sie auf den Fersen stehen, langsam absetzen.'],
-    ['einbeinstand', 'Einbeinstand', 'an der Küchenzeile', 'fuss hue', 'stand', 'ohne', 'Fingerspitzen an die Küchenzeile. Ein Bein anheben und 20 bis 30 Sekunden stehen, das Becken bleibt waagerecht.'],
+    ['zehenstand', 'Zehenstand', 'an der Küchenzeile', 'fuss gg', 'stand', 'ohne', 'Hüftbreit stehen, möglichst wenig festhalten. Langsam auf die Zehen hoch und langsam absenken.'],
+    ['fersenstand', 'Fersenstand', 'an der Küchenzeile', 'fuss gg', 'stand', 'ohne', 'An der Küchenzeile stehen. Beide Fußspitzen anheben, sodass Sie auf den Fersen stehen, langsam absetzen.'],
+    ['einbeinstand', 'Einbeinstand', 'an der Küchenzeile', 'fuss hue gg', 'stand', 'ohne', 'Fingerspitzen an die Küchenzeile. Ein Bein anheben und 20 bis 30 Sekunden stehen, das Becken bleibt waagerecht.'],
     ['wadendehnung-wand', 'Wadendehnung an der Wand', 'Wand', 'fuss', 'stand', 'ohne', 'Hände an die Wand, ein Bein nach hinten. Ferse bleibt am Boden, Becken nach vorn schieben, 30 Sekunden halten.'],
     ['fusswippe', 'Fußwippe im Sitz', 'Stuhl', 'fuss', 'sitz', 'ohne', 'Aufrecht sitzen. Abwechselnd die Fersen und die Fußspitzen anheben.'],
     ['handtuch-zehen', 'Handtuch mit den Zehen greifen', 'barfuß, Stuhl', 'fuss', 'sitz', 'ohne', 'Barfuß sitzen, Handtuch vor dem Fuß. Mit den Zehen das Handtuch zu sich heranziehen, die Ferse bleibt am Boden.'],
@@ -99,12 +99,18 @@
     ['oberschenkel-vorderseite-dehnen', 'Oberschenkelvorderseite dehnen', 'an der Küchenzeile', 'knie hue', 'stand', 'ohne', 'An der Küchenzeile festhalten. Den Fuß hinter dem Körper greifen und die Ferse Richtung Gesäß ziehen. Knie bleiben nebeneinander, kein Hohlkreuz. 30 Sekunden halten.'],
     ['hochdruecken-bauchlage', 'Hochdrücken in Bauchlage', 'Matte', 'ruecken', 'liegen', 'ohne', 'Bauchlage, Hände neben den Schultern. Mit den Armen den Oberkörper hochdrücken, Becken und Beine bleiben auf der Matte, der untere Rücken hängt locker durch. Kurz oben bleiben, langsam ablegen.'],
     ['nervengleiten-sitz', 'Nervengleiten im Sitz', 'Stuhl', 'ruecken', 'sitz', 'ohne', 'Locker gerundet sitzen, Kopf nach vorn gebeugt. Gleichzeitig den Kopf heben und ein Knie strecken, dann gleichzeitig Kopf senken und Knie beugen. Locker im Wechsel, ohne Schmerz.'],
-    ['tandemstand', 'Tandemstand', 'an der Küchenzeile', 'fuss hue', 'stand', 'ohne', 'An der Küchenzeile stehen. Die Füße genau hintereinander stellen, die Ferse berührt die Zehen des hinteren Fußes. 20 bis 30 Sekunden stehen, möglichst wenig festhalten.'],
-    ['einbeinstand-kissen', 'Einbeinstand auf dem Kissen', 'Kissen, Küchenzeile', 'fuss hue', 'stand', 'ohne', 'Auf ein dickes Kissen stellen, an der Küchenzeile festhalten. Ein Bein anheben und 20 bis 30 Sekunden stehen, das Becken bleibt waagerecht.']
+    ['tandemstand', 'Tandemstand', 'an der Küchenzeile', 'fuss hue gg', 'stand', 'ohne', 'An der Küchenzeile stehen. Die Füße genau hintereinander stellen, die Ferse berührt die Zehen des hinteren Fußes. 20 bis 30 Sekunden stehen, möglichst wenig festhalten.'],
+    ['einbeinstand-kissen', 'Einbeinstand auf dem Kissen', 'Kissen, Küchenzeile', 'fuss hue gg', 'stand', 'ohne', 'Auf ein dickes Kissen stellen, an der Küchenzeile festhalten. Ein Bein anheben und 20 bis 30 Sekunden stehen, das Becken bleibt waagerecht.'],
+    ['tandemgang', 'Tandemgang', 'an der Küchenzeile', 'gg', 'stand', 'ohne', 'An der Küchenzeile entlang gehen. Jeden Fuß genau vor den anderen setzen, die Ferse berührt die Zehen. Blick nach vorn, 10 Schritte, zurück.'],
+    ['einbeinstand-augen-zu', 'Einbeinstand mit geschlossenen Augen', 'an der Küchenzeile', 'gg', 'stand', 'ohne', 'Neben der Küchenzeile auf einem Bein stehen, die Hand knapp über der Platte. Dann die Augen schließen und 10 bis 20 Sekunden stehen. Nur üben, wenn der Einbeinstand mit offenen Augen sicher klappt.'],
+    ['gewichtsverlagerung', 'Gewicht seitlich verlagern', 'vor der Küchenzeile', 'gg hue', 'stand', 'ohne', 'Etwas breiter als hüftbreit stehen. Das Gewicht langsam auf ein Bein verlagern, das Becken schiebt sich über den Fuß, der Oberkörper bleibt aufrecht. Zur anderen Seite im Wechsel.'],
+    ['hindernis-steigen', 'Über ein Hindernis steigen', 'Handtuch, Küchenzeile', 'gg', 'stand', 'ohne', 'Ein gerolltes Handtuch quer auf den Boden legen, an der Küchenzeile festhalten. Mit gebeugtem Knie darüber steigen und zurück, im Wechsel rechts und links.'],
+    ['zehengang', 'Zehengang', 'an der Küchenzeile', 'gg fuss', 'stand', 'ohne', 'An der Küchenzeile auf den Zehenspitzen entlang gehen, die Fersen bleiben oben. Aufrecht bleiben, 10 Schritte, zurück.'],
+    ['kopfdrehen-stand', 'Kopf drehen im Stand', 'vor der Küchenzeile', 'gg', 'stand', 'ohne', 'Mit eng geschlossenen Füßen vor der Küchenzeile stehen. Den Kopf langsam nach rechts und links drehen, der Rumpf bleibt gerade. Bei Schwindel kurz pausieren.']
   ];
   const KAT = K.map(([id, n, z, r, p, h, t]) => ({ id, n, z, r: r.split(' '), p, h, t }));
   const BY = Object.fromEntries(KAT.map((x) => [x.id, x]));
-  const REG = [['hue', 'Hüfte'], ['knie', 'Knie'], ['fuss', 'Fuß'], ['ruecken', 'Rücken'], ['hws', 'HWS'], ['schulter', 'Schulter'], ['hand', 'Ellenbogen/Hand']];
+  const REG = [['hue', 'Hüfte'], ['knie', 'Knie'], ['fuss', 'Fuß'], ['ruecken', 'Rücken'], ['hws', 'HWS'], ['schulter', 'Schulter'], ['hand', 'Ellenbogen/Hand'], ['gg', 'Gleichgewicht']];
   const POS = [['liegen', 'Liegen'], ['vierf', 'Vierfüßler'], ['sitz', 'Sitz'], ['stand', 'Stand']];
   const HM = [['ohne', 'ohne'], ['band', 'Band'], ['ball', 'Ball'], ['hantel', 'Hantel'], ['stab', 'Stab']];
   const SER = [1, 2, 3], WDH = [8, 10, 12, 15, 20];
@@ -115,6 +121,7 @@
     ruecken: ['becken-kippen', 'knie-brust', 'katzenbuckel', 'offenes-buch', 'bws-ball', 'hochdruecken-bauchlage'],
     hws: ['kinn-einziehen', 'kopfnicken', 'trapez-dehnung', 'levator-dehnung', 'nacken-halten'],
     hand: ['unterarm-drehen', 'faust', 'ball-druecken', 'dehnung-unterarm-strecker', 'handgelenk-senken'],
+    gg: ['einbeinstand', 'tandemstand', 'gewichtsverlagerung', 'tandemgang', 'hindernis-steigen', 'einbeinstand-kissen'],
     schulter: ['pendeln', 'tisch-gleiten', 'wand-hochwandern', 'stab-rueckenlage', 'aussenrotation-stab']
   };
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -135,6 +142,8 @@
       const k = /(HWS|HALS|NACKEN)/.test(r) ? 'hws' : /(ELLENBOGEN|HANDGELENK|HAND|FINGER|DAUMEN)/.test(r) ? 'hand' : /H(Ü|UE)FT/.test(r) ? 'hue' : /KNIE/.test(r) ? 'knie' : /(SPRUNG|FU(SS|ß)|ZEH|OSG|USG)/.test(r) ? 'fuss' : /(LWS|BWS|WIRBEL|R(Ü|UE)CK|ISG|BECKEN)/.test(r) ? 'ruecken' : /SCHULTER/.test(r) ? 'schulter' : null;
       if (k && !out.includes(k)) out.push(k);
     }
+    const d = String(P?.erstbefund?.diagnose ?? '').toUpperCase();
+    if (/(SCHWINDEL|STURZ|GLEICHGEWICHT|GANGUNSICHER|ATAXIE|POLYNEURO|PARKINSON)/.test(d) && !out.includes('gg')) out.push('gg');
     return out;
   }
   function letztes(P, o) {
