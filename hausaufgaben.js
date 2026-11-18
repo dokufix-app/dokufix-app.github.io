@@ -70,7 +70,7 @@
     ['pnf-diagonale-theraband', 'Diagonale nach oben mit Theraband', 'Stuhl, Theraband unter dem Fuß', 'schulter', 'sitz', 'band', 'Band unter den gegenüberliegenden Fuß klemmen, Faust neben der anderen Hüfte, Daumen nach unten. Den gestreckten Arm schräg nach oben außen führen, Hand öffnen und aufdrehen, der Blick folgt der Hand.'],
     ['antirotation', 'Antirotation im Sitz mit Theraband', 'Stuhl, Theraband an der Türklinke', 'ruecken', 'sitz', 'band', 'Seitlich zur Tür sitzen, Band an der Klinke, Bandende mit beiden Händen vor dem Brustbein. Die Hände gerade nach vorn schieben, einige Sekunden halten, langsam zurück. Der Oberkörper dreht nicht mit.'],
     ['ferse-rausschieben', 'Ferse rausschieben im Wechsel', 'Matte', 'ruecken hue', 'liegen', 'ohne', 'Rückenlage, beide Beine gestreckt. Im Wechsel eine Ferse nach unten schieben und die andere etwas hochziehen, die Knie bleiben gestreckt. Die Bewegung kommt aus dem Becken.'],
-    ['kinn-einziehen', 'Kinn einziehen im Sitz', 'Stuhl', 'hws', 'sitz', 'ohne', 'Aufrecht sitzen, Blick geradeaus. Das Kinn waagerecht nach hinten ziehen (Doppelkinn), ohne zu nicken. Kurz halten, locker lassen.'],
+    ['kinn-einziehen', 'Kinn einziehen im Sitz', 'Stuhl', 'hws kiefer', 'sitz', 'ohne', 'Aufrecht sitzen, Blick geradeaus. Das Kinn waagerecht nach hinten ziehen (Doppelkinn), ohne zu nicken. Kurz halten, locker lassen.'],
     ['kopfnicken', 'Kopfnicken in Rückenlage', 'Matte, flaches Handtuch', 'hws', 'liegen', 'ohne', 'Rückenlage, Kopf auf einem flachen Handtuch. Ganz leicht mit dem Kinn Richtung Brust nicken, der Hinterkopf bleibt liegen. 5 bis 10 Sekunden halten.'],
     ['trapez-dehnung', 'Dehnung oberer Trapezmuskel', 'Stuhl', 'hws schulter', 'sitz', 'ohne', 'Aufrecht sitzen, eine Hand hält die Sitzkante. Die andere Hand legt sich über den Kopf und zieht ihn sanft zur Gegenseite, das Gesicht bleibt nach vorn. 20 bis 30 Sekunden halten.'],
     ['levator-dehnung', 'Dehnung Schulterblattheber', 'Stuhl', 'hws schulter', 'sitz', 'ohne', 'Aufrecht sitzen, eine Hand hält die Sitzkante. Den Kopf zur Gegenseite drehen und Richtung Achsel neigen, die andere Hand am Hinterkopf hilft sanft nach. 20 bis 30 Sekunden halten.'],
@@ -122,11 +122,19 @@
     ['bauchatmung', 'Bauchatmung in Rückenlage', 'Matte oder Bett', 'atem', 'liegen', 'ohne', 'Rückenlage, Knie angestellt. Eine Hand auf den Bauch, eine auf die Brust. Durch die Nase einatmen, sodass sich die Bauchhand hebt und die Brusthand fast ruhig bleibt. Langsam ausatmen.'],
     ['flankenatmung', 'Tief in die Flanken atmen', 'Stuhl', 'atem', 'sitz', 'ohne', 'Aufrecht sitzen, die Hände seitlich auf die unteren Rippen legen. Tief durch die Nase einatmen und die Rippen gegen die Hände weiten, kurz halten, langsam ausatmen. 3 bis 4 tiefe Atemzüge, dann ruhig weiteratmen.'],
     ['huffing-kissen', 'Huffing und Abhusten mit Kissen', 'Stuhl, Kissen', 'atem', 'sitz', 'ohne', 'Ein Kissen fest gegen den Bauch oder die Narbe drücken. Tief einatmen und mit weit offenem Mund kräftig aushauchen, wie beim Anhauchen einer Brille. Ein- bis zweimal wiederholen, dann bei Bedarf abhusten.'],
-    ['halbmond-dehnlage', 'Halbmond-Dehnlage', 'Matte oder Bett', 'atem ruecken', 'liegen', 'ohne', 'Rückenlage. Arme über den Kopf und Beine zur selben Seite legen, sodass der Körper einen Bogen bildet. Ruhig in die gedehnte Flanke atmen, 30 bis 60 Sekunden, Seite wechseln.']
+    ['halbmond-dehnlage', 'Halbmond-Dehnlage', 'Matte oder Bett', 'atem ruecken', 'liegen', 'ohne', 'Rückenlage. Arme über den Kopf und Beine zur selben Seite legen, sodass der Körper einen Bogen bildet. Ruhig in die gedehnte Flanke atmen, 30 bis 60 Sekunden, Seite wechseln.'],
+    ['kiefer-ruhelage', 'Kieferruhelage', 'Sitz', 'kiefer', 'sitz', 'ohne', 'Lippen locker zu, Zähne leicht auseinander, die Zungenspitze liegt oben am Gaumen direkt hinter den oberen Schneidezähnen. Diese Lage mehrmals am Tag prüfen, vor allem wenn Sie merken, dass Sie die Zähne zusammenbeißen.'],
+    ['oeffnen-zunge-gaumen', 'Kontrolliert öffnen mit Zunge am Gaumen', 'Sitz, Spiegel', 'kiefer', 'sitz', 'ohne', 'Zungenspitze oben an den Gaumen legen. Den Mund langsam und gerade öffnen, nur so weit, wie die Zunge oben bleiben kann, langsam schließen. Am besten vor dem Spiegel, ohne Schmerz.'],
+    ['oeffnen-finger-gelenk', 'Öffnen mit Fingern an den Kiefergelenken', 'Sitz', 'kiefer', 'sitz', 'ohne', 'Zeige- und Mittelfinger leicht vor die Ohren auf die Kiefergelenke legen. Den Mund langsam und gerade öffnen und schließen, beide Seiten sollen sich gleich bewegen, ohne Knacken und ohne Schmerz.'],
+    ['isometrisch-oeffnen', 'Mund öffnen gegen die Faust', 'Sitz', 'kiefer', 'sitz', 'ohne', 'Die Faust unter das Kinn legen. Mit dem Kinn leicht gegen die Faust drücken, als wollten Sie den Mund öffnen, ohne dass er sich bewegt. 5 Sekunden halten, lösen.'],
+    ['isometrisch-seitlich', 'Kiefer seitlich gegen die Hand', 'Sitz', 'kiefer', 'sitz', 'ohne', 'Die flache Hand seitlich an den Unterkiefer legen. Den Unterkiefer leicht gegen die Hand schieben, ohne dass er sich bewegt. 5 Sekunden halten, lösen, Seite wechseln.'],
+    ['kiefer-seitschieben', 'Unterkiefer zur Seite schieben', 'Holzspatel', 'kiefer', 'sitz', 'ohne', 'Einen Holzspatel locker zwischen die Schneidezähne legen, nicht fest zubeißen. Den Unterkiefer langsam zur Seite schieben und zurück, im Wechsel rechts und links.'],
+    ['kiefer-vorschieben', 'Unterkiefer vorschieben', 'Sitz', 'kiefer', 'sitz', 'ohne', 'Mund einen Spalt öffnen. Den Unterkiefer langsam gerade nach vorn schieben, bis die unteren Zähne vor den oberen stehen, und langsam zurück. Ohne Schmerz.'],
+    ['masseter-lockern', 'Kaumuskel lockern', 'Sitz', 'kiefer', 'sitz', 'ohne', 'Die Fingerkuppen auf die Wangen zwischen Wangenknochen und Kieferwinkel legen. Mit kleinen Kreisen den Kaumuskel massieren, der Mund ist dabei locker einen Spalt offen. 1 bis 2 Minuten.']
   ];
   const KAT = K.map(([id, n, z, r, p, h, t]) => ({ id, n, z, r: r.split(' '), p, h, t }));
   const BY = Object.fromEntries(KAT.map((x) => [x.id, x]));
-  const REG = [['hue', 'Hüfte'], ['knie', 'Knie'], ['fuss', 'Fuß'], ['ruecken', 'Rücken'], ['hws', 'HWS'], ['schulter', 'Schulter'], ['hand', 'Ellenbogen/Hand'], ['gg', 'Gleichgewicht'], ['atem', 'Atmung']];
+  const REG = [['hue', 'Hüfte'], ['knie', 'Knie'], ['fuss', 'Fuß'], ['ruecken', 'Rücken'], ['hws', 'HWS'], ['schulter', 'Schulter'], ['hand', 'Ellenbogen/Hand'], ['gg', 'Gleichgewicht'], ['atem', 'Atmung'], ['kiefer', 'Kiefer']];
   const POS = [['liegen', 'Liegen'], ['vierf', 'Vierfüßler'], ['sitz', 'Sitz'], ['stand', 'Stand']];
   const HM = [['ohne', 'ohne'], ['band', 'Band'], ['ball', 'Ball'], ['hantel', 'Hantel'], ['stab', 'Stab']];
   const SER = [1, 2, 3], WDH = [8, 10, 12, 15, 20];
@@ -137,6 +145,7 @@
     ruecken: ['becken-kippen', 'knie-brust', 'katzenbuckel', 'offenes-buch', 'bws-ball', 'hochdruecken-bauchlage'],
     hws: ['kinn-einziehen', 'kopfnicken', 'trapez-dehnung', 'levator-dehnung', 'nacken-halten'],
     hand: ['unterarm-drehen', 'faust', 'ball-druecken', 'dehnung-unterarm-strecker', 'handgelenk-senken'],
+    kiefer: ['kiefer-ruhelage', 'oeffnen-zunge-gaumen', 'isometrisch-oeffnen', 'masseter-lockern', 'kinn-einziehen'],
     atem: ['lippenbremse', 'kutschersitz', 'bauchatmung', 'flankenatmung', 'huffing-kissen'],
     gg: ['einbeinstand', 'tandemstand', 'gewichtsverlagerung', 'tandemgang', 'hindernis-steigen', 'einbeinstand-kissen'],
     schulter: ['pendeln', 'tisch-gleiten', 'wand-hochwandern', 'stab-rueckenlage', 'aussenrotation-stab']
@@ -159,11 +168,12 @@
     const out = [];
     for (const st of P?.erstbefund?.stellen ?? []) {
       const r = String(st.region ?? st.name ?? '').toUpperCase();
-      const k = /(HWS|HALS|NACKEN)/.test(r) ? 'hws' : /(ELLENBOGEN|HANDGELENK|HAND|FINGER|DAUMEN)/.test(r) ? 'hand' : /H(Ü|UE)FT/.test(r) ? 'hue' : /KNIE/.test(r) ? 'knie' : /(SPRUNG|FU(SS|ß)|ZEH|OSG|USG)/.test(r) ? 'fuss' : /(LWS|BWS|WIRBEL|R(Ü|UE)CK|ISG|BECKEN)/.test(r) ? 'ruecken' : /SCHULTER/.test(r) ? 'schulter' : null;
+      const k = /(KIEFER|TMJ)/.test(r) ? 'kiefer' : /(HWS|HALS|NACKEN)/.test(r) ? 'hws' : /(ELLENBOGEN|HANDGELENK|HAND|FINGER|DAUMEN)/.test(r) ? 'hand' : /H(Ü|UE)FT/.test(r) ? 'hue' : /KNIE/.test(r) ? 'knie' : /(SPRUNG|FU(SS|ß)|ZEH|OSG|USG)/.test(r) ? 'fuss' : /(LWS|BWS|WIRBEL|R(Ü|UE)CK|ISG|BECKEN)/.test(r) ? 'ruecken' : /SCHULTER/.test(r) ? 'schulter' : null;
       if (k && !out.includes(k)) out.push(k);
     }
     const d = String(P?.erstbefund?.diagnose ?? '').toUpperCase();
     if (/(SCHWINDEL|STURZ|GLEICHGEWICHT|GANGUNSICHER|ATAXIE|POLYNEURO|PARKINSON)/.test(d) && !out.includes('gg')) out.push('gg');
+    if (/(CMD|KIEFER|KRANIOMAND|CRANIOMAND|TMJ|TMD|BRUX)/.test(d) && !out.includes('kiefer')) out.push('kiefer');
     if (/(COPD|ASTHMA|LUNGE|PNEUMO|EMPHYSEM|BRONCH|ATEM|DYSPNO|MUKOVISZ|THORAKOTOM|STERNOTOM|BYPASS)/.test(d) && !out.includes('atem')) out.push('atem');
     return out;
   }
