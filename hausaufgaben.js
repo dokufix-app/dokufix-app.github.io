@@ -64,6 +64,7 @@
     ['brust-tuerrahmen', 'Brustmuskel dehnen im Türrahmen', 'Türrahmen', 'schulter ruecken', 'stand', 'ohne', 'Seitlich in den Türrahmen stellen, die Hand hinten auf Schulterhöhe an den Rahmen legen. Einen Schritt nach vorn machen, bis vorn in der Brust ein Ziehen kommt, 20 bis 30 Sekunden halten.'],
     ['pnf-diagonale-theraband', 'Diagonale nach oben mit Theraband', 'Stuhl, Theraband unter dem Fuß', 'schulter', 'sitz', 'band', 'Band unter den gegenüberliegenden Fuß klemmen, Faust neben der anderen Hüfte, Daumen nach unten. Den gestreckten Arm schräg nach oben außen führen, Hand öffnen und aufdrehen, der Blick folgt der Hand.'],
     ['antirotation', 'Antirotation im Sitz mit Theraband', 'Stuhl, Theraband an der Türklinke', 'ruecken', 'sitz', 'band', 'Seitlich zur Tür sitzen, Band an der Klinke, Bandende mit beiden Händen vor dem Brustbein. Die Hände gerade nach vorn schieben, einige Sekunden halten, langsam zurück. Der Oberkörper dreht nicht mit.'],
+    ['ferse-rausschieben', 'Ferse rausschieben im Wechsel', 'Matte', 'ruecken hue', 'liegen', 'ohne', 'Rückenlage, beide Beine gestreckt. Im Wechsel eine Ferse nach unten schieben und die andere etwas hochziehen, die Knie bleiben gestreckt. Die Bewegung kommt aus dem Becken.'],
     ['kinn-einziehen', 'Kinn einziehen im Sitz', 'Stuhl', 'hws', 'sitz', 'ohne', 'Aufrecht sitzen, Blick geradeaus. Das Kinn waagerecht nach hinten ziehen (Doppelkinn), ohne zu nicken. Kurz halten, locker lassen.'],
     ['kopfnicken', 'Kopfnicken in Rückenlage', 'Matte, flaches Handtuch', 'hws', 'liegen', 'ohne', 'Rückenlage, Kopf auf einem flachen Handtuch. Ganz leicht mit dem Kinn Richtung Brust nicken, der Hinterkopf bleibt liegen. 5 bis 10 Sekunden halten.'],
     ['trapez-dehnung', 'Dehnung oberer Trapezmuskel', 'Stuhl', 'hws schulter', 'sitz', 'ohne', 'Aufrecht sitzen, eine Hand hält die Sitzkante. Die andere Hand legt sich über den Kopf und zieht ihn sanft zur Gegenseite, das Gesicht bleibt nach vorn. 20 bis 30 Sekunden halten.'],
@@ -177,7 +178,20 @@
     const taste = (e) => { if (e.key === 'Escape') zu() };
     document.addEventListener('keydown', taste);
     const hat = (id) => prog.some((x) => x.id === id);
-    const kachel = (k) => `<button type="button" class="ha-ka${hat(k.id) ? ' drin' : ''}" data-a="add" data-id="${k.id}">${paar(k.id)}<span class="ha-ue-n">${esc(k.n)}<small>${esc(k.z)}</small></span><i>${hat(k.id) ? '✓' : '+'}</i></button>`;
+    const dv = 'd2';
+    const kachel = (k) => `<div class="ha-ka hz-ka${hat(k.id) ? ' drin' : ''}${ST.info === k.id ? ' offen' : ''}"><button type="button" class="hz-auf" data-a="info" data-id="${k.id}" aria-expanded="${ST.info === k.id}" aria-label="Details zu ${esc(k.n)}">${paar(k.id)}<span class="ha-ue-n">${esc(k.n)}<small>${esc(k.z)}</small></span></button><button type="button" class="hz-plus" data-a="add" data-id="${k.id}" aria-label="${hat(k.id) ? 'Aus dem Programm nehmen' : 'Zum Programm'}">${hat(k.id) ? '✓' : '+'}</button></div>`;
+    const regName = (r) => REG.find((x) => x[0] === r)?.[1] ?? r;
+    const detail = (k, cls, nav) => { const d = hat(k.id), inV = VORL.filter((t) => t.ids.includes(k.id)).map((t) => t.n);
+      return `<section class="hz ${cls}" aria-label="${esc(k.n)}">
+<div class="hz-kopf">${nav ?? ''}<div class="hz-tt"><h4>${esc(k.n)}</h4><small>${esc(k.z)}</small></div><button type="button" class="hz-zu" data-a="info" data-id="${k.id}" aria-label="Details schließen">${IC.weg}</button></div>
+<div class="hz-bilder"><figure><img src="${bild(k.id, 'start')}" alt="Ausgangsstellung"><figcaption>Start</figcaption></figure><figure><img src="${bild(k.id, 'ende')}" alt="Endstellung"><figcaption>Ende</figcaption></figure></div>
+<div class="hz-film" aria-hidden="true"><img src="${bild(k.id, 'start')}" alt=""><img class="hz-film-e" src="${bild(k.id, 'ende')}" alt=""><span class="hz-film-l"><i>Start</i><i>Ende</i></span></div>
+<div class="hz-meta"><span>${k.r.map(regName).join(', ')}</span><span>${esc(POS.find((x) => x[0] === k.p)?.[1] ?? '')}</span><span>${k.h === 'ohne' ? 'ohne Hilfsmittel' : esc(HM.find((x) => x[0] === k.h)?.[1] ?? '')}</span></div>
+<div class="hz-txt"><h5>So geht’s</h5><p>${esc(k.t)}</p></div>
+<dl class="hz-dl"><div><dt>Startdosis</dt><dd>3 × 10</dd></div>${inV.length ? `<div><dt>In Vorlagen</dt><dd>${inV.map(esc).join(', ')}</dd></div>` : ''}</dl>
+<button type="button" class="hz-los${d ? ' drin' : ''}" data-a="add" data-id="${k.id}">${d ? IC.hak + 'Im Programm · entfernen' : IC.plus + 'Zum Programm'}</button>
+</section>`; };
+
     const male = () => {
       const sc = huelle.querySelector('.ha-sheet')?.scrollTop ?? 0;
       setTimeout(() => { const sh = huelle.querySelector('.ha-sheet'); if (sh) sh.scrollTop = sc; });
@@ -201,9 +215,9 @@
         const grp = (t, gr, L2) => `<div class="hx2-gr"><h5>${t}</h5><div>${L2.map((r) => chip(gr, r)).join('')}</div></div>`;
         const nav = `<div class="hx2-nav" role="navigation">${REG.map(([k, t]) => `<button type="button" aria-current="${!q && ST.reg === k}" data-a="f" data-g="reg" data-v="${k}"><span>${t}</span><small>${nReg(k)}</small></button>`).join('')}${grp('Ausgangsstellung', 'pos', POS)}${grp("Hilfsmittel", "hm", HM)}</div>`;
         const stapel = prog.slice(0, 4).map((x) => BY[x.id] ? `<img src="${bild(x.id, 'ende')}" alt="">` : '').join('');
-        inhalt = `<div class="hx-kopf"><b>Übung hinzufügen</b><button type="button" class="hx-text" data-a="zu">Schließen</button></div><div class="hx2">${nav}<div class="hx2-rechts">${such}${q ? '' : vorBox}<p class="ha-zahl">${titel}</p><div class="ha-liste">${L.map(kachel).join('') || leer}</div></div></div><div class="hx2-leiste"><span class="hx2-stapel">${stapel}</span><span class="hx2-n">${prog.length ? `<b>${prog.length}</b> im Programm` : 'Noch keine Übung gewählt'}</span><button type="button" class="hx2-ok" data-a="zu"${prog.length ? '' : ' disabled'}>Fertig</button></div>`;
+        inhalt = `<div class="hx-kopf"><b>Übung hinzufügen</b><button type="button" class="hx-text" data-a="zu">Schließen</button></div><div class="hx2">${nav}<div class="hx2-rechts">${such}${q ? '' : vorBox}<p class="ha-zahl">${titel}</p><div class="ha-liste">${L.map(kachel).join('') || leer}</div></div></div>${dv === 'd2' && ST.info && BY[ST.info] ? (() => { const i = L.findIndex((x) => x.id === ST.info), vo = L[i - 1], na = L[i + 1]; return `<div class="hz2-dim" data-a="info" data-id="${ST.info}"></div>${detail(BY[ST.info], 'hz2', `<span class="hz2-nav"><button type="button" class="hp-ic" data-a="info2" data-id="${vo?.id ?? ''}"${vo ? '' : ' disabled'} aria-label="Vorherige Übung">${IC.zurueck}</button><button type="button" class="hp-ic hz-vor" data-a="info2" data-id="${na?.id ?? ''}"${na ? '' : ' disabled'} aria-label="Nächste Übung">${IC.zurueck}</button></span>`)}`; })() : ''}<div class="hx2-leiste"><span class="hx2-stapel">${stapel}</span><span class="hx2-n">${prog.length ? `<b>${prog.length}</b> im Programm` : 'Noch keine Übung gewählt'}</span><button type="button" class="hx2-ok" data-a="zu"${prog.length ? '' : ' disabled'}>Fertig</button></div>`;
       }
-      huelle.innerHTML = `<div class="ha-dim" data-a="zu"></div><div class="ha-sheet hx hx-${bv}" role="dialog" aria-label="Übung hinzufügen"><div class="ha-griff"></div>${inhalt}</div>`;
+      huelle.innerHTML = `<div class="ha-dim" data-a="zu"></div><div class="ha-sheet hx hx-${bv} hz-${dv}${ST.info ? ' hz-auf-an' : ''}" role="dialog" aria-label="Übung hinzufügen"><div class="ha-griff"></div>${inhalt}</div>`;
       const nv = huelle.querySelector('.hx2-nav'), akt = nv?.querySelector('[aria-current="true"]');
       if (nv && akt && nv.scrollWidth > nv.clientWidth) nv.scrollLeft = akt.offsetLeft - (nv.clientWidth - akt.offsetWidth) / 2;
       const s = huelle.querySelector('.ha-such');
@@ -222,6 +236,8 @@
       const a = b.dataset.a;
       if (a === 'zu') return zu();
       if (a === 'fo') { ST.fOffen = !ST.fOffen; return male(); }
+      if (a === 'info') { ST.info = ST.info === b.dataset.id ? null : b.dataset.id; return male(); }
+      if (a === 'info2') { ST.info = b.dataset.id || ST.info; return male(); }
       if (a === 'f') { const g = b.dataset.g, v = b.dataset.v || null; ST[g] = g === 'reg' ? v : (ST[g] === v ? null : v); if (g === 'reg') { ST.q = ''; } return male(); }
       if (a === 'raus' || /^[sw][+-]$/.test(a)) {
         const i = +b.dataset.i, k = a[0], max = k === 's' ? 10 : 99;
@@ -399,7 +415,34 @@ ${frei.length ? `<div class="hy-chips"><span>Vorlage dazu</span>${alleV.map((t) 
   window.HA = { vollbild, KAT, BY, REG, liste, letztes, regionen, karte, panel, blatt, druck, anzahl: KAT.length };
 
   // ---------- Stil ----------
-  const css = `.hy-2 .hy-top{position:sticky;top:64px;z-index:3;margin:0 -12px;padding:10px 12px;border-radius:18px;background:color-mix(in srgb,var(--grund,#f3f5ee) 88%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+  const css = `.hz-ka{padding:0;display:block;transition:transform 160ms ease-out,box-shadow 200ms ease}
+.hz-ka .hz-auf{display:block;width:100%;padding:7px 7px 9px;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;border-radius:12px}
+.hz-ka:active{transform:scale(.98)}.hz-ka.offen{box-shadow:0 0 0 2px var(--tape,#4f6d10)}
+.hz-ka .ha-ue-n{padding-right:36px}
+.hz-plus{position:absolute;right:10px;bottom:10px;width:30px;height:30px;border-radius:15px;border:0;background:var(--tape,#4f6d10);color:#fff;font:inherit;font-size:18px;display:grid;place-items:center;cursor:pointer;transition:transform 160ms ease-out}
+.hz-plus:active{transform:scale(.92)}.hz-ka.drin .hz-plus{background:#ddf6a2;color:#2f4208;font-size:15px}
+.hz{background:var(--flaeche,#fff);border-radius:18px;padding:16px;display:grid;gap:12px;box-shadow:0 1px 2px rgba(0,0,0,.06),0 12px 32px -18px rgba(30,45,10,.35)}
+.hz svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.hz-kopf{display:flex;align-items:flex-start;gap:10px}.hz-tt{flex:1;min-width:0}.hz h4{margin:0;font-size:1.25rem;letter-spacing:-.01em;line-height:1.2}.hz-tt small{color:var(--schrift2,#5f6556)}
+.hz-zu{width:36px;height:36px;border-radius:18px;border:0;background:var(--grund,#f3f5ee);display:grid;place-items:center;cursor:pointer;color:var(--schrift2,#5f6556);flex:none}
+.hz-bilder{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0}.hz-bilder figure{margin:0;position:relative}.hz-bilder img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;display:block;background:#e9e4e1}
+.hz-bilder figcaption,.hz-film-l i{position:absolute;left:8px;top:8px;padding:3px 9px;border-radius:9px;background:rgba(255,255,255,.88);font-size:.75rem;font-weight:650;color:var(--schrift,#1a1a1a);font-style:normal}
+.hz-film{display:none;position:relative}.hz-film img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:14px;display:block}.hz-film .hz-film-e{position:absolute;inset:0;animation:hz-film 3.2s ease-in-out infinite}
+.hz-film-l i:last-child{left:auto;right:8px;animation:hz-film 3.2s ease-in-out infinite}.hz-film-l i:first-child{animation:hz-film 3.2s ease-in-out infinite reverse}
+@keyframes hz-film{0%,35%{opacity:0}50%,85%{opacity:1}100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.hz-film .hz-film-e,.hz-film-l i{animation:none}}
+.hz-meta{display:flex;flex-wrap:wrap;gap:6px}.hz-meta span{padding:4px 10px;border-radius:10px;background:var(--grund,#f3f5ee);font-size:.8125rem;color:var(--schrift2,#5f6556)}.hz-meta span:empty{display:none}
+.hz-txt h5{margin:0 0 4px!important}.hz-txt p{margin:0;line-height:1.5;font-size:.9375rem;max-width:62ch}
+.hz-dl{display:flex;gap:24px;margin:0}.hz-dl dt{font-size:.75rem;color:var(--schrift2,#5f6556)}.hz-dl dd{margin:2px 0 0;font-weight:600}
+.hz-los{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;border:0;border-radius:14px;background:var(--tape,#4f6d10);color:#fff;font:inherit;font-weight:650;cursor:pointer;transition:transform 160ms ease-out}
+.hz-los:active{transform:scale(.98)}.hz-los.drin{background:var(--grund,#f3f5ee);color:var(--tape,#4f6d10)}
+.hz2-dim{position:fixed;inset:0;background:rgba(20,24,16,.32);z-index:5;animation:hz-dim .2s ease-out}
+@keyframes hz-dim{from{opacity:0}}
+.hz2{position:fixed;z-index:6;left:50%;top:50%;width:min(640px,92vw);max-height:86vh;overflow:auto;transform:translate(-50%,-50%);animation:hz-pop .26s cubic-bezier(.23,1,.32,1)}
+@keyframes hz-pop{from{opacity:0;transform:translate(-50%,-48%) scale(.96)}}
+.hz2 .hz-bilder{display:none}.hz2 .hz-film{display:block}
+.hz2-nav{display:flex;gap:4px;order:3}.hz2 .hz-kopf{align-items:center}.hz-vor svg{transform:rotate(180deg)}.hz2-nav button:disabled{opacity:.3}
+.hy-2 .hy-top{position:sticky;top:64px;z-index:3;margin:0 -12px;padding:10px 12px;border-radius:18px;background:color-mix(in srgb,var(--grund,#f3f5ee) 88%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
 .hy-sp{flex:1}
 .hy-oft{display:flex;align-items:center;gap:4px;padding:4px;border-radius:14px;background:var(--flaeche,#fff);box-shadow:0 1px 2px rgba(0,0,0,.05);flex-wrap:wrap}
 .hy-oft span{font-size:.8125rem;font-weight:650;color:var(--schrift2,#5f6556);padding:0 6px 0 8px}
