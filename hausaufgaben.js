@@ -731,7 +731,7 @@ ${frei.length ? `<div class="hy-chips"><span>Vorlage dazu</span>${alleV.map((t) 
 .hx-tabs button{flex:1 0 auto;display:inline-flex;align-items:baseline;justify-content:center;gap:5px;min-height:40px;padding:0 14px;border:0;border-radius:10px;background:none;font:inherit;font-weight:600;font-size:.9375rem;color:var(--schrift2,#5f6556);cursor:pointer;transition:background 160ms ease,color 160ms ease,transform 160ms ease-out}
 .hx-tabs button small{font-weight:500;font-size:.75rem;opacity:.7;font-variant-numeric:tabular-nums}
 .hx-tabs button[aria-selected="true"]{background:var(--flaeche,#fff);color:var(--schrift,#1a1a1a);box-shadow:0 1px 3px rgba(0,0,0,.1)}
-.hx-vor{margin:12px 0 2px;padding:12px;border-radius:16px;background:color-mix(in srgb,var(--tape,#4f6d10) 8%,var(--flaeche,#fff))}
+.hx-vor{margin:12px 0 2px;padding:12px;border-radius:16px;background:color-mix(in srgb,var(--tape,#4f6d10) 8%,var(--flaeche,#fff))} .hx .hz-ka{background:var(--flaeche,#fff);box-shadow:0 0 0 1px var(--linie,#e1e4d8),0 1px 3px rgba(30,45,10,.07)} .hx .hz-ka.offen{box-shadow:0 0 0 2px var(--tape,#4f6d10)} .hx .hz-ka .hz-auf{padding:7px 7px 12px} .hx .hz-plus{right:12px;bottom:14px}
 .hx h5{margin:0 0 8px;font-size:.8125rem;font-weight:650;color:var(--schrift2,#5f6556);letter-spacing:.01em}
 .hx .ha-liste{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
 .hx2{display:grid;grid-template-columns:236px 1fr;gap:20px;align-items:start;padding-bottom:84px}
