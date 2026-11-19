@@ -14,7 +14,8 @@ window.WDH_INDEX=[
    "Gewebeheilung: wann ist was belastbar?",
    "Habituelle Patellaluxation",
    "Querschnitt: was ist je Höhe möglich?",
-   "Schwindel: einordnen, testen, behandeln"
+   "Schwindel: einordnen, testen, behandeln",
+   "Kopfschmerzen: einordnen, testen, behandeln"
   ]
  }
 ];

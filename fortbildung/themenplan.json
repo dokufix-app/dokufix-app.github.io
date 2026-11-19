@@ -611,7 +611,8 @@
    "titel": "Lipödem",
    "bereich": "Innere/Sonstiges"
   },
-  "KN11"
+  "KN11",
+  "NE11"
  ],
  "wochen": [
   {
@@ -672,6 +673,12 @@
      "kb": "NE07",
      "art": "kb",
      "titel": "Schwindel: einordnen, testen, behandeln"
+    },
+    {
+     "id": "w47-kopf",
+     "kb": "NE11",
+     "art": "kb",
+     "titel": "Kopfschmerzen: einordnen, testen, behandeln"
     }
    ]
   }
@@ -724,6 +731,12 @@
    "zuerst": "2026-W47",
    "wiederholt": [],
    "faellig": "2026-W50"
+  },
+  "NE11": {
+   "zuerst": "2026-W47",
+   "wiederholt": [],
+   "faellig": "2026-W50",
+   "notiz": "Zusatzthema 20.11.2026 nach Deep Research; Krankheitsbild NE11 neu in v220"
   }
  },
  "forschung": [
