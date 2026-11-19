@@ -529,11 +529,36 @@ ${prog.filter((x) => BY[x.id]).map((x, i) => { const k = BY[x.id]; return `<div 
     const reihe2 = (x, i) => { const k = BY[x.id], hOffen = el.__hinw === i || x.h; return `<li class="hy-z gross"><span class="hy-nr">${i + 1}</span><div class="hy-bild">${paar(x.id)}</div><div class="hy-txt"><b>${esc(k.n)}</b><small>${esc(k.z)}</small><p>${esc(k.t)}</p></div><div class="hy-dos"><div class="hy-dz">${stepper(x, i)}<div class="hy-pre" role="group" aria-label="Schnellwahl">${PRE.map(([s2, w2]) => `<button type="button" data-a="preset" data-i="${i}" data-v="${s2}x${w2}" aria-pressed="${x.s === s2 && x.w === w2}">${s2} × ${w2}</button>`).join('')}</div></div>${hOffen ? `<div class="hy-hz"><input class="hy-hinw" data-i="${i}" maxlength="140" placeholder="Hinweis für den Patienten, z. B. nur bis zur Schmerzgrenze" value="${esc(x.h || '')}" aria-label="Hinweis für den Patienten"><button type="button" class="hp-ic klein" data-a="hinwweg" data-i="${i}" aria-label="Hinweis entfernen">${IC.weg}</button></div>` : `<button type="button" class="hy-hplus" data-a="hinw" data-i="${i}">${IC.plus}Hinweis für den Patienten</button>`}</div><div class="hy-akt"><button type="button" class="hp-ic klein" data-a="hoch" data-i="${i}" aria-label="Nach oben"${i ? '' : ' disabled'}>${IC.hoch}</button><button type="button" class="hp-ic klein hy-runter" data-a="runter" data-i="${i}" aria-label="Nach unten"${i < frei.length - 1 ? '' : ' disabled'}>${IC.hoch}</button><button type="button" class="hp-ic klein" data-a="weg" data-i="${i}" aria-label="Entfernen">${IC.weg}</button></div></li>`; };
     const merkZ = el.__merken ? `<div class="hy-merk"><input class="hq-in" maxlength="40" placeholder="Name der Vorlage, z. B. Knie nach OP Woche 2" aria-label="Name der Vorlage"><button type="button" class="hp-kn" data-a="speichern">Merken</button><button type="button" class="hp-link" data-a="merkzu">Abbrechen</button></div>` : merk;
     const vKarten = `<div class="hy-vgrid">${alleV.map((t) => `<button type="button" class="hq-vk" ${vAkt(t)}>${mosaik(t.ids)}<b>${esc(t.n)}</b><small>${anz(t.ids.length)}${t.eig != null ? ' · eigene' : ''}</small></button>`).join('')}</div>`;
+    const ans = el.__ans || 'prog';
+    const regName = (r) => REG.find((x) => x[0] === r)?.[1] ?? r;
+    const tabs = `<div class="hb-tabs" role="tablist" aria-label="Ansicht">${[['prog', 'Programm' + (frei.length ? ` · ${frei.length}` : '')], ['vorl', 'Vorlagen'], ['alle', 'Alle Übungen']].map(([k2, n2]) => `<button type="button" role="tab" data-a="ans" data-v="${k2}" aria-selected="${ans === k2}">${n2}</button>`).join('')}</div>`;
+    const vKey = (t) => t.eig != null ? 'e' + t.eig : 'v' + t.vi;
+    let ansHtml = '';
+    if (ans === 'vorl') {
+      const t = el.__vd ? alleV.find((x) => vKey(x) === el.__vd) : null;
+      if (t) {
+        const k2 = vKey(t);
+        ansHtml = `<div class="hb-vd"><button type="button" class="hb-zur" data-a="vzur">${IC.zurueck}Alle Vorlagen</button>
+<div class="hb-vk"><div class="hb-vk-t"><h3>${esc(t.n)}</h3><small>${anz(t.ids.length)}${t.eig != null ? ' · eigene Vorlage' : ' · Entwurf, fachlich prüfen'}</small></div><div class="hb-vk-akt"><button type="button" class="hp-kn zwei" data-a="vdazu" data-k="${k2}"${frei.length ? '' : ' hidden'}>${IC.plus}Zum Programm dazu</button><button type="button" class="hp-kn" data-a="vneu" data-k="${k2}">${frei.length ? 'Programm ersetzen' : 'Als Programm übernehmen'}</button></div></div>
+<ol class="hb-vl">${t.ids.map((id, i) => { const x = BY[id]; return `<li><span class="hy-nr">${i + 1}</span><div class="hb-b">${paar(id)}</div><div class="hy-txt"><b>${esc(x.n)}</b><small>${esc(x.z)} · ${x.r.map(regName).join(', ')}</small><p>${esc(x.t)}</p></div></li>`; }).join('')}</ol></div>`;
+      } else {
+        ansHtml = `<div class="hy-sk"><h4>${alleV.length} Vorlagen</h4><span class="hp-hint">Antippen zeigt die Übungen · Entwurf, fachlich prüfen</span></div><div class="hy-vgrid hb-vgrid">${alleV.map((t) => `<button type="button" class="hq-vk" data-a="vsehen" data-k="${vKey(t)}">${mosaik(t.ids)}<b>${esc(t.n)}</b><small>${anz(t.ids.length)}${t.eig != null ? ' · eigene' : ''}</small></button>`).join('')}</div>`;
+      }
+    } else if (ans === 'alle') {
+      const drin = (id) => frei.some((x) => x.id === id);
+      const regs = REG.map(([r, n2]) => [r, n2, KAT.filter((k) => k.r.includes(r))]).filter((x) => x[2].length);
+      const kach = (k) => `<div class="hb-ka${drin(k.id) ? ' drin' : ''}"><button type="button" class="hb-auf" data-a="ainfo" data-id="${k.id}" aria-label="Details zu ${esc(k.n)}"><img src="${bild(k.id, 'ende')}" alt="" loading="lazy"><span><b>${esc(k.n)}</b><small>${esc(k.z)}</small></span></button><button type="button" class="hb-plus" data-a="aadd" data-id="${k.id}" aria-label="${drin(k.id) ? 'Aus dem Programm nehmen' : 'Zum Programm'}">${drin(k.id) ? IC.hak : IC.plus}</button></div>`;
+      const ai = el.__ai && BY[el.__ai];
+      const inV = ai ? VORL.filter((t) => t.ids.includes(ai.id)).map((t) => t.n) : [];
+      const det = ai ? `<div class="hb-dim" data-a="ainfo" data-id="${ai.id}"></div><section class="hb-det" role="dialog" aria-label="${esc(ai.n)}"><div class="hb-det-k"><div><h4>${esc(ai.n)}</h4><small>${esc(ai.z)}</small></div><button type="button" class="hp-ic" data-a="ainfo" data-id="${ai.id}" aria-label="Schließen">${IC.weg}</button></div><div class="hb-det-b"><figure><img src="${bild(ai.id, 'start')}" alt="Ausgangsstellung"><figcaption>Start</figcaption></figure><figure><img src="${bild(ai.id, 'ende')}" alt="Endstellung"><figcaption>Ende</figcaption></figure></div><div class="hb-det-m"><span>${ai.r.map(regName).join(', ')}</span><span>${esc(POS.find((x) => x[0] === ai.p)?.[1] ?? '')}</span><span>${ai.h === 'ohne' ? 'ohne Hilfsmittel' : esc(HM.find((x) => x[0] === ai.h)?.[1] ?? '')}</span></div><p class="hb-det-t">${esc(ai.t)}</p>${inV.length ? `<p class="hb-det-v"><b>In Vorlagen:</b> ${inV.map(esc).join(', ')}</p>` : ''}<button type="button" class="hp-kn${drin(ai.id) ? ' zwei' : ''} hb-det-los" data-a="aadd" data-id="${ai.id}">${drin(ai.id) ? IC.hak + 'Im Programm · entfernen' : IC.plus + 'Zum Programm'}</button></section>` : '';
+      ansHtml = `<div class="hb-alle"><div class="hb-sprung" role="group" aria-label="Zur Region springen">${regs.map(([r, n2, L]) => `<button type="button" data-a="areg" data-v="${r}">${n2}<span>${L.length}</span></button>`).join('')}</div>${regs.map(([r, n2, L]) => `<section class="hb-reg" id="hb-r-${r}"><h3>${n2}<span>${L.length} Übungen</span></h3><div class="hb-grid">${L.map(kach).join('')}</div></section>`).join('')}</div>${det}`;
+    }
     html = `<div class="hp hy hy-2">
 <div class="hy-top"><div class="hy-zahl"><b>${frei.length}</b><span>${frei.length === 1 ? 'Übung' : 'Übungen'}</span></div>${frei.length ? `<div class="hy-oft" role="group" aria-label="Wie oft üben"><span>Üben</span>${OFT.map((o) => `<button type="button" data-a="oft" data-v="${o}" aria-pressed="${oft === o}">${o}</button>`).join('')}</div>` : '<span class="hy-sp"></span>'}${aktionen}</div>
 ${frei.length ? `<div class="hy-chips"><span>Vorlage dazu</span>${alleV.map((t) => `<button type="button" class="hy-chip" ${vAkt(t)}><img src="${bild(t.ids[0], 'ende')}" alt="">${esc(t.n)}</button>`).join('')}</div>
 <ol class="hy-liste gross">${frei.map(reihe2).join('')}</ol>
 <div class="hy-unten"><button type="button" class="hy-plus" data-a="neu">${IC.plus}Übung hinzufügen</button>${merkZ}<span class="hy-sp"></span><button type="button" class="hp-link warn" data-a="leeren">Programm leeren</button></div>` : `${leerY}<div class="hy-sk" style="margin-top:22px"><h4>Oder mit einer Vorlage beginnen</h4><span class="hp-hint">Entwurf, fachlich prüfen</span></div>${vKarten}`}</div>`;
+    html = ans === 'prog' ? html.replace('<div class="hp hy hy-2">', '<div class="hp hy hy-2">' + tabs) : `<div class="hp hy hy-2 hb-ans-${ans}">${tabs}${ansHtml}</div>`;
     if (el.__html !== html) { el.innerHTML = html; el.__html = html; }
     function male() { el.__html = null; panel(el); }
     el.onclick = (ev) => {
@@ -551,11 +576,18 @@ ${frei.length ? `<div class="hy-chips"><span>Vorlage dazu</span>${alleV.map((t) 
       if (a === 'vorlagen') { el.__vorl = !el.__vorl; return male(); }
       if (a === 'vorlage') { const ids = VORL[i].ids; const p = frei.slice(); for (const id of ids) if (!p.some((x) => x.id === id)) p.push({ id, s: 3, w: 10 }); el.__vorl = false; return setze(p); }
       const vk = (k) => k[0] === 'e' ? eigene()[+k.slice(1)] : VORL[+k.slice(1)];
+      const nachOben = () => { const t = el.getBoundingClientRect().top; if (t < 0) el.scrollIntoView({ block: 'start' }); };
+      if (a === 'ans') { el.__ans = b.dataset.v; el.__vd = null; el.__ai = null; male(); return nachOben(); }
+      if (a === 'vsehen') { el.__vd = b.dataset.k; male(); return nachOben(); }
+      if (a === 'vzur') { el.__vd = null; return male(); }
+      if (a === 'ainfo') { el.__ai = el.__ai === b.dataset.id ? null : b.dataset.id; return male(); }
+      if (a === 'aadd') { const id = b.dataset.id; return setze(frei.some((x) => x.id === id) ? frei.filter((x) => x.id !== id) : [...frei, { id, s: 3, w: 10 }]); }
+      if (a === 'areg') { el.querySelector(`#hb-r-${b.dataset.v}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
       if (a === 's-' || a === 's+' || a === 'w-' || a === 'w+' || a === 'ds' || a === 'dw') { const p = JSON.parse(JSON.stringify(frei)); const x = p[i]; if (a === 's-') x.s--; if (a === 's+') x.s++; if (a === 'w-') x.w = Math.max(1, x.w - 1); if (a === 'w+') x.w = Math.min(99, x.w + 1); if (a === 's+') x.s = Math.min(10, x.s);  if (a === 'ds') x.s = +b.dataset.v; if (a === 'dw') x.w = +b.dataset.v; return setze(p); }
       if (a === 'hoch' && i > 0) { const p = frei.slice(); [p[i - 1], p[i]] = [p[i], p[i - 1]]; return setze(p); }
       if (a === 'eig') { const t = eigene()[i]; return setze(JSON.parse(JSON.stringify(t.prog))); }
       if (a === 'vauf') { el.__vorOffen = el.__vorOffen === b.dataset.k ? null : b.dataset.k; return male(); }
-      if (a === 'vneu' || a === 'vdazu') { const t = vk(b.dataset.k); const neuP = t.prog ? JSON.parse(JSON.stringify(t.prog)) : t.ids.map((id) => ({ id, s: 3, w: 10 })); const p = a === 'vneu' ? neuP : [...frei, ...neuP.filter((y) => !frei.some((x) => x.id === y.id))]; el.__vorOffen = null; return setze(p); }
+      if (a === 'vneu' || a === 'vdazu') { const t = vk(b.dataset.k); const neuP = t.prog ? JSON.parse(JSON.stringify(t.prog)) : t.ids.map((id) => ({ id, s: 3, w: 10 })); const p = a === 'vneu' ? neuP : [...frei, ...neuP.filter((y) => !frei.some((x) => x.id === y.id))]; el.__vorOffen = null; el.__ans = 'prog'; el.__vd = null; setze(p); return nachOben(); }
       if (a === 'vloesch') { const L = eigene(); L.splice(+b.dataset.k.slice(1), 1); eigeneSpeichern(L); el.__vorOffen = null; return male(); }
       if (a === 'merken') { if (variante() === 'a1') { const n = 'Eigene Vorlage ' + (eigene().length + 1); eigeneSpeichern([{ n, ids: frei.map((x) => x.id), prog: frei }, ...eigene()]); return male(); } el.__merken = true; male(); el.querySelector('.hq-in')?.focus(); return; }
       if (a === 'merkzu') { el.__merken = false; return male(); }
@@ -929,6 +961,53 @@ ${frei.length ? `<div class="hy-chips"><span>Vorlage dazu</span>${alleV.map((t) 
 
 @media print{body.ha-print>*:not(.ha-druck){display:none!important}body.ha-print .ha-druck{position:static;background:#fff;padding:0;overflow:visible}body.ha-print .ha-druck-leiste{display:none}.ha-a4{max-width:none;padding:0}@page{size:A4;margin:14mm}}
 @media (max-width:560px){.ha-a4{padding:20px 16px}.ha-a4-ue{grid-template-columns:1fr}}
+/* Ansichten Programm | Vorlagen | Alle Übungen */
+.hb-tabs{display:flex;gap:2px;padding:3px;border-radius:12px;background:var(--seite,#e9ebe2);margin:0 0 18px;max-width:520px}
+.hb-tabs button{flex:1;min-height:38px;border:0;border-radius:9px;background:none;font:inherit;font-size:.9375rem;color:var(--schrift2,#5f6556);cursor:pointer;transition:background-color 150ms ease,color 150ms ease}
+.hb-tabs button[aria-selected="true"]{background:var(--flaeche,#fff);color:var(--schrift,#1a1a1a);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.hb-vgrid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+.hb-zur{display:inline-flex;align-items:center;gap:4px;border:0;background:none;color:var(--tape,#4f6d10)!important;font:inherit;font-size:.9375rem;font-weight:600;padding:6px 0;cursor:pointer}
+.hb-zur svg,.hb-vk-akt svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.hb-vk{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:6px 0 16px}
+.hb-vk h3{margin:0;font-size:1.5rem;letter-spacing:-.01em;line-height:1.2}.hb-vk small{color:var(--schrift2,#5f6556);font-size:.875rem}
+.hb-vk-akt{display:flex;gap:8px;flex-wrap:wrap}
+.hb-vl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.hb-vl li{display:grid;grid-template-columns:22px 200px minmax(0,1fr);gap:14px;align-items:center;background:var(--flaeche,#fff);border-radius:16px;padding:10px 14px 10px 10px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 6px 16px -12px rgba(20,40,10,.22)}
+.hb-b .ha-paar{border-radius:10px;overflow:hidden}
+.hb-vl .hy-txt,.hb-vl .hb-b,.hb-vl .hy-nr{grid-area:auto!important}
+.hb-sprung{position:sticky;top:0;z-index:2;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:8px 0 10px;margin:-8px 0 6px;background:var(--hintergrund,#f3f4ee)}
+.hb-sprung::-webkit-scrollbar{display:none}
+.hb-sprung button{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--linie,#dfe2d6);background:var(--flaeche,#fff);font:inherit;font-size:.875rem;color:var(--schrift,#1a1a1a);cursor:pointer}
+.hb-sprung button span{color:var(--schrift2,#5f6556);font-size:.8125rem}
+.hb-sprung button:active,.hb-ka button:active,.hb-tabs button:active{transform:scale(.97)}
+.hb-reg{scroll-margin-top:64px;margin:0 0 26px}
+.hb-reg h3{display:flex;align-items:baseline;gap:8px;margin:0 0 10px;font-size:1.25rem;letter-spacing:-.01em}
+.hb-reg h3 span{font-size:.875rem;font-weight:500;color:var(--schrift2,#5f6556)}
+.hb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
+.hb-ka{position:relative;background:var(--flaeche,#fff);border-radius:14px;overflow:hidden;box-shadow:0 0 0 1px var(--linie,#e3e5dc),0 4px 12px -10px rgba(20,40,10,.25)}
+.hb-ka.drin{box-shadow:0 0 0 2px var(--tape,#4f6d10)}
+.hb-auf{display:flex;flex-direction:column;width:100%;border:0;padding:0;background:none;text-align:left;font:inherit;color:inherit;cursor:pointer;transition:transform 160ms cubic-bezier(.23,1,.32,1)}
+.hb-auf img{width:100%;aspect-ratio:16/10;object-fit:cover;background:#ece7e4;display:block}
+.hb-auf span{display:flex;flex-direction:column;gap:2px;padding:8px 44px 10px 10px}
+.hb-auf b{font-size:.875rem;font-weight:620;line-height:1.25}.hb-auf small{font-size:.75rem;color:var(--schrift2,#5f6556);line-height:1.25}
+.hb-plus{position:absolute;right:6px;bottom:6px;width:34px;height:34px;border-radius:50%;border:0;display:grid;place-items:center;background:var(--seite,#eef0e7);color:var(--tape,#4f6d10);cursor:pointer;transition:transform 160ms cubic-bezier(.23,1,.32,1)}
+.hb-ka.drin .hb-plus{background:var(--tape,#4f6d10);color:#fff}
+.hb-plus svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.hb-dim{position:fixed;inset:0;z-index:60;background:rgba(20,24,16,.32)}
+.hb-det{position:fixed;z-index:61;left:50%;top:50%;transform:translate(-50%,-50%);width:min(640px,calc(100vw - 32px));max-height:calc(100dvh - 48px);overflow:auto;background:var(--flaeche,#fff);border-radius:22px;padding:18px 20px 20px;box-shadow:0 24px 60px -20px rgba(0,0,0,.35);animation:hbAuf 200ms cubic-bezier(.23,1,.32,1)}
+@keyframes hbAuf{from{opacity:0;transform:translate(-50%,-48%) scale(.97)}to{opacity:1;transform:translate(-50%,-50%)}}
+.hb-det-k{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px}
+.hb-det-k h4{margin:0;font-size:1.25rem;color:var(--schrift,#1a1a1a)}.hb-det-k small{color:var(--schrift2,#5f6556)}
+.hb-det-b{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.hb-det-b figure{margin:0;position:relative}.hb-det-b img{width:100%;border-radius:12px;display:block;background:#ece7e4}
+.hb-det-b figcaption{position:absolute;left:8px;top:8px;background:rgba(255,255,255,.9);border-radius:8px;padding:2px 8px;font-size:.75rem}
+.hb-det-m{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 0}.hb-det-m span:empty{display:none}
+.hb-det-m span{font-size:.8125rem;padding:4px 10px;border-radius:999px;background:var(--seite,#eef0e7);color:var(--schrift2,#5f6556)}
+.hb-det-t{margin:12px 0 0;line-height:1.5}.hb-det-v{margin:8px 0 0;font-size:.875rem;color:var(--schrift2,#5f6556)}
+.hb-det-los{width:100%;justify-content:center;margin-top:16px}
+@media (prefers-reduced-motion:reduce){.hb-det{animation:none}}
+@media (max-width:600px){.hb-tabs{max-width:none}.hb-vl li{grid-template-columns:112px minmax(0,1fr);gap:12px;align-items:start;padding:10px}.hb-vl .hy-nr{display:none}.hb-vl .hy-txt p{display:block;font-size:.875rem}.hb-grid{grid-template-columns:1fr 1fr}.hb-vk-akt{width:100%}.hb-vk-akt .hp-kn{flex:1;justify-content:center}}
+
 `;
   const st = document.createElement('style'); st.textContent = css; document.head.append(st);
 })();
