@@ -194,6 +194,70 @@
     return E[0] ? JSON.parse(JSON.stringify(E[0].va.haProg)) : null;
   }
 
+
+  // ---------- Vorschlag: Heimübung aus den Übungen der Therapie (Kurz-Doku) ----------
+  const NORM = (s) => String(s ?? '').toLowerCase().replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss');
+  const TAGS = [
+    ['habd', /abdukt|abspreiz|seitschritt|side ?steps?|seitwaerts gehen|muschel|clam|monster ?walk/],
+    ['hext', /hueft\w*streck|hueft\w*extens|extensoren|bruecke|bridge|gesaess|glute|hip ?thrust|kreuzheben|deadlift|kickback|bein nach hinten|beinpresse|kniebeuge|squat|lunge|ausfallschritt|step-?up|stufe hoch|aufstehen/],
+    ['hadd', /addukt/],
+    ['hflex', /hueftbeug\w*(?! dehn)|knie heben|marsch|hueft\w*flex/],
+    ['kext', /quadri|kniestreck|beinpresse|kniebeuge|squat|lunge|ausfallschritt|step-?(up|down)|stufe|aufstehen|wandsitz|beinstrecker/],
+    ['kflex', /ischio|kniebeugung|beinbeuger|leg ?curl|ferse zum po/],
+    ['wade', /wade|zehenstand|fersenheben|plantarflex|triceps surae/],
+    ['fuss', /kurzfuss|short foot|zehen\b|zehen |fusssohle|fussbinnen|fussgewoelbe/],
+    ['gg', /einbein|gleichgewicht|tandem|balance|propriozep|kissen|wackel/],
+    ['rumpf', /rumpf|dead ?bug|stuetz|plank|pallof|antirotation|bauchmusk/],
+    ['rot', /rotation|rumpfdreh|offenes buch/],
+    ['sar', /aussenrot/],
+    ['skap', /rudern|\brow\b|latzieh|latzug|schulterblatt|skapula|reverse fly/],
+    ['shoch', /seitheben|ueberkopf|arm heben|wand-?slides|unterarme an der wand|pnf|diagonale|schulterpresse|frontheben/],
+    ['hws', /\bhws\b|nacken|kinn|halswirbel/],
+    ['hand', /ellenbogen|handgelenk|unterarm|bizeps|trizeps|epicond|greif/]
+  ];
+  const tagsVon = (txt) => { const t = NORM(txt), t2 = t.replace(/(aussen|innen)rotation/g, ''); return TAGS.filter(([k, r]) => r.test(k === 'rot' ? t2 : t)).map(([k]) => k); };
+  const POSRE = [['vierf', /vierfuess/], ['liegen', /liegen|rueckenlage|bauchlage|seitlage|bruecke|bridge|matte|am bett/], ['sitz', /sitz|beinpresse|stuhl|beinstrecker|beinbeuger/], ['stand', /stand|stehen|seitschritt|side ?step|kniebeuge|squat|lunge|ausfallschritt|step|stufe|gehen|zehenstand|wadenheben|einbein|kreuzheben|kabelzug|zugmaschine|monster|an der wand|an der treppe/]];
+  const posVon = (txt) => { const t = NORM(txt); const h = POSRE.find(([, r]) => r.test(t)); return h ? h[0] : null; };
+  // feste Zuordnung für die wichtigsten Heimübungen, sonst aus Name und Text
+  const MV = {
+    'bruecke': 'hext', 'bruecke-einbeinig': 'hext', 'seitlage-abspreizen': 'habd', 'muschel-loopband': 'habd sar', 'bauchlage-hueftstreckung': 'hext',
+    'fersenschub': 'kflex hflex', 'quadrizeps-rolle': 'kext', 'gestrecktes-bein-heben': 'hflex kext', 'bein-gleiten': 'habd', 'aufstehen-stuhl': 'kext hext',
+    'kniestreckung-sitz': 'kext', 'kniebeugung-sitz': 'kflex', 'abduktion-sitz-loopband': 'habd', 'adduktion-ball': 'hadd', 'bein-abspreizen': 'habd',
+    'knieheben-fuss-hoch': 'hflex', 'ferse-zum-po': 'kflex', 'hueftstreckung-stand': 'hext', 'seitschritte-loopband': 'habd', 'mini-kniebeuge': 'kext hext',
+    'stufe-hoch': 'kext hext', 'stufe-abwaerts': 'kext', 'einbeinstand': 'gg habd', 'vierfuessler-diagonal': 'hext rumpf', 'wandsitz': 'kext',
+    'kniestreckung-band': 'kext', 'ausfallschritt': 'kext hext', 'tandemstand': 'gg', 'einbeinstand-kissen': 'gg habd', 'gewichtsverlagerung': 'gg habd',
+    'seitwaerts-gehen': 'habd gg', 'seitstuetz-knie': 'habd rumpf', 'zehenstand': 'wade', 'wadenheben-exzentrisch': 'wade', 'fersenheben-sitz': 'wade',
+    'zehenstand-ball': 'wade', 'kurzfuss': 'fuss', 'kurzfuss-knie-vor': 'fuss kext', 'zehen-ball-greifen': 'fuss', 'fuss-ueber-ball': 'fuss gg',
+    'ball-rollen-fusssohle': 'fuss', 'fuss-beugen-sitz': 'wade', 'rumpfrotation-diagonale-sitz': 'rot shoch'
+  };
+  const DEHN = /dehn|dehnlage|stretch/;
+  const heimTags = (x) => MV[x.id] ? MV[x.id].split(' ') : (DEHN.test(NORM(x.n)) ? [] : tagsVon(x.n + ' ' + x.z));
+  const POSWORT = { stand: 'im Stand', sitz: 'im Sitz', liegen: 'im Liegen', vierf: 'im Vierfüßler' };
+  // ueb: [{n: Name, t: Zusatztext}] aus der Kurz-Doku (Katalog, eigene Übungen, KGG)
+  function vorschlaege(ueb, prog, n = 3) {
+    const hat = new Set((prog ?? []).map((x) => x.id));
+    const T = (ueb ?? []).map((u) => ({ n: u.n, tags: tagsVon(u.n + ' ' + (u.t ?? '')), pos: posVon(u.n + ' ' + (u.t ?? '')), band: /loop|band|theraband|kabel/.test(NORM(u.n + ' ' + (u.t ?? ''))) })).filter((u) => u.tags.length).flatMap((u) => u.tags.map((t) => ({ ...u, tags: [t] })));
+    if (!T.length) return [];
+    const kand = KAT.filter((x) => !hat.has(x.id)).map((x) => ({ x, tg: heimTags(x) })).filter((k) => k.tg.length);
+    const wertung = (u, k) => { const ov = u.tags.filter((t) => k.tg.includes(t)).length; if (!ov) return 0; return ov * 3 + (u.pos && u.pos === k.x.p ? 4 : 0) + (u.band && k.x.h === 'band' ? 1 : 0) - (k.tg.length - ov) * 0.5; };
+    const raus = [], genommen = new Set();
+    // erst je Therapieübung die beste, dann nach Gesamtwertung auffüllen
+    for (let runde = 0; raus.length < n && runde < n; runde++) {
+      for (const u of T) {
+        if (raus.length >= n) break;
+        let best = null, bw = 0;
+        for (const k of kand) { if (genommen.has(k.x.id)) continue; const w = wertung(u, k); if (w > bw) { bw = w; best = k; } }
+        if (best) { genommen.add(best.x.id); raus.push({ id: best.x.id, grund: u.n + (u.pos && u.pos === best.x.p ? ' ' + POSWORT[u.pos] : '') }); }
+      }
+    }
+    return raus;
+  }
+  const vorBlock = (opt) => {
+    const V = vorschlaege(opt.ueb, opt.prog);
+    if (!V.length) return '';
+    return `<div class="ha-tv"><div class="ha-tv-k"><b>Passt als Heimübung</b><small>Vorschlag zu den Übungen von heute</small></div>${V.map((v) => `<div class="ha-tv-z"><img src="${bild(v.id, 'ende')}" alt=""><span><b>${esc(BY[v.id].n)}</b><small>weil: ${esc(v.grund)}</small></span><button type="button" class="ha-tv-plus" data-a="vor" data-id="${v.id}" aria-label="${esc(BY[v.id].n)} übernehmen">${IC.plus}</button></div>`).join('')}${V.length > 1 ? `<button type="button" class="ha-kn zwei ha-tv-alle" data-a="voralle" data-ids="${V.map((v) => v.id).join(' ')}">Alle ${V.length} übernehmen</button>` : ''}</div>`;
+  };
+
   // ---------- Karte (Verlauf, Kurz-Doku, Mehr) ----------
   function karte(el, opt) {
     const prog = opt.prog ?? [];
@@ -210,6 +274,7 @@
           : `<p class="ha-leer">Noch keine Übungen. Über „+ Übung“ nach Region auswählen${opt.P && regionen(opt.P).length ? ', Vorschläge passend zum Befund stehen oben' : ''}.</p>`)
         + (prog.length ? `<div class="ha-fuss"><button type="button" class="ha-kn" data-a="druck">Blatt zeigen</button><button type="button" class="ha-kn zwei" data-a="druck">Drucken / Teilen</button></div>` : '');
     }
+    html += vorBlock(opt);
     if (el.__html !== html) { el.innerHTML = html; el.__html = html; }
     el.__opt = opt;
     el.onclick = (ev) => {
@@ -217,6 +282,7 @@
       const o = el.__opt, pr = o.prog ?? [];
       const a = b.dataset.a, i = +b.dataset.i, p = JSON.parse(JSON.stringify(pr));
       if (a === 'neu') return blatt(o);
+      if (a === 'vor' || a === 'voralle') { const ids = a === 'vor' ? [b.dataset.id] : b.dataset.ids.split(' '); for (const id of ids) if (BY[id] && !p.some((x) => x.id === id)) p.push({ id, s: 3, w: 10 }); el.__html = null; o.prog = p; karte(el, o); return o.setze(p); }
       if (a === 'druck') return druck(pr);
       if (a === 'auf') { el.__offen = el.__offen === i ? null : i; return karte(el, o); }
       if (/^[sw][+-]$/.test(a)) { const k = a[0]; p[i][k] = Math.max(1, Math.min(k === 's' ? 10 : 99, p[i][k] + (a[1] === '+' ? 1 : -1))); }
@@ -511,7 +577,7 @@ ${frei.length ? `<div class="hy-chips"><span>Vorlage dazu</span>${alleV.map((t) 
     lauf(null, 'auf', () => v.querySelector('.hv-zu').focus({ preventScroll: true }));
   }
 
-  window.HA = { vollbild, KAT, BY, REG, liste, letztes, regionen, karte, panel, blatt, druck, anzahl: KAT.length };
+  window.HA = { vollbild, KAT, BY, REG, liste, letztes, regionen, karte, panel, blatt, druck, vorschlaege, anzahl: KAT.length };
 
   // ---------- Stil ----------
   const css = `.ha-paar.hw{display:block;position:relative}.ha-paar.hw img{width:100%}.ha-paar.hw .hw-e{position:absolute;inset:0;height:100%;animation:hz-film 3.2s ease-in-out infinite}
@@ -680,6 +746,7 @@ ${frei.length ? `<div class="hy-chips"><span>Vorlage dazu</span>${alleV.map((t) 
 .ha-fuss{display:flex;gap:8px;flex-wrap:wrap}
 .ha-leer{color:var(--schrift2,#5f6556);font-size:.9375rem;margin:10px 0}
 .ha-karte.kompakt{display:flex;align-items:center;gap:12px;padding:10px 12px}
+.ha-karte.kompakt{flex-wrap:wrap}.ha-tv{flex-basis:100%;margin-top:10px;padding-top:10px;border-top:1px solid var(--linie,#e3e5dc)}.ha-tv-k{display:flex;align-items:baseline;gap:8px;margin-bottom:4px}.ha-tv-k b{font-size:.9375rem}.ha-tv-k small{color:var(--schrift2,#5f6556);font-size:.8125rem}.ha-tv-z{display:flex;align-items:center;gap:10px;padding:6px 0}.ha-tv-z img{width:64px;height:36px;object-fit:cover;border-radius:6px;flex:none}.ha-tv-z span{flex:1;min-width:0;display:flex;flex-direction:column}.ha-tv-z span b{font-size:.9375rem;font-weight:600}.ha-tv-z small{color:var(--schrift2,#5f6556);font-size:.8125rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ha-tv-plus{width:44px;height:44px;border-radius:12px;border:0;background:var(--tape,#4f6d10);color:#fff;display:grid;place-items:center;flex:none}.ha-tv-plus:active{transform:scale(.94)}.ha-tv-plus svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}.ha-tv-alle{margin-top:6px;width:100%}
 .ha-stapel{display:flex}.ha-stapel img{width:64px;height:36px;object-fit:cover;border-radius:6px;border:2px solid #fff;margin-left:-14px}.ha-stapel img:first-child{margin-left:0}
 .ha-k-txt{flex:1;min-width:0;display:flex;flex-direction:column}.ha-k-txt small{color:var(--schrift2,#5f6556);font-size:.8125rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ha-ueber{position:fixed;inset:0;z-index:2147483000}

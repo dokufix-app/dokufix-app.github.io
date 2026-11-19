@@ -8,8 +8,9 @@ Neue Versionen kommen oben dazu.
 
 | Version | Datum | Commit | Was sich geändert hat |
 |---|---|---|---|
-| v209 | 19.11.2026 | (dieser) | Wissen › Wiederholung: Begriffe mit Zusatzfenster (grün unterstrichen, Antippen öffnet Erklärung), 138 Begriffe in allen 14 Einheiten der KW 47; Korrekturen Schulter (Dekompression) und Karpaltunnel (CTS-6) |
-| v208 | 19.11.2026 | (dieser) | Hausaufgaben: neue Übung „Diagonale mit Rumpfdrehung im Sitz“ (gestreckter Arm gegen Theraband von über die Körpermitte in Flexion, Abduktion, Außenrotation mit Rumpfrotation zur gleichen Seite; Rücken und Schulter, 137 Übungen). Sicherungsdatei heißt jetzt „JJJJ-MM-TT HH-MM Sicherung Doku-Fix.json“, Datum und Uhrzeit vorn. |
+| v210 | 19.11.2026 | (dieser) | Schnell-Doku › Heimübungen: Unter der Hausaufgaben-Karte stehen drei Vorschläge passend zu den Übungen von heute (Auswahl, eigene Übungen, KGG). Erkannt werden Bewegung (z. B. Hüftabduktion, -extension, Kniestreckung, Wade, Fuß, Rumpf) und Ausgangsstellung (im Stand trainiert, im Stand vorgeschlagen). Mit Begründung, einzeln oder alle übernehmen; nur Vorschlag. |
+| v209 | 19.11.2026 | 723179a | Wissen › Wiederholung: Begriffe mit Zusatzfenster (grün unterstrichen, Antippen öffnet Erklärung), 138 Begriffe in allen 14 Einheiten der KW 47; Korrekturen Schulter (Dekompression) und Karpaltunnel (CTS-6) |
+| v208 | 19.11.2026 | 0599852 | Hausaufgaben: neue Übung „Diagonale mit Rumpfdrehung im Sitz“ (gestreckter Arm gegen Theraband von über die Körpermitte in Flexion, Abduktion, Außenrotation mit Rumpfrotation zur gleichen Seite; Rücken und Schulter, 137 Übungen). Sicherungsdatei heißt jetzt „JJJJ-MM-TT HH-MM Sicherung Doku-Fix.json“, Datum und Uhrzeit vorn. |
 | v207 | 19.11.2026 | 4958565 | Kurz-Doku: Unter Befinden, Eigene Angaben, Schmerz und Reaktion steht klein der Wert der letzten Einheit |
 | v206 | 19.11.2026 | 068241d | Verlauf: Schritt „Maßnahmen“ auch ohne Körperregion; Kurz-Doku › Übungen: Dosierung je Übung (3 × 8/10/15 plus Freitext) und Übung tauschen |
 | v205 | 19.11.2026 | f6ec3ad | Dienstplan: Wärme, Fango, Heißluft, Kälte, Elektro, Ultraschall als blasse Zeile „Anmeldung“, parallel hinter dem Termin, ohne Überschneidungs-Warnung, zählt nicht als Termin oder offene Doku |
