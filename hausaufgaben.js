@@ -154,7 +154,13 @@
     ['aufsetzen-bettkante', 'Über die Seite an die Bettkante aufsetzen', 'im Bett', 'ruecken', 'liegen', 'ohne', 'Auf die Seite drehen, die Unterschenkel über die Bettkante schieben. Mit dem unteren Unterarm und der oberen Hand von der Matratze wegdrücken und den Oberkörper aufrichten, bis du sicher an der Bettkante sitzt.'],
     ['schneidemesser-bettkante', 'Schneidemesser an der Bettkante', 'Bettkante', 'hand atem', 'sitz', 'ohne', 'Aufrecht an der Bettkante sitzen, Füße fest am Boden, Oberarme am Körper, Unterarme angebeugt, Daumen nach oben. Mit den Händen kleine, schnelle Hackbewegungen auf und ab machen. Nur nach Freigabe durch Arzt oder Therapeut.'],
     ['aufstehen-bettkante', 'Aufstehen von der Bettkante', 'Bettkante', 'hue knie', 'sitz', 'ohne', 'An der Bettkante sitzen, Füße hüftbreit etwas hinter den Knien. Oberkörper nach vorn neigen, mit den Händen abdrücken und aufstehen. Kurz stehen, dann langsam wieder hinsetzen. Nur nach Freigabe durch Arzt oder Therapeut.'],
-    ['wade-dehnen-handtuch-bett', 'Wade dehnen mit Handtuch im Bett', 'im Bett, Handtuch', 'fuss', 'sitz', 'ohne', 'Langsitz im Bett, Rücken angelehnt, Beine gestreckt. Ein Handtuch um den Vorfuß legen und die Fußspitze damit zu dir ziehen, das Knie bleibt gestreckt. 30 Sekunden halten.']
+    ['wade-dehnen-handtuch-bett', 'Wade dehnen mit Handtuch im Bett', 'im Bett, Handtuch', 'fuss', 'sitz', 'ohne', 'Langsitz im Bett, Rücken angelehnt, Beine gestreckt. Ein Handtuch um den Vorfuß legen und die Fußspitze damit zu dir ziehen, das Knie bleibt gestreckt. 30 Sekunden halten.'],
+    ['kurzfuss-band', 'Kurzfuß gegen den Bandzug', 'barfuß, langes Loopband, Tischbein', 'fuss', 'stand', 'band', 'Loopband an einem Tischbein auf der Innenseite befestigen. Die Schlaufe hinten tief um das Fersenbein legen, beide Stränge außen um den Knöchel nach vorn und quer über das Sprunggelenk zur Innenseite führen (einer knapp über dem Knöchel, einer darunter). Gegen den Zug das Fußgewölbe anheben, Zehen bleiben lang am Boden. Kurz halten, lösen.'],
+    ['einbeinstand-tippen-band', 'Einbeinstand mit Tippen, Bandzug', 'barfuß, langes Loopband, Tischbein', 'fuss gg', 'stand', 'band', 'Band wie beim Kurzfuß anlegen, auf dem Bein mit dem Band stehen. Mit dem freien Fuß weit nach vorn und schräg außen tippen und zurück. Das Standknie bleibt über dem Fuß, das Gewölbe sinkt nicht ein.'],
+    ['zehenstand-flasche-band', 'Zehenstand halten, Flasche um den Körper', 'barfuß, langes Loopband, Wasserflasche', 'fuss gg', 'stand', 'band', 'Band wie beim Kurzfuß anlegen, einbeinig in den Zehenstand gehen und halten. Dabei eine Wasserflasche um den Körper herum von einer Hand in die andere reichen. Die Ferse bleibt oben, der Knöchel kippt nicht nach innen.'],
+    ['wadenheben-stufe-band', 'Wadenheben einbeinig an der Stufe, Bandzug', 'barfuß, langes Loopband, Stufe', 'fuss', 'stand', 'band', 'Band wie beim Kurzfuß anlegen, mit dem Vorfuß auf die Stufenkante stellen, eine Hand an der Wand. Einbeinig hoch auf den Ballen und langsam wieder absenken. Der Knöchel bleibt gerade.'],
+    ['stufe-abwaerts-band', 'Stufe abwärts mit Bandzug', 'barfuß, langes Loopband, Stufe', 'fuss knie', 'stand', 'band', 'Band wie beim Kurzfuß anlegen, mit diesem Fuß auf der Stufe stehen. Das Knie langsam beugen und den anderen Fuß vor der Stufe absenken, bis die Ferse fast den Boden berührt. Knie über dem zweiten Zeh, Gewölbe bleibt stehen.'],
+    ['fuss-innen-band', 'Fuß nach innen drehen gegen das Band', 'Stuhl, Theraband', 'fuss', 'sitz', 'band', 'Aufrecht sitzen, das Band außen neben dem Fuß befestigen und um den Vorfuß legen. Die Fußspitze gegen das Band nach innen und leicht nach oben drehen, die Ferse bleibt am Boden. Langsam zurück.']
   ];
   const KAT = K.map(([id, n, z, r, p, h, t]) => ({ id, n, z, r: r.split(' '), p, h, t }));
   const BY = Object.fromEntries(KAT.map((x) => [x.id, x]));
@@ -175,6 +181,10 @@
     schulter: ['pendeln', 'tisch-gleiten', 'wand-hochwandern', 'stab-rueckenlage', 'aussenrotation-stab']
   };
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  // Nahaufnahme, wie das Hilfsmittel angelegt wird (eine für mehrere Übungen)
+  const NAH = { 'kurzfuss-band': 'band-steigbuegel', 'einbeinstand-tippen-band': 'band-steigbuegel', 'zehenstand-flasche-band': 'band-steigbuegel', 'wadenheben-stufe-band': 'band-steigbuegel', 'stufe-abwaerts-band': 'band-steigbuegel' };
+  const NAHTXT = { 'band-steigbuegel': 'So legst du das Band an: Die Schlaufe liegt hinten tief um das Fersenbein. Beide Stränge laufen außen um den Knöchel nach vorn und quer über das Sprunggelenk, einer knapp über dem Knöchel, einer darunter, und von dort gespannt zur Innenseite. Das Band zieht den Fuß nach innen, du hältst mit dem Gewölbe dagegen' };
+  const nahBild = (n) => window.HA_BILD?.[`nah-${n}`] || `heimuebungen/heim-nah-${n}.webp`;
   const bild = (id, s) => window.HA_BILD?.[`${id}-${s}`] || `heimuebungen/heim-${id}-${s}.webp`;
   const dos = (x) => `${x.s} × ${x.w}`;
   const liste = (prog) => (prog ?? []).filter((x) => BY[x.id]).map((x) => `${BY[x.id].n} ${dos(x)}${x.h ? ` (${x.h})` : ''}`);
@@ -243,7 +253,7 @@
     'zehenstand-ball': 'wade', 'kurzfuss': 'fuss', 'kurzfuss-knie-vor': 'fuss kext', 'zehen-ball-greifen': 'fuss', 'fuss-ueber-ball': 'fuss gg',
     'ball-rollen-fusssohle': 'fuss', 'fuss-beugen-sitz': 'wade', 'rumpfrotation-diagonale-sitz': 'rot shoch',
     'fersenschub-bett': 'kflex hflex', 'knie-fallen-bett': 'hadd habd', 'knie-loopband-bett': 'habd', 'bruecke-bett': 'hext',
-    'arme-heben-bett': 'shoch', 'beinpresse-band-bett': 'kext hext', 'wadenpresse-band-bett': 'wade', 'nach-oben-rutschen': 'hext', 'aufsetzen-bettkante': 'rumpf', 'schneidemesser-bettkante': 'hand', 'aufstehen-bettkante': 'kext hext'
+    'arme-heben-bett': 'shoch', 'beinpresse-band-bett': 'kext hext', 'wadenpresse-band-bett': 'wade', 'nach-oben-rutschen': 'hext', 'aufsetzen-bettkante': 'rumpf', 'schneidemesser-bettkante': 'hand', 'aufstehen-bettkante': 'kext hext', 'kurzfuss-band': 'fuss', 'einbeinstand-tippen-band': 'fuss gg', 'zehenstand-flasche-band': 'wade gg', 'wadenheben-stufe-band': 'wade', 'stufe-abwaerts-band': 'kext fuss', 'fuss-innen-band': 'fuss'
   };
   const DEHN = /dehn|dehnlage|stretch/;
   const heimTags = (x) => MV[x.id] ? MV[x.id].split(' ') : (DEHN.test(NORM(x.n)) ? [] : tagsVon(x.n + ' ' + x.z));
@@ -334,7 +344,7 @@
     const detail = (k, cls, nav) => { const d = hat(k.id), inV = VORL.filter((t) => t.ids.includes(k.id)).map((t) => t.n);
       return `<section class="hz ${cls}" aria-label="${esc(k.n)}">
 <div class="hz-kopf">${nav ?? ''}<div class="hz-tt"><h4>${esc(k.n)}</h4><small>${esc(k.z)}</small></div><button type="button" class="hz-zu" data-a="info" data-id="${k.id}" aria-label="Details schließen">${IC.weg}</button></div>
-<div class="hz-bilder"><figure><img src="${bild(k.id, 'start')}" alt="Ausgangsstellung"><figcaption>Start</figcaption></figure><figure><img src="${bild(k.id, 'ende')}" alt="Endstellung"><figcaption>Ende</figcaption></figure></div>
+<div class="hz-bilder"><figure><img src="${bild(k.id, 'start')}" alt="Ausgangsstellung"><figcaption>Start</figcaption></figure><figure><img src="${bild(k.id, 'ende')}" alt="Endstellung"><figcaption>Ende</figcaption></figure>${NAH[k.id] ? `<figure class="hz-nah"><div class="hz-nah-b"><img src="${nahBild(NAH[k.id])}" alt="Nahaufnahme: so wird das Band angelegt"><figcaption>Nahaufnahme</figcaption></div><p><b>So legst du das Band an</b>${esc(NAHTXT[NAH[k.id]].replace(/^So legst du das Band an: /, ''))}.</p></figure>` : ''}</div>
 <div class="hz-film" aria-hidden="true"><img src="${bild(k.id, 'start')}" alt=""><img class="hz-film-e" src="${bild(k.id, 'ende')}" alt=""><span class="hz-film-l"><i>Start</i><i>Ende</i></span></div>
 <div class="hz-meta"><span>${k.r.map(regName).join(', ')}</span><span>${esc(POS.find((x) => x[0] === k.p)?.[1] ?? '')}</span><span>${k.h === 'ohne' ? 'ohne Hilfsmittel' : esc(HM.find((x) => x[0] === k.h)?.[1] ?? '')}</span></div>
 <div class="hz-txt"><h5>So geht’s</h5><p>${esc(k.t)}</p></div>
@@ -432,7 +442,7 @@
     w.innerHTML = `<div class="ha-druck-leiste"><button type="button" class="ha-kn" data-a="p">Drucken / Teilen</button><button type="button" class="ha-kn zwei" data-a="zu">Schließen</button></div>
 <div class="ha-a4"><div class="ha-a4-kopf"><div><small>Physiotherapie</small><h1>Ihr Heimprogramm</h1></div><div class="ha-a4-dat">${dat}<br><span>Name: ____________________</span></div></div>
 <p class="ha-a4-intro">Bitte üben Sie ${esc(oft || 'täglich')} in Ruhe. Die Bilder zeigen die Ausgangsstellung links und die Endstellung rechts.</p>
-${prog.filter((x) => BY[x.id]).map((x, i) => { const k = BY[x.id]; return `<div class="ha-a4-ue"><div class="ha-a4-bild">${paarZwei(x.id)}</div><div class="ha-a4-txt"><h2>${i + 1}. ${esc(k.n)}</h2><p class="ha-a4-dos">${x.s} Serien × ${x.w} Wiederholungen</p><p>${esc(k.t)}</p>${x.h ? `<p class="ha-a4-hinw">${esc(x.h)}</p>` : ''}<div class="ha-a4-wo">${['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'].map((t) => `<span>${t}</span>`).join('')}</div></div></div>` }).join('')}
+${prog.filter((x) => BY[x.id]).map((x, i) => { const k = BY[x.id]; return `<div class="ha-a4-ue"><div class="ha-a4-bild">${paarZwei(x.id)}${NAH[x.id] ? `<div class="ha-a4-nah"><img src="${nahBild(NAH[x.id])}" alt=""><span>So das Band anlegen</span></div>` : ''}</div><div class="ha-a4-txt"><h2>${i + 1}. ${esc(k.n)}</h2><p class="ha-a4-dos">${x.s} Serien × ${x.w} Wiederholungen</p><p>${esc(k.t)}</p>${x.h ? `<p class="ha-a4-hinw">${esc(x.h)}</p>` : ''}<div class="ha-a4-wo">${['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'].map((t) => `<span>${t}</span>`).join('')}</div></div></div>` }).join('')}
 <div class="ha-a4-fuss"><p><b>Sicherheit:</b> Langsam und kontrolliert üben, ruhig weiteratmen. Bei Schwindel oder Unsicherheit eine feste Stütze nutzen.</p><p><b>Schmerz:</b> Leichtes Ziehen ist in Ordnung. Stärkere Schmerzen, die nach dem Üben anhalten, bitte beim nächsten Termin ansprechen.</p></div></div>`;
     document.body.append(w);
     document.body.classList.add('ha-print');
@@ -618,6 +628,8 @@ ${frei.length ? `<div class="hy-chips"><span>Vorlage dazu</span>${alleV.map((t) 
 .hz svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .hz-kopf{display:flex;align-items:flex-start;gap:10px}.hz-tt{flex:1;min-width:0}.hz h4{margin:0;font-size:1.25rem;letter-spacing:-.01em;line-height:1.2}.hz-tt small{color:var(--schrift2,#5f6556)}
 .hz-zu{width:36px;height:36px;border-radius:18px;border:0;background:var(--grund,#f3f5ee);display:grid;place-items:center;cursor:pointer;color:var(--schrift2,#5f6556);flex:none}
+.hz-nah{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,34%) minmax(0,1fr);gap:14px;align-items:center;background:var(--flaeche2,#f1eee9);border-radius:14px;padding:8px}.hz-nah-b{position:relative}.hz-bilder .hz-nah img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:10px;display:block}.hz-nah p{margin:0;font-size:.9375rem;line-height:1.4;color:var(--schrift2,#5f6556)}.hz-nah p b{display:block;color:var(--schrift,#1a1a1a);margin-bottom:4px}
+.ha-a4-nah{position:relative;margin-top:4px}.ha-a4-nah img{width:28%;aspect-ratio:4/5;object-fit:cover;border-radius:6px;display:block}.ha-a4-nah span{position:absolute;left:4px;top:4px;font-size:8pt;background:rgba(255,255,255,.9);padding:1px 5px;border-radius:5px}
 .hz-bilder{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0}.hz-bilder figure{margin:0;position:relative}.hz-bilder img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;display:block;background:#e9e4e1}
 .hz-bilder figcaption,.hz-film-l i{position:absolute;left:8px;top:8px;padding:3px 9px;border-radius:9px;background:rgba(255,255,255,.88);font-size:.75rem;font-weight:650;color:var(--schrift,#1a1a1a);font-style:normal}
 .hz-film{display:none;position:relative}.hz-film img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:14px;display:block}.hz-film .hz-film-e{position:absolute;inset:0;animation:hz-film 3.2s ease-in-out infinite}
