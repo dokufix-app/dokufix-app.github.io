@@ -133,7 +133,14 @@
     ['masseter-lockern', 'Kaumuskel lockern', 'Sitz', 'kiefer', 'sitz', 'ohne', 'Die Fingerkuppen auf die Wangen zwischen Wangenknochen und Kieferwinkel legen. Mit kleinen Kreisen den Kaumuskel massieren, der Mund ist dabei locker einen Spalt offen. 1 bis 2 Minuten.'],
     ['seitstuetz-knie', 'Seitstütz auf den Knien', 'Matte', 'ruecken hue', 'liegen', 'ohne', 'Seitlage, auf den Unterarm stützen, der Ellenbogen liegt unter der Schulter, die Knie sind gebeugt. Die Hüfte anheben, bis Kopf, Hüfte und Knie in einer Linie sind, 10 bis 20 Sekunden halten, ablegen. Seite wechseln.'],
     ['sleeper-stretch', 'Sleeper Stretch', 'Matte oder Bett', 'schulter', 'liegen', 'ohne', 'Auf der zu dehnenden Seite liegen, Oberarm 90 Grad nach vorn, Ellenbogen gebeugt, Unterarm zeigt zur Decke. Mit der anderen Hand den Unterarm sanft Richtung Unterlage drücken, bis es hinten in der Schulter zieht. 30 Sekunden halten, kein Schmerz vorn in der Schulter.'],
-    ['wand-slides', 'Unterarme an der Wand hochschieben', 'Wand', 'schulter', 'stand', 'ohne', 'Vor der Wand stehen, die Unterarme liegen senkrecht an der Wand, Ellenbogen auf Schulterhöhe. Die Unterarme langsam nach oben in ein Y schieben, die Schultern bleiben unten, langsam zurück.']
+    ['wand-slides', 'Unterarme an der Wand hochschieben', 'Wand', 'schulter', 'stand', 'ohne', 'Vor der Wand stehen, die Unterarme liegen senkrecht an der Wand, Ellenbogen auf Schulterhöhe. Die Unterarme langsam nach oben in ein Y schieben, die Schultern bleiben unten, langsam zurück.'],
+    ['zehen-ball-greifen', 'Zehen um den Ball krallen', 'barfuß, kleiner Ball', 'fuss', 'stand', 'ball', 'Leicht festhalten, ein kleiner Ball liegt unter den Zehen. Die Zehen um den Ball krallen, kurz halten und wieder lang machen. Die Ferse bleibt am Boden.'],
+    ['zehenstand-ball', 'Zehenstand mit Ball zwischen den Fersen', 'Ball, Küchenzeile', 'fuss', 'stand', 'ball', 'Beide Hände leicht an der Küchenzeile, ein kleiner Ball klemmt zwischen den Fersen. Langsam auf die Zehen hoch, der Ball bleibt zwischen den Fersen, die Fersen kippen nicht nach außen. Langsam absenken.'],
+    ['fersenheben-sitz', 'Fersenheben im Sitz', 'Stuhl', 'fuss', 'sitz', 'ohne', 'Aufrecht sitzen, beide Füße stehen flach. Die Fersen langsam anheben, Ballen und Zehen bleiben am Boden, kurz halten und langsam absenken.'],
+    ['fuss-beugen-sitz', 'Fuß beugen und strecken, Bein angehoben', 'Stuhl, barfuß', 'fuss', 'sitz', 'ohne', 'Aufrecht sitzen, ein Bein gestreckt anheben. Die Fußspitze kräftig zu sich ziehen, dann weit wegstrecken, ruhig im Wechsel. Zwischendurch den Fuß auch in beide Richtungen kreisen.'],
+    ['kurzfuss-knie-vor', 'Kurzfuß mit Knie nach vorn', 'barfuß, Küchenzeile', 'fuss', 'stand', 'ohne', 'Kleine Schrittstellung, der Fuß vorn baut einen Kurzfuß auf (Gewölbe heben, Zehen lang). Das Knie langsam nach vorn über den zweiten Zeh schieben, die Ferse bleibt unten und das Gewölbe bleibt stehen. Langsam zurück.'],
+    ['fuss-ueber-ball', 'Fuß über den Ball heben', 'barfuß, kleiner Ball, Küchenzeile', 'fuss gg', 'stand', 'ball', 'Leicht festhalten, ein kleiner Ball liegt neben dem Fuß. Den Fuß kontrolliert über den Ball heben und auf der anderen Seite absetzen, ohne ihn zu berühren, dann zurück.'],
+    ['ball-rollen-fusssohle', 'Ball unter der Fußsohle rollen', 'barfuß, kleiner Ball', 'fuss', 'stand', 'ball', 'Leicht festhalten, ein kleiner Ball liegt unter dem Vorfuß. Den Ball mit leichtem Druck vom Vorfuß bis zur Ferse und zurück rollen.']
   ];
   const KAT = K.map(([id, n, z, r, p, h, t]) => ({ id, n, z, r: r.split(' '), p, h, t }));
   const BY = Object.fromEntries(KAT.map((x) => [x.id, x]));
@@ -369,6 +376,7 @@ ${prog.filter((x) => BY[x.id]).map((x, i) => { const k = BY[x.id]; return `<div 
     ['Atemnot, COPD', ['lippenbremse', 'kutschersitz', 'torwartstellung', 'abstuetzen-tisch', 'bauchatmung']],
     ['Atmung nach OP', ['flankenatmung', 'huffing-kissen', 'bauchatmung', 'fusspumpe', 'halbmond-dehnlage']],
     ['Achillessehne', ['wadenheben-exzentrisch', 'wadendehnung-wand', 'zehenstand', 'einbeinstand']],
+    ['Achillessehne nach OP, frühe Phase', ['fuss-beugen-sitz', 'fersenheben-sitz', 'kurzfuss-knie-vor', 'fuss-ueber-ball', 'zehen-ball-greifen', 'zehenstand-ball']],
     ['Fersenschmerz (Plantarfasziitis)', ['plantarfaszie-dehnen', 'wadendehnung-wand', 'kurzfuss', 'handtuch-zehen', 'zehenstand']],
     ['Sprunggelenk nach Umknicken', ['fusswippe', 'sprunggelenk-band', 'zehenstand', 'einbeinstand', 'einbeinstand-kissen']],
     ['Ischias', ['nervengleiten-sitz', 'hochdruecken-bauchlage', 'becken-kippen', 'knie-brust', 'katzenbuckel']]
