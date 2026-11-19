@@ -8,6 +8,7 @@ Neue Versionen kommen oben dazu.
 
 | Version | Datum | Commit | Was sich geändert hat |
 |---|---|---|---|
+| v205 | 19.11.2026 | f6ec3ad | Dienstplan: Wärme, Fango, Heißluft, Kälte, Elektro, Ultraschall als blasse Zeile „Anmeldung“, parallel hinter dem Termin, ohne Überschneidungs-Warnung, zählt nicht als Termin oder offene Doku |
 | v204 | 19.11.2026 | (dieser) | Hausaufgaben: sieben neue Fußübungen für die Frühphase nach Achillessehnen-OP (Fersenheben im Sitz, Fuß beugen und strecken mit angehobenem Bein, Kurzfuß mit Knie nach vorn, Fuß über den Ball heben, Ball unter der Fußsohle rollen, Zehen um den Ball krallen, Zehenstand mit Ball zwischen den Fersen), erstmals mit Personen mittleren Alters; neue Vorlage „Achillessehne nach OP, frühe Phase“ (136 Übungen, 19 Vorlagen, Entwurf, fachlich prüfen). |
 | v203 | 18.11.2026 | 86714aa | Wissen › Wiederholung: Quiz geht nach Unterbrechung an derselben Stelle weiter; Auswertung am Ende mit Fehlern und Wiederholungen; Monatsauswertung (Durchläufe, Fehler, Wiederholungen, erneut gemachte Einheiten), Vormonatsbilanz in der ersten Monatswoche |
 | v202 | 18.11.2026 | 3650f73 | Hausaufgaben: drei neue Übungen mit Bildern und Clip: Seitstütz auf den Knien (Rücken, Hüfte), Sleeper Stretch (Schulter), Unterarme an der Wand hochschieben (Schulter) (129 Übungen, Entwurf, fachlich prüfen). |
