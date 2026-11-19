@@ -105,6 +105,14 @@ var ICO={ok:'<svg viewBox="0 0 24 24" class="wq-mk"><path d="M5 12.5l4.5 4.5L19 
 .wd-e>svg{color:var(--schrift2)}
 .wd-heute{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;background:var(--tape);color:var(--flaeche);font-size:.75rem;font-weight:700;vertical-align:1px}
 .wd-frueher{margin-top:26px}
+.wd-i{font:inherit;color:var(--tape);font-weight:600;background:none;border:0;padding:0;margin:0;cursor:pointer;text-align:inherit;text-decoration:underline dotted;text-decoration-thickness:2px;text-underline-offset:3px;border-radius:4px;-webkit-tap-highlight-color:transparent;transition:background-color 150ms ease}
+.wd-i:hover,.wd-i[aria-expanded="true"]{background:color-mix(in srgb,var(--tape) 12%,transparent)}
+.wd-pop{position:fixed;inset:0;z-index:60;pointer-events:none}
+.wd-pop-k{position:fixed;pointer-events:auto;background:var(--flaeche);color:var(--schrift);border-radius:16px;padding:16px 18px 14px;box-shadow:0 12px 40px rgba(0,0,0,.18),0 0 0 1px var(--linie);max-height:60vh;overflow:auto}
+.wd-pop-k h3{font-size:1rem;margin:0 28px 6px 0}
+.wd-pop-t p{font-size:.9375rem;line-height:1.5;margin:6px 0}
+.wd-pop-q{font-size:.75rem!important;color:var(--schrift2)}
+.wd-pop-x{position:absolute;top:8px;right:8px;width:32px;height:32px;border:0;border-radius:50%;background:var(--grund);color:var(--schrift2);font-size:1.25rem;line-height:1;cursor:pointer}
 .wd-mon{margin-top:26px;padding:18px;border-radius:18px;background:var(--flaeche);box-shadow:inset 0 0 0 1px var(--linie)}
 .wd-mon.neu{margin:18px 0 0;box-shadow:inset 0 0 0 2px var(--tape)}
 .wd-mon h2{font-size:1.125rem;margin:0 0 12px}
@@ -232,26 +240,30 @@ function seiteListe(){
  var fm={};laeufe().forEach(function(x){var m=x.d&&x.d.slice(0,7);if(m&&m!==mJ&&!(jetzt.getDate()<=7&&m===mV))fm[m]=1});var fl=Object.keys(fm).sort().reverse();
  if(fl.length)h+=`<details class="wd-frueher"><summary>Frühere Monate</summary>${fl.map(function(m){return monatBlock(m,monatName(m))}).join("")}</details>`;
  return h+`</div>`}
+/* Begriffe mit Zusatzerklärung: im Text [[sichtbarer Text|schluessel]], Erklärung in einheit.info[schluessel] = {t, x} */
+var aktE=null;
+function OHNE(x){return String(x==null?"":x).replace(/\[\[([^|\]]+)\|[^\]]+\]\]/g,"$1")}
+function TX(x){var info=aktE&&aktE.info||{};return E(x).replace(/\[\[([^|\]]+)\|([^\]]+)\]\]/g,function(m,t,k){return info[k]?`<button type="button" class="wd-i" data-info="${k}" aria-haspopup="dialog">${t}</button>`:t})}
 var musN=0;function block(b){var h=b.t?`<h3>${E(b.t)}</h3>`:"";
- (b.p||[]).forEach(function(x){h+=`<p>${E(x)}</p>`});
- if(b.l)h+=`<ul>${b.l.map(function(x){return `<li>${E(x)}</li>`}).join("")}</ul>`;
+ (b.p||[]).forEach(function(x){h+=`<p>${TX(x)}</p>`});
+ if(b.l)h+=`<ul>${b.l.map(function(x){return `<li>${TX(x)}</li>`}).join("")}</ul>`;
  if(b.mus){var mz=b.mus.some(function(m){return m.z!=null});musN++;
   if(mz)h+=`<div class="wd-muc">${b.mus.map(function(m,k){return `<button data-mu="wdmu${musN}-${k}"><span class="wd-mnr${m.z?"":" leer"}">${E(m.z||"–")}</span>${E(String(m.n).replace(/^Mm?\. /,"").replace(/^./,function(c){return c.toUpperCase()}))}</button>`}).join("")}</div>`;
   h+=`<div class="wd-mus${mz?" nr":""}">${b.mus.map(function(m,k){return `<div class="wd-mu" id="wdmu${musN}-${k}"${m.p?` data-p="${E(JSON.stringify(m.p))}"${m.b?` data-b="${E(m.b)}"`:""} role="button" tabindex="0" aria-pressed="false"`:""}>${mz?`<span class="wd-mnr${m.z?"":" leer"}">${E(m.z||"–")}</span>`:""}<div><b>${E(m.n)}</b><dl><dt class="u">Ursprung</dt><dd>${E(m.u)}</dd><dt class="a">Ansatz</dt><dd>${E(m.a)}</dd><dt class="i">Nerv</dt><dd>${E(m.i)}</dd><dt>Funktion</dt><dd>${E(m.f)}</dd></dl>${m.p?`<div class="wd-zoom"><div><i></i></div></div>`:""}</div></div>`}).join("")}</div>`}
  if(b.bars)h+=`<div class="wd-bars">${b.bars.map(function(r){return `<div><b><span>${E(r[0])}</span><span>${E(r[2]||"")}</span></b><i><em style="width:${+r[1]}%"></em></i></div>`}).join("")}</div>`;
- if(b.tab)h+=`<div class="wd-tab">${b.tab.map(function(r){return `<div>${E(r[0])}</div><div>${E(r[1])}</div>`}).join("")}</div>`;
+ if(b.tab)h+=`<div class="wd-tab">${b.tab.map(function(r){return `<div>${TX(r[0])}</div><div>${TX(r[1])}</div>`}).join("")}</div>`;
  if(b.fig)h+=`<div class="wd-figs">${b.fig.map(function(f){return `<figure><img src="${E(f.src)}" alt="${E(f.alt||"")}" loading="lazy"><figcaption><b>${E(f.t)}</b> ${E(f.c||"")}</figcaption></figure>`}).join("")}</div>`;
- if(b.merk)h+=`<div class="wd-merk"><b>Merke:</b> ${E(b.merk)}</div>`;
+ if(b.merk)h+=`<div class="wd-merk"><b>Merke:</b> ${TX(b.merk)}</div>`;
  return h}
 function kurzTitel(t){return String(t).replace(/^\d+\.\s*/,"").replace(/[:?].*$/,"").replace(/^Was ist das eigentlich$/,"Grundlagen").replace(/^Was hilft laut Studienlage$/,"Studienlage")}
 function titelBild(e){if(e.bild)return e.bild;var f=null;(e.abschnitte||[]).some(function(a){return (a.b||[a]).some(function(b){if(b.fig&&b.fig[0]){f=b.fig[0].src;return true}})});return f}
 function seiteEinheit(kw,id){var w=woche(kw),e=w&&alleE(w).find(function(x){return x.id===id});
  if(!e)return seiteListe();
- var r=lesen()[id],o=offen(id),ab=e.abschnitte||[],merk=[];
+ aktE=e;var r=lesen()[id],o=offen(id),ab=e.abschnitte||[],merk=[];
  ab.forEach(function(a){(a.b||[a]).forEach(function(b){if(b.merk)merk.push(b.merk)})});
  var h=`<div class="wi-seite wd-einheit"><button class="wi-zur" data-a="wdh-liste">‹ Wiederholung</button>${titelBild(e)?`<div class="wd-hero"><img src="${E(titelBild(e))}" alt=""></div>`:""}<h1>${E(e.titel)}</h1><p class="wi-unter">${E(ART[e.art]||"")} · ca. ${E(e.min||8)} min · ${E(e.fragen.length)} Fragen${e.kb?` · <button class="wd-kblink" data-kbid="${E(e.kb)}">Zum Krankheitsbild</button>`:""}</p>`;
  h+=`<div class="wd-toc" role="navigation" aria-label="Kapitel"><div class="wd-toc-l">${ab.map(function(a,i){return `<button data-wdhgo="${i}">${E(kurzTitel(a.t))}</button>`}).join("")}</div><i class="wd-lese"><em></em></i></div>`;
- if(merk.length)h+=`<section class="wd-kurz"><h2>Kurz gemerkt</h2><ul>${merk.map(function(m){return `<li>${E(m)}</li>`}).join("")}</ul></section>`;
+ if(merk.length)h+=`<section class="wd-kurz"><h2>Kurz gemerkt</h2><ul>${merk.map(function(m){return `<li>${TX(m)}</li>`}).join("")}</ul></section>`;
  ab.forEach(function(a,i){h+=`<section class="wi-karte wd-k" id="wd-s${i}" data-i="${i}"><h2>${E(a.t)}</h2>${(a.b||[a]).map(function(b){return block(b===a?{p:a.p,l:a.l,tab:a.tab,fig:a.fig,merk:a.merk,bars:a.bars}:b)}).join("")}</section>`});
  if(e.quellen)h+=`<section class="wi-karte"><h2>Quellen</h2><p class="wd-quellen">${e.quellen.map(E).join("<br>")}</p></section>`;
  h+=`<section class="wd-ende" id="wd-quiz"><div class="wd-ende-t"><h2>${r?"Nochmal testen?":"Alles gelesen? Dann ins Quiz."}</h2><p>${E(e.fragen.length)} Fragen · ca. 5 min${r?" · zuletzt "+E(status(id)):" · falsche Antworten kommen am Ende nochmal"}</p></div><div class="wd-ende-k"><button class="wq-go" data-wdhquiz="${E(id)}" data-kw="${E(kw)}">${o?"Quiz fortsetzen":"Quiz starten"}</button><button class="wq-ghost wd-teil2" data-wdhpdf="${E(id)}" data-kw="${E(kw)}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>Als PDF teilen</button></div></section>`;
@@ -298,7 +310,7 @@ document.addEventListener("click",function(ev){var b=ev.target.closest(".wi-port
 function ladeJs(src){return new Promise(function(ok,no){if(window.jspdf)return ok();var s=document.createElement("script");s.src=src;s.onload=ok;s.onerror=no;document.head.append(s)})}
 function bildJpg(src){return new Promise(function(ok){var im=new Image();im.onload=function(){var c=document.createElement("canvas");c.width=im.naturalWidth;c.height=im.naturalHeight;var g=c.getContext("2d");g.fillStyle="#000";g.fillRect(0,0,c.width,c.height);g.drawImage(im,0,0);ok(c.toDataURL("image/jpeg",.85))};im.onerror=function(){ok(null)};im.src=src})}
 // shortcut: Helvetica kann nur Windows-1252, seltene Zeichen werden ersetzt; bei Bedarf eigene TTF einbetten
-function T(x){return String(x==null?"":x).replace(/≤/g,"<=").replace(/≥/g,">=").replace(/→/g,"->").replace(/≈/g,"ca.").replace(/[^\x00-\xff€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ]/g,"")}
+function T(x){return OHNE(x).replace(/≤/g,"<=").replace(/≥/g,">=").replace(/→/g,"->").replace(/≈/g,"ca.").replace(/[^\x00-\xff€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ]/g,"")}
 async function pdfBauen(e){
  await ladeJs("jspdf.umd.min.js");
  var doc=new window.jspdf.jsPDF({unit:"mm",format:"a4"}),W=210,H=297,M=18,B=W-2*M,y=M,ANT=[46,50,54],GR=[110,116,122],LIM=[201,232,107],LINIE=[226,226,222];
@@ -392,7 +404,7 @@ var Quiz=(function(){
   var lines=ok?["Richtig.","Genau.","Sitzt.","Stimmt."]:["Nicht ganz.","Knapp daneben.","Das war es nicht."];
   $(".wq-verdict").innerHTML=(ok?ICO.ok:ICO.no)+"<span>"+lines[(i+att[i])%lines.length]+"</span>"+(ok&&streak>=3?"<em>"+streak+" in Folge</em>":"");
   $(".wq-cmp").innerHTML=ok?"":`<div><small>Deine Antwort</small>${E(q[1][a])}</div><div><small>Richtig</small><b>${E(q[1][c])}</b></div>`;
-  $(".wq-why").textContent=q[3];
+  $(".wq-why").textContent=OHNE(q[3]);
   var last=pos+1>=queue.length;$('[data-q="weiter"]').textContent=last?"Zur Auswertung":(pos+1===Q.length&&round===1&&queue.length>Q.length?"Zu den Wiederholungen":"Weiter");
   sheet.classList.add("on",ok?"ok":"no");
   requestAnimationFrame(function(){var sh=sheet.offsetHeight;st.style.setProperty("--sh",sh+"px");var o=card.querySelector(".wq-opts"),t=o.offsetTop+o.offsetHeight-(view.clientHeight-sh)+20;if(t>view.scrollTop)setTimeout(function(){view.scrollTo({top:t,behavior:RM?"auto":"smooth"})},60)});
@@ -431,6 +443,25 @@ var Quiz=(function(){
  return{auf:auf}})();
 window.WDH_Quiz=Quiz;
 document.addEventListener("click",function(ev){var im=ev.target.closest(".wd-figs img");if(im)lupe(im)});
+/* Kleines Fenster mit der Zusatzerklärung, am Begriff verankert */
+var Pop=(function(){var el,quelle,RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
+ function bau(){if(el)return;el=document.createElement("div");el.className="wd-pop";el.hidden=true;el.setAttribute("role","dialog");
+  el.innerHTML='<div class="wd-pop-k"><button type="button" class="wd-pop-x" aria-label="Schließen">&times;</button><h3></h3><div class="wd-pop-t"></div></div>';document.body.append(el);
+  el.querySelector(".wd-pop-x").addEventListener("click",zu);
+  document.addEventListener("pointerdown",function(ev){if(!el.hidden&&!ev.target.closest(".wd-pop-k")&&!ev.target.closest(".wd-i"))zu()},true);
+  document.addEventListener("keydown",function(ev){if(ev.key==="Escape"&&!el.hidden)zu()});
+  window.addEventListener("resize",zu);document.addEventListener("scroll",function(){if(!el.hidden)lage()},true)}
+ function lage(){if(!quelle)return;var k=el.firstChild,r=quelle.getBoundingClientRect(),vw=innerWidth,vh=innerHeight,w=Math.min(380,vw-24);
+  k.style.width=w+"px";var h=k.offsetHeight,x=Math.max(12,Math.min(r.left+r.width/2-w/2,vw-w-12)),unten=r.bottom+10+h<vh-80||r.top-10-h<70,y=unten?r.bottom+10:r.top-10-h;
+  if(r.bottom<0||r.top>vh)return zu();
+  k.style.left=x+"px";k.style.top=Math.max(12,y)+"px";k.style.transformOrigin=(r.left+r.width/2-x)+"px "+(unten?"0":"100%")}
+ function auf(btn){bau();var e=aktE,i=e&&e.info&&e.info[btn.dataset.info];if(!i)return;
+  if(quelle===btn&&!el.hidden)return zu();if(quelle)quelle.setAttribute("aria-expanded","false");quelle=btn;btn.setAttribute("aria-expanded","true");
+  el.querySelector("h3").textContent=i.t;el.querySelector(".wd-pop-t").innerHTML=(Array.isArray(i.x)?i.x:[i.x]).map(function(p){return "<p>"+TX(p)+"</p>"}).join("")+(i.q?'<p class="wd-pop-q">'+E(i.q)+"</p>":"");
+  el.hidden=false;lage();var k=el.firstChild;if(!RM)k.animate([{opacity:0,transform:"scale(.96)"},{opacity:1,transform:"none"}],{duration:200,easing:"cubic-bezier(.23,1,.32,1)"})}
+ function zu(){if(!el||el.hidden)return;el.hidden=true;if(quelle){quelle.setAttribute("aria-expanded","false");quelle.focus({preventScroll:true})}quelle=null}
+ return{auf:auf,zu:zu}})();
+document.addEventListener("click",function(ev){var b=ev.target.closest(".wd-i");if(b){ev.preventDefault();Pop.auf(b)}});
 function muWahl(k,ausChip){if(!k)return;var war=k.classList.contains("an");var sec=k.closest(".wd-k")||document;
  sec.querySelectorAll(".wd-mu.an").forEach(function(x){x.classList.remove("an");x.setAttribute("aria-pressed","false")});
  sec.querySelectorAll(".wd-muc button").forEach(function(x){x.classList.toggle("an",!war&&x.dataset.mu===k.id)});

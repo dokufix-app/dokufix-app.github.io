@@ -8,6 +8,7 @@ Neue Versionen kommen oben dazu.
 
 | Version | Datum | Commit | Was sich geändert hat |
 |---|---|---|---|
+| v209 | 19.11.2026 | (dieser) | Wissen › Wiederholung: Begriffe mit Zusatzfenster (grün unterstrichen, Antippen öffnet Erklärung), 138 Begriffe in allen 14 Einheiten der KW 47; Korrekturen Schulter (Dekompression) und Karpaltunnel (CTS-6) |
 | v208 | 19.11.2026 | (dieser) | Hausaufgaben: neue Übung „Diagonale mit Rumpfdrehung im Sitz“ (gestreckter Arm gegen Theraband von über die Körpermitte in Flexion, Abduktion, Außenrotation mit Rumpfrotation zur gleichen Seite; Rücken und Schulter, 137 Übungen). Sicherungsdatei heißt jetzt „JJJJ-MM-TT HH-MM Sicherung Doku-Fix.json“, Datum und Uhrzeit vorn. |
 | v207 | 19.11.2026 | 4958565 | Kurz-Doku: Unter Befinden, Eigene Angaben, Schmerz und Reaktion steht klein der Wert der letzten Einheit |
 | v206 | 19.11.2026 | 068241d | Verlauf: Schritt „Maßnahmen“ auch ohne Körperregion; Kurz-Doku › Übungen: Dosierung je Übung (3 × 8/10/15 plus Freitext) und Übung tauschen |
