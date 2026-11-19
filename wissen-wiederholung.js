@@ -28,13 +28,13 @@ function monatBlock(m,titel,cls){var s=monatStat(m);
  return `<section class="wd-mon${cls||""}"><h2>${E(titel)}</h2><div class="wd-mon-g"><div><b>${s.l}</b><small>Durchläufe</small></div><div><b>${s.ein}</b><small>Einheiten</small></div><div><b>${s.pct} %</b><small>auf Anhieb richtig</small></div><div><b>${s.f}</b><small>Fehler in Runde 1</small></div><div><b>${s.w}</b><small>Wiederholungen nötig</small></div><div><b>${s.wd}</b><small>Einheiten erneut gemacht</small></div></div>${s.schwach.length?`<p class="wd-mon-s">Am meisten Fehler: ${s.schwach.map(function(u){return E(u.t)+" ("+u.r+"/"+u.n+")"}).join(" · ")}</p>`:""}</section>`}
 function lade(src,cb){if(ladend[src])return;ladend[src]=1;var s=document.createElement("script");s.src=src;s.onload=cb||null;s.onerror=function(){ladend[src]=0};document.head.append(s)}
 function index(){if(window.WDH_INDEX){IDX=window.WDH_INDEX;return IDX}lade("fortbildung/index.js?t="+Date.now(),function(){IDX=window.WDH_INDEX||[];if(WI_st.modus==="wdh")WI_zeige()});return null}
-function woche(kw){var e=(IDX||[]).find(function(x){return x.kw===kw});if(!W[kw]&&e)lade(e.datei);return W[kw]}
-function alleE(w){return w?(w.einheiten||[]).concat(w.anatomie||[]):[]}
+function woche(kw){if(kw==="pnf"){if(!W.pnf)lade("fortbildung/techniken-pnf.js");return W.pnf}var e=(IDX||[]).find(function(x){return x.kw===kw});if(!W[kw]&&e)lade(e.datei);return W[kw]}
+function alleE(w){return w?(w.einheiten||[]).concat(w.anatomie||[],(w.techniken||[]).filter(function(x){return !x.bald})):[]}
 function heuteKw(){var d=new Date(),t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())),n=t.getUTCDay()||7;t.setUTCDate(t.getUTCDate()+4-n);var j=new Date(Date.UTC(t.getUTCFullYear(),0,1));return t.getUTCFullYear()+"-W"+String(Math.ceil(((t-j)/864e5+1)/7)).padStart(2,"0")}
 function aktuelleKw(){var k=heuteKw(),l=IDX||[];if(l.some(function(x){return x.kw===k}))return k;var f=l.filter(function(x){return x.kw<=k});return(f[0]||l[0]||{}).kw}
 function tag(){return["so","mo","di","mi","do","fr","sa"][new Date().getDay()]}
 function datum(iso){var p=String(iso||"").split("-");return p.length===3?(+p[2])+"."+(+p[1])+".":""}
-var ART={kb:"Krankheitsbild",neu:"Neu aus der Forschung",wdh:"Wiederholung",ana:"Anatomie",grund:"Grundlagen"};
+var ART={kb:"Krankheitsbild",neu:"Neu aus der Forschung",wdh:"Wiederholung",ana:"Anatomie",grund:"Grundlagen",tech:"Technik",anw:"Anwendung",fall:"Fallquiz",pruef:"Prüfung"};
 var ICO={ok:'<svg viewBox="0 0 24 24" class="wq-mk"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',no:'<svg viewBox="0 0 24 24" class="wq-mk"><path d="M7 7l10 10M17 7L7 17"/></svg>',
  pfeil:'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>',
  x:'<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>'};
@@ -74,7 +74,7 @@ var ICO={ok:'<svg viewBox="0 0 24 24" class="wq-mk"><path d="M5 12.5l4.5 4.5L19 
 @keyframes wd-auf{from{opacity:0}}
 @keyframes wd-gross{from{opacity:0;transform:scale(.96)}}
 @media (prefers-reduced-motion:reduce){.wd-anim .wd-k{opacity:1;transform:none;transition:none}.wd-anim .wd-bars em{transform:none;transition:none}.wd-lupe,.wd-lupe img{animation:none}}
-.wd-zweig{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0 4px}
+.wd-zweig{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 4px}
 .wd-zweig button{border:0;border-radius:16px;background:var(--flaeche);color:var(--schrift);font:inherit;text-align:left;padding:12px 14px;cursor:pointer;display:flex;flex-direction:column;gap:2px;box-shadow:inset 0 0 0 2px transparent;transition:box-shadow 180ms ease,transform 140ms ease-out}
 .wd-zweig button:active{transform:scale(.98)}
 .wd-zweig button b{font-size:1rem}.wd-zweig button small{color:var(--schrift2);font-size:.8125rem}
@@ -143,6 +143,13 @@ var ICO={ok:'<svg viewBox="0 0 24 24" class="wq-mk"><path d="M5 12.5l4.5 4.5L19 
 .wd-figs img{width:100%;display:block;border-radius:14px;background:#000;aspect-ratio:1/1;object-fit:contain}
 .wd-figs figcaption{font-size:.875rem;color:var(--schrift2);line-height:1.45;margin-top:8px}
 .wd-figs figcaption b{color:var(--schrift)}
+.wd-pfad{background:var(--flaeche);border-radius:18px;padding:14px 16px;margin:14px 0 2px;display:grid;gap:8px}.wd-pfad b{display:block;font-size:1.0625rem}.wd-pfad span,.wd-pfad small{color:var(--schrift2);font-size:.8125rem}.wd-pfad-bar{display:block;height:8px;border-radius:9px;background:var(--seite);overflow:hidden}.wd-pfad-bar em{display:block;height:100%;background:#C9E86B;border-radius:9px;transition:width 400ms cubic-bezier(.23,1,.32,1)}
+.wd-e.bald{opacity:.55;cursor:default;box-shadow:none}.wd-e.bald .wd-th{background:var(--seite)}
+.wd-s{counter-reset:s;list-style:none;padding:0;margin:8px 0}.wd-s li{counter-increment:s;position:relative;padding-left:34px;margin:9px 0;line-height:1.5}.wd-s li:before{content:counter(s);position:absolute;left:0;top:0;width:24px;height:24px;border-radius:50%;background:var(--tape);color:var(--flaeche);display:grid;place-items:center;font-weight:700;font-size:.8125rem}
+.wd-skizze{margin:12px 0}.wd-skizze img{width:100%;max-width:640px;display:block;border-radius:14px;background:var(--seite)}.wd-skizze figcaption{font-size:.8125rem;color:var(--schrift2);margin-top:6px}.wd-skizze b{color:var(--schrift)}
+.wd-platz{margin:12px 0;border:2px dashed var(--linie);border-radius:14px;padding:14px;display:flex;gap:12px;align-items:flex-start;color:var(--schrift2);background:color-mix(in srgb,var(--seite) 50%,transparent)}.wd-platz figcaption{display:grid;gap:2px}.wd-platz b{color:var(--schrift);font-size:.9375rem}.wd-platz span{font-size:.875rem}.wd-platz small{font-size:.8125rem}
+.wd-kurs{border-left:4px solid #C9E86B;background:color-mix(in srgb,#C9E86B 14%,var(--flaeche));border-radius:12px;padding:10px 14px;margin:12px 0}.wd-kurs b{display:block}.wd-kurs ul{margin:6px 0 0;padding-left:18px}.wd-kurs li{margin:4px 0;line-height:1.5}
+@media(max-width:500px){.wd-zweig button{padding:10px}.wd-zweig button small{font-size:.75rem}}
 .wd-merk{background:color-mix(in srgb,#C9E86B 30%,var(--flaeche));border-radius:14px;padding:12px 14px;margin-top:10px;line-height:1.5}
 .wd-quellen{font-size:.8125rem;color:var(--schrift2);line-height:1.5}
 .wd-start{display:flex;align-items:center;gap:12px;background:var(--flaeche);border-radius:20px;padding:12px;margin:18px 0 0;box-shadow:0 6px 24px rgba(0,0,0,.12)}
@@ -221,12 +228,19 @@ var ICO={ok:'<svg viewBox="0 0 24 24" class="wq-mk"><path d="M5 12.5l4.5 4.5L19 
 
 /* ---------- Seiten im Reiter Wissen ---------- */
 function status(id){var r=lesen()[id];return r?`${r.right}/${r.total} auf Anhieb`:""}
-function karte(e,i,w){var r=lesen()[e.id],o=offen(e.id),heute=w&&w.plan&&w.plan[tag()]===e.id&&w.kw===heuteKw();
+function karte(e,i,w){if(e.bald)return `<div class="wd-e bald" aria-disabled="true"><span class="wd-nr">${i+1}</span><i class="wd-th"></i><span class="wd-t"><small>${E(ART[e.art]||"")}</small><b>${E(e.titel)}</b><span>kommt bald · ca. ${E(e.min||8)} min</span></span></div>`;var r=lesen()[e.id],o=offen(e.id),heute=w&&w.plan&&w.plan[tag()]===e.id&&w.kw===heuteKw();
  return `<button class="wd-e${r?" fertig":""}" data-wdh="${E(e.id)}" data-kw="${E(w.kw)}"><span class="wd-nr">${r?'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>':i+1}</span>${titelBild(e)?`<img class="wd-th" src="${E(titelBild(e))}" alt="" loading="lazy">`:`<i class="wd-th"></i>`}<span class="wd-t"><small>${E(ART[e.art]||"")}${heute?'<span class="wd-heute">Heute dran</span>':""}</small><b>${E(e.titel)}</b><span>${o?`<em class="wd-offen">${E(offenText(o))}</em>`:""}${r?E(status(e.id))+" · "+E(e.min||8)+" min":"ca. "+E(e.min||8)+" min lesen · "+E((e.fragen||[]).length)+" Fragen"}</span></span>${ICO.pfeil}</button>`}
+function pfadListe(){var w=woche("pnf");if(!w)return `<p class="wd-hinweis">Lade die Einheiten …</p>`;
+ var T=w.techniken||[],R=lesen(),fertig=T.filter(function(e){return !e.bald&&R[e.id]}).length,da=T.filter(function(e){return !e.bald}).length;
+ var h=`<div class="wd-pfad"><div><b>${E(w.titel)}</b><span>${E(w.unter||"")}</span></div><i class="wd-pfad-bar"><em style="width:${Math.round(fertig/Math.max(T.length,1)*100)}%"></em></i><small>${fertig} von ${T.length} erledigt${da<T.length?` · ${da} schon da, die übrigen folgen`:""}</small></div>`;
+ Object.keys(w.bloecke||{}).forEach(function(k){var L=T.filter(function(e){return e.block===k});if(!L.length)return;
+  h+=`<div class="wd-woche"><h2>${E(k)} · ${E(w.bloecke[k])}</h2></div><div class="wd-liste">${L.map(function(e){return karte(e,T.indexOf(e),w)}).join("")}</div>`});
+ return h+`<p class="wd-hinweis">Die Einheiten bauen aufeinander auf, du kannst aber frei springen. Was du im Quiz falsch hattest, kommt am Ende nochmal.</p>`}
 function seiteListe(){
- var l=index(),z=WI_st.wdhZweig==="ana"?"ana":"kl",feld=z==="ana"?"anatomie":"einheiten";
+ var l=index(),z=WI_st.wdhZweig==="ana"||WI_st.wdhZweig==="tech"?WI_st.wdhZweig:"kl",feld=z==="ana"?"anatomie":"einheiten";
  var kopf=`<div class="wi-seite"><button class="wi-zur" data-a="zu">‹ Mehr</button><h1>Wissen</h1><p class="wi-unter">Wiederholung · jede Woche neue Einheiten mit Quiz</p>${WI_umschWdh()}
- <div class="wd-zweig" role="tablist"><button role="tab" data-zweig="kl" aria-selected="${z==="kl"}"><b>Krankheitslehre</b><small>Krankheitsbilder und Forschung</small></button><button role="tab" data-zweig="ana" aria-selected="${z==="ana"}"><b>Anatomie</b><small>Gelenke und Regionen</small></button></div>`;
+ <div class="wd-zweig" role="tablist"><button role="tab" data-zweig="kl" aria-selected="${z==="kl"}"><b>Krankheitslehre</b><small>Krankheitsbilder und Forschung</small></button><button role="tab" data-zweig="ana" aria-selected="${z==="ana"}"><b>Anatomie</b><small>Gelenke und Regionen</small></button><button role="tab" data-zweig="tech" aria-selected="${z==="tech"}"><b>Techniken</b><small>PNF, später weitere</small></button></div>`;
+ if(z==="tech")return kopf+pfadListe()+`</div>`;
  if(!l)return kopf+`<p class="wd-hinweis">Lade die Einheiten …</p></div>`;
  var kw=aktuelleKw(),w=woche(kw),meta=l.find(function(x){return x.kw===kw})||{},liste=w?(w[feld]||[]):null;
  var h=kopf+`<div class="wd-woche"><h2>Diese Woche</h2><span>${datum(meta.von)} – ${datum(meta.bis)}</span></div>`;
@@ -253,6 +267,10 @@ var musN=0;function block(b){var h=b.t?`<h3>${E(b.t)}</h3>`:"";
  if(b.bars)h+=`<div class="wd-bars">${b.bars.map(function(r){return `<div><b><span>${E(r[0])}</span><span>${E(r[2]||"")}</span></b><i><em style="width:${+r[1]}%"></em></i></div>`}).join("")}</div>`;
  if(b.tab)h+=`<div class="wd-tab">${b.tab.map(function(r){return `<div>${TX(r[0])}</div><div>${TX(r[1])}</div>`}).join("")}</div>`;
  if(b.fig)h+=`<div class="wd-figs">${b.fig.map(function(f){return `<figure><img src="${E(f.src)}" alt="${E(f.alt||"")}" loading="lazy"><figcaption><b>${E(f.t)}</b> ${E(f.c||"")}</figcaption></figure>`}).join("")}</div>`;
+ if(b.foto&&b.foto.src)h+=`<figure class="wd-skizze"><img src="${E(b.foto.src)}" alt="${E(b.foto.t)}" loading="lazy"><figcaption><b>Skizze · Foto folgt (${E(b.foto.id)})</b> ${E(b.foto.t)}</figcaption></figure>`;
+ else if(b.foto)h+=`<figure class="wd-platz"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><figcaption><b>Foto folgt · ${E(b.foto.id)}</b><span>${E(b.foto.t)}</span><small>${E(b.foto.x||"")}</small></figcaption></figure>`;
+ if(b.s)h+=`<ol class="wd-s">${b.s.map(function(x){return `<li>${TX(x)}</li>`}).join("")}</ol>`;
+ if(b.kurs)h+=`<div class="wd-kurs"><b>Aus deinem Kurs</b><ul>${b.kurs.map(function(x){return `<li>${TX(x)}</li>`}).join("")}</ul></div>`;
  if(b.merk)h+=`<div class="wd-merk"><b>Merke:</b> ${TX(b.merk)}</div>`;
  return h}
 function kurzTitel(t){return String(t).replace(/^\d+\.\s*/,"").replace(/[:?].*$/,"").replace(/^Was ist das eigentlich$/,"Grundlagen").replace(/^Was hilft laut Studienlage$/,"Studienlage")}
@@ -261,7 +279,7 @@ function seiteEinheit(kw,id){var w=woche(kw),e=w&&alleE(w).find(function(x){retu
  if(!e)return seiteListe();
  aktE=e;var r=lesen()[id],o=offen(id),ab=e.abschnitte||[],merk=[];
  ab.forEach(function(a){(a.b||[a]).forEach(function(b){if(b.merk)merk.push(b.merk)})});
- var h=`<div class="wi-seite wd-einheit"><button class="wi-zur" data-a="wdh-liste">‹ Wiederholung</button>${titelBild(e)?`<div class="wd-hero"><img src="${E(titelBild(e))}" alt=""></div>`:""}<h1>${E(e.titel)}</h1><p class="wi-unter">${E(ART[e.art]||"")} · ca. ${E(e.min||8)} min · ${E(e.fragen.length)} Fragen${e.kb?` · <button class="wd-kblink" data-kbid="${E(e.kb)}">Zum Krankheitsbild</button>`:""}</p>`;
+ var h=`<div class="wi-seite wd-einheit"><button class="wi-zur" data-a="wdh-liste">‹ Wiederholung</button>${titelBild(e)?`<div class="wd-hero"><img src="${E(titelBild(e))}" alt=""></div>`:""}<h1>${E(e.titel)}</h1><p class="wi-unter">${E(ART[e.art]||"")}${kw==="pnf"?" · PNF":""} · ca. ${E(e.min||8)} min · ${E(e.fragen.length)} Fragen${e.kb?` · <button class="wd-kblink" data-kbid="${E(e.kb)}">Zum Krankheitsbild</button>`:""}</p>`;
  h+=`<div class="wd-toc" role="navigation" aria-label="Kapitel"><div class="wd-toc-l">${ab.map(function(a,i){return `<button data-wdhgo="${i}">${E(kurzTitel(a.t))}</button>`}).join("")}</div><i class="wd-lese"><em></em></i></div>`;
  if(merk.length)h+=`<section class="wd-kurz"><h2>Kurz gemerkt</h2><ul>${merk.map(function(m){return `<li>${TX(m)}</li>`}).join("")}</ul></section>`;
  ab.forEach(function(a,i){h+=`<section class="wi-karte wd-k" id="wd-s${i}" data-i="${i}"><h2>${E(a.t)}</h2>${(a.b||[a]).map(function(b){return block(b===a?{p:a.p,l:a.l,tab:a.tab,fig:a.fig,merk:a.merk,bars:a.bars}:b)}).join("")}</section>`});
@@ -329,6 +347,8 @@ async function pdfBauen(e){
    if(b.t){y+=1;text(b.t,11,"bold");y+=1}
    (b.p||[]).forEach(function(x){text(x,10.5);y+=2});
    if(b.l)b.l.forEach(function(x){doc.setFontSize(10.5);var z=doc.splitTextToSize(T(x),B-6);platz(z.length*4.4);doc.setFillColor(ANT[0],ANT[1],ANT[2]);doc.circle(M+1.5,y+2.5,.8,"F");farbe(ANT);doc.setFont("helvetica","normal");z.forEach(function(l){doc.text(l,M+6,y+3.6);y+=4.4});y+=1.2});
+   if(b.s)b.s.forEach(function(x,n){text((n+1)+". "+x,10.5);y+=1});
+   if(b.kurs){text("Aus deinem Kurs",10.5,"bold");b.kurs.forEach(function(x){text("- "+x,10.5);y+=1})}
    if(b.mus){b.mus.forEach(function(m){var BL=[223,234,250],RO=[251,226,226],GN=[228,243,212],z=[["Ursprung",m.u,BL,[38,88,168]],["Ansatz",m.a,RO,[168,45,45]],["Nerv",m.i,GN,[62,112,30]],["Funktion",m.f,null,GR]],h=6;doc.setFontSize(9.5);z.forEach(function(r){h+=doc.splitTextToSize(T(r[1]),B-28).length*4+1.6});platz(h+3);doc.setFont("helvetica","bold");doc.setFontSize(10.5);farbe(ANT);doc.text(T(m.n),M,y+4);y+=6.5;z.forEach(function(r){var l=doc.splitTextToSize(T(r[1]),B-28);if(r[2]){doc.setFillColor(r[2][0],r[2][1],r[2][2]);doc.roundedRect(M,y-.2,23,l.length*4+1.4,1.2,1.2,"F")}y+=.6;doc.setFont("helvetica","bold");doc.setFontSize(9);farbe(r[3]);doc.text(r[0],M+2,y+3);doc.setFont("helvetica","normal");doc.setFontSize(9.5);farbe(ANT);l.forEach(function(t,k){doc.text(t,M+26,y+3+k*4)});y+=l.length*4+1.4});y+=3});y+=2}
    if(b.bars){b.bars.forEach(function(r){platz(11);doc.setFont("helvetica","bold");doc.setFontSize(10);farbe(ANT);doc.text(T(r[0]),M,y+3.5);doc.setFont("helvetica","normal");farbe(GR);doc.text(T(r[2]||""),W-M,y+3.5,{align:"right"});doc.setFillColor(LINIE[0],LINIE[1],LINIE[2]);doc.roundedRect(M,y+5.5,B,3,1.5,1.5,"F");doc.setFillColor(LIM[0],LIM[1],LIM[2]);doc.roundedRect(M,y+5.5,B*r[1]/100,3,1.5,1.5,"F");y+=12});y+=2}
    if(b.tab){y+=1;b.tab.forEach(function(r){doc.setFontSize(10);var k=doc.splitTextToSize(T(r[0]),52),v=doc.splitTextToSize(T(r[1]),B-58),h=Math.max(k.length,v.length)*4.2+3;platz(h);doc.setFont("helvetica","bold");farbe(ANT);k.forEach(function(l,i){doc.text(l,M,y+4+i*4.2)});doc.setFont("helvetica","normal");v.forEach(function(l,i){doc.text(l,M+58,y+4+i*4.2)});y+=h;doc.setDrawColor(LINIE[0],LINIE[1],LINIE[2]);doc.line(M,y-.5,W-M,y-.5)});y+=3}
