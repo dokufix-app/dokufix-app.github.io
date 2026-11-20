@@ -207,6 +207,13 @@ var ICO={ok:'<svg viewBox="0 0 24 24" class="wq-mk"><path d="M5 12.5l4.5 4.5L19 
 .wq-cmp:empty{display:none}
 .wq-cmp div{background:#fff;border-radius:10px;padding:10px 12px}
 .wq-cmp small{display:block;font-size:.8125rem;opacity:.7;margin-bottom:3px}
+.wq-buddy[aria-pressed="true"]{color:var(--tape)}
+.wb{position:absolute;left:clamp(10px,3vw,24px);bottom:calc(var(--sh,0px) + 10px);z-index:5;transition:bottom 300ms cubic-bezier(.32,.72,0,1);display:flex;align-items:flex-end;gap:8px;pointer-events:none;max-width:min(360px,calc(100vw - 20px))}
+.wb-fig{display:grid;justify-items:center;flex:none}.wb-fig img{width:clamp(84px,12vw,120px);height:clamp(84px,12vw,120px);object-fit:contain}.wb-fig small{font-size:.6875rem;color:var(--schrift2);font-weight:600}
+.wb-blase{background:var(--flaeche);color:var(--schrift);border-radius:16px 16px 16px 4px;padding:10px 13px;font-size:.9375rem;line-height:1.35;box-shadow:0 6px 24px rgba(0,0,0,.14)}
+.wb.rein{animation:wbRein 260ms cubic-bezier(.23,1,.32,1)}@keyframes wbRein{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
+.wb-k{display:block;filter:drop-shadow(0 4px 10px rgba(0,0,0,.15));transform-origin:50% 100%;transition:transform 70ms linear;will-change:transform}.wb-m{display:block;overflow:hidden;width:clamp(84px,12vw,120px);height:clamp(84px,12vw,120px);animation:wbAtem 2.6s ease-in-out infinite alternate;transform-origin:50% 100%}.wb-fig img.wb-sprite{width:600%!important;height:100%!important;max-width:none;object-fit:fill}@keyframes wbAtem{from{transform:scale(1,1)}to{transform:scale(1.012,.988)}}
+@media(prefers-reduced-motion:reduce){.wb.rein,.wb-m{animation:none}.wb-k{transform:none!important}}
 .wq-why{font-size:.96875rem;line-height:1.55;margin:12px 0 16px}
 .wq-sheet .wq-go{width:100%;color:#fff}
 .wq-sheet.ok .wq-go{background:var(--ok)}.wq-sheet.no .wq-go{background:var(--no)}
@@ -391,20 +398,79 @@ async function pdfTeilen(e,btn){btn.setAttribute("aria-busy","true");
  finally{btn.removeAttribute("aria-busy")}}
 window.WDH_pdf=pdfBauen;
 
+/* ---------- Quiz-Buddy Patti: kommentiert Antworten (optional, mit Stimme) ---------- */
+var Buddy=(function(){var KEY="df-wdh-buddy",au=null,el,txt,img,tm,stimme=null,heim=document.body,SP=null,sl=false;
+ function an(){try{return localStorage.getItem(KEY)==="1"}catch(e){return false}}
+ function setz(v){try{localStorage.setItem(KEY,v?"1":"0")}catch(e){}if(v)lade();else{still();weg()}}
+ var geladen={},uid=null;
+ function skript(src,f){if(geladen[src])return;geladen[src]=1;var sc=document.createElement("script");sc.src=src;if(f){sc.onload=function(){f(true)};sc.onerror=function(){f(false)}}document.head.append(sc)}
+ function lade(){if(!sl){sl=true;skript("fortbildung/patti.js",function(){SP=window.PATTI_SP||{}})}skript("fortbildung/patti-ton/allgemein.js");if(uid)skript("fortbildung/patti-ton/"+uid+".js")}
+ function einheit(u){uid=u;if(an())lade()}
+ function bau(){if(el)return;el=document.createElement("div");el.className="wb";el.hidden=true;el.setAttribute("aria-live","polite");
+  el.innerHTML='<div class="wb-fig"><span class="wb-k"><span class="wb-m"><img alt="" width="84" height="84"></span></span><small>Patti</small></div><div class="wb-blase"></div>';heim.append(el);txt=el.querySelector(".wb-blase");img=el.querySelector("img");kp=el.querySelector(".wb-k")}
+ // Lippensynchron: je Emotion ein Streifen mit 6 Mundbildern (0 zu, 1 leicht, 2 halb, 3 weit, 4 O, 5 E), gesteuert über Lautstärke und Klangfarbe der Aufnahme
+ var kp,emo="neutral",MB="fortbildung/bilder/patti/mund/patti-",fr=[],ctx=null,ana=null,raf=0,fake=0,last=-1,lastT=0,vorrat={};
+ function bild(e){emo=e||"neutral";last=-1;if(!img)return;img.onerror=null;if(ohne[emo]){img.className="";img.style.transform="";img.src="fortbildung/bilder/patti/patti-"+emo+".webp";return}
+  img.onerror=function(){ohne[emo]=1;img.onerror=null;img.className="";img.style.transform="";img.src="fortbildung/bilder/patti/patti-"+emo+".webp"};img.className="wb-sprite";img.src=MB+emo+".webp";zeig(0,true)}
+ var ohne={};function zeig(n,jetzt){if(n===last&&!jetzt)return;last=n;if(!img||ohne[emo])return;img.style.transform="translateX("+(-n*100/6).toFixed(4)+"%)"}
+ function koerper(l){if(!kp)return;kp.style.transform=l?"translateY("+(-l*6).toFixed(1)+"px) scale("+(1+l*.05).toFixed(3)+","+(1-l*.035).toFixed(3)+") rotate("+(Math.sin(Date.now()/260)*l*3).toFixed(2)+"deg)":""}
+ function mundAus(){cancelAnimationFrame(raf);raf=0;clearInterval(fake);fake=0;zeig(0,true);koerper(0)}
+ function mundAudio(a){mundAus();try{var AC=window.AudioContext||window.webkitAudioContext;if(!AC)throw 0;if(!ctx)ctx=new AC();if(ctx.state!=="running")ctx.resume();if(ctx.state!=="running")throw 0;
+   var src=ctx.createMediaElementSource(a);ana=ctx.createAnalyser();ana.fftSize=1024;ana.smoothingTimeConstant=.35;src.connect(ana);ana.connect(ctx.destination)}catch(e){ana=null;return mundSchein()}
+  var td=new Uint8Array(ana.fftSize),fd=new Uint8Array(ana.frequencyBinCount),pegel=0,ms=0;
+  (function schleife(t){raf=requestAnimationFrame(schleife);ana.getByteTimeDomainData(td);var q=0;for(var i=0;i<td.length;i++){var v=(td[i]-128)/128;q+=v*v}var rms=Math.sqrt(q/td.length);
+   pegel=pegel*.55+Math.min(1,rms*5)*.45;koerper(pegel);if(t-lastT<70)return;lastT=t;
+   ana.getByteFrequencyData(fd);var su=0,gw=0;for(var k=2;k<180;k++){su+=fd[k];gw+=fd[k]*k}var mitte=su?gw/su:0;
+   if(pegel>.1)ms=ms?ms*.9+mitte*.1:mitte;var n=pegel<.1?0:pegel<.3?1:pegel<.55?2:3;if(n>=1&&ms&&mitte>ms+7)n=5;else if(n>=1&&ms&&mitte<ms-9)n=4;zeig(n)})(0)}
+ function mundSchein(){mundAus();var folge=[1,2,3,2,1,5,2,4,1,3,2,0];var i=0;fake=setInterval(function(){var n=folge[i++%folge.length];zeig(n);koerper(n?.35:0)},110)}
+ function wahl(){if(stimme||!window.speechSynthesis)return stimme;var v=speechSynthesis.getVoices().filter(function(x){return /^de/i.test(x.lang)});
+  stimme=v.find(function(x){return /anna|helena|petra|marlene|female/i.test(x.name)})||v[0]||null;return stimme}
+ function still(){mundAus();try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){}try{if(au){au.pause();au=null}}catch(e){}if(el)el.classList.remove("spricht")}
+ function weg(){if(el)el.hidden=true}
+ function sag(t,e){var emo=e;if(!an())return;bau();clearTimeout(tm);txt.textContent=t;bild(emo);el.hidden=false;el.classList.remove("rein");void el.offsetWidth;el.classList.add("rein");
+  var dauer=Math.max(2800,t.length*80);
+  if(ton(t))return;
+  if(window.speechSynthesis&&window.SpeechSynthesisUtterance){try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="de-DE";var v=wahl();if(v)u.voice=v;u.rate=1.05;u.pitch=1.25;
+   u.onstart=function(){el.classList.add("spricht");mundSchein()};u.onend=u.onerror=function(){el.classList.remove("spricht");mundAus();tm=setTimeout(weg,2200)};speechSynthesis.speak(u);return}catch(e){}}
+  el.classList.add("spricht");tm=setTimeout(function(){el.classList.remove("spricht");weg()},dauer)}
+ function fnv(t){var h=0x811c9dc5;for(var i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0}return ("0000000"+h.toString(16)).slice(-8)}
+ // Aufgenommene Patti-Stimme (Qwen3-TTS, Vivian); fehlt die Datei, spricht die Browserstimme
+ function ton(t){try{var b=window.PATTI_TON&&window.PATTI_TON[fnv(t)];if(!b||!window.Audio)return false;still();var bin=atob(b),z=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)z[i]=bin.charCodeAt(i);var url=URL.createObjectURL(new Blob([z],{type:"audio/mpeg"})),a=new Audio(url);au=a;a.addEventListener("ended",function(){URL.revokeObjectURL(url)});
+  a.onplaying=function(){el.classList.add("spricht")};a.onended=function(){el.classList.remove("spricht");mundAus();tm=setTimeout(weg,2200)};mundAudio(a);
+  a.onerror=function(){if(au!==a)return;au=null;try{var u=new SpeechSynthesisUtterance(t);u.lang="de-DE";var v=wahl();if(v)u.voice=v;u.rate=1.05;u.pitch=1.25;u.onstart=function(){el.classList.add("spricht");mundSchein()};u.onend=u.onerror=function(){el.classList.remove("spricht");mundAus();tm=setTimeout(weg,2200)};speechSynthesis.speak(u)}catch(e){tm=setTimeout(weg,Math.max(2800,t.length*80))}};
+  var p=a.play();if(p&&p.catch)p.catch(function(){});return true}catch(e){return false}}
+ function eins(a){return a[Math.floor(Math.random()*a.length)]}
+ var RICHTIG=["Na also, geht doch.","Sogar ein blindes Huhn findet mal ein Korn.","Wer hätte das gedacht. Richtig.","Ich bin fast stolz auf dich.","Schau an, da ist ja doch was hängen geblieben.","Richtig. Sag das bloß nicht zu laut, sonst gewöhn ich mich dran."],
+  FALSCH=[["Wie kann man nur so blöd sein? Lies die Erklärung, aber gründlich.","frech"],["Ernsthaft jetzt, Bruno?","entsetzt"],["Hast du dein Examen im Lotto gewonnen?","frech"],["Das tut mir als Kniescheibe körperlich weh.","entsetzt"],["Dein Dozent weint gerade leise.","enttaeuscht"],["Mutig. Dumm, aber mutig.","skeptisch"]],
+  SERIE={3:"Drei in Folge. Wer bist du und was hast du mit Bruno gemacht?",5:"Fünf am Stück. Jetzt bloß nicht abheben.",8:"Acht in Folge. Ich bin beeindruckt."},
+  EMO={skeptisch:"skeptisch",frech:"frech","enttäuscht":"enttaeuscht",enttaeuscht:"enttaeuscht",entsetzt:"entsetzt",nachdenklich:"nachdenklich"};
+ function antwort(ok,serie,uid,frage){
+  if(ok&&SERIE[serie])return sag(SERIE[serie],"begeistert");
+  var x=SP&&uid&&frage?SP[uid+"|"+String(frage).slice(0,60)]:null;
+  if(x)return ok?sag(x[0],Math.random()<.35?"stolz":"freut"):sag(x[1],EMO[x[2]]||"nachdenklich");
+  if(ok)return sag(eins(RICHTIG),Math.random()<.35?"stolz":"freut");var f=eins(FALSCH);sag(f[0],f[1])}
+ function hallo(){sag("Hallo Bruno, ich bin Patti. Ab jetzt sag ich dir ehrlich, was ich von deinen Antworten halte.","neutral")}
+ function pause(r,n){r===n?sag("Erste Runde ohne Fehler. Hast du geschummelt?","stolz"):sag("Erste Runde geschafft. Jetzt kommen deine Peinlichkeiten nochmal dran.","nachdenklich")}
+ function ende(r,n){var q=r/Math.max(n,1);q===1?sag("Alles auf Anhieb richtig. Ich bin sprachlos. Fast.","begeistert"):q>=.75?sag("Starke Runde. Ich muss mich erst mal setzen.","stolz"):q>=.5?sag("Geht so, Bruno. Ein paar Sachen sitzen noch nicht, und das weißt du.","nachdenklich"):sag("Ganz ehrlich, Bruno? Das war nichts. Nochmal, und diesmal mit Gehirn.","enttaeuscht")}
+ return{in:function(h){heim=h;if(el)h.append(el)},an:an,setz:setz,lade:lade,einheit:einheit,antwort:antwort,hallo:hallo,pause:pause,ende:ende,still:still,weg:weg}})();
+
 /* ---------- Quiz: eine Frage pro Bildschirm ---------- */
 var Quiz=(function(){
  var RM=matchMedia("(prefers-reduced-motion: reduce)").matches,L="ABCD",st,view,sheet,bar,cnt,Q,unit,queue,pos,round,att,right,answered,firstWrong,done,streak;
  function $(s){return st.querySelector(s)}
  function bauen(){if(st)return;st=document.createElement("div");st.className="wq";st.hidden=true;st.setAttribute("role","dialog");st.setAttribute("aria-modal","true");
-  st.innerHTML=`<header class="wq-top"><button class="wq-ico" data-q="zu" type="button" aria-label="Quiz schließen">${ICO.x}</button><div class="wq-bar" aria-hidden="true"><i></i></div><span class="wq-cnt"></span></header><div class="wq-view"></div><div class="wq-sheet" aria-live="polite"><div class="wq-sin"><div class="wq-verdict"></div><div class="wq-cmp"></div><p class="wq-why"></p><button class="wq-go" data-q="weiter" type="button">Weiter</button></div></div>`;
-  document.body.append(st);view=$(".wq-view");sheet=$(".wq-sheet");bar=$(".wq-bar i");cnt=$(".wq-cnt");
+  st.innerHTML=`<header class="wq-top"><button class="wq-ico" data-q="zu" type="button" aria-label="Quiz schließen">${ICO.x}</button><div class="wq-bar" aria-hidden="true"><i></i></div><span class="wq-cnt"></span><button class="wq-ico wq-buddy" data-q="buddy" type="button" aria-label="Quiz-Buddy mit Stimme" aria-pressed="false"></button></header><div class="wq-view"></div><div class="wq-sheet" aria-live="polite"><div class="wq-sin"><div class="wq-verdict"></div><div class="wq-cmp"></div><p class="wq-why"></p><button class="wq-go" data-q="weiter" type="button">Weiter</button></div></div>`;
+  document.body.append(st);Buddy.in(st);view=$(".wq-view");sheet=$(".wq-sheet");bar=$(".wq-bar i");cnt=$(".wq-cnt");
   st.addEventListener("click",function(ev){var b=ev.target.closest("button");if(!b)return;
    if(b.classList.contains("wq-opt"))return pick(b);
-   var q=b.dataset.q;if(q==="zu")zu();else if(q==="weiter")next();else if(q==="rep")ask();else if(q==="neu"){offenWeg(unit.id);reset();ask()}else if(q==="fort")fort()});
+   var q=b.dataset.q;if(q==="zu")zu();else if(q==="weiter")next();else if(q==="rep")ask();else if(q==="neu"){offenWeg(unit.id);reset();ask()}else if(q==="fort")fort();else if(q==="buddy")buddyKnopf(true)});
   document.addEventListener("keydown",function(e){if(st.hidden)return;if(e.key==="Escape"){zu();return}
    var k="1234abcd".indexOf(String(e.key).toLowerCase());
    if(k>-1&&!answered){var o=view.lastElementChild&&view.lastElementChild.querySelectorAll(".wq-opt")[k%4];if(o)pick(o)}
    else if(e.key==="Enter"&&answered&&document.activeElement!==$('[data-q="weiter"]')){e.preventDefault();next()}})}
+ function buddyKnopf(um){var b=$(".wq-buddy"),v=Buddy.an();if(um){v=!v;Buddy.setz(v);if(v)Buddy.hallo()}else if(v)Buddy.lade();
+  b.setAttribute("aria-pressed",v?"true":"false");b.innerHTML=v?'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>':'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="m22 9-6 6M16 9l6 6"/></svg>';
+  b.title=v?"Buddy an: tippen zum Ausschalten":"Buddy aus: tippen zum Einschalten"}
  function mix(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.random()*(i+1)|0,t=a[i];a[i]=a[j];a[j]=t}return a}
  function reset(){queue=Q.map(function(_,i){return i});pos=0;round=1;att=Q.map(function(){return 0});right=0;firstWrong=[];done=0;streak=0}
  function progress(){var rest=queue.length-pos-(answered?1:0),total=done+rest;bar.style.transform="scaleX("+Math.max(.02,done/Math.max(total,1))+")";cnt.textContent=round===1?(pos+1)+" / "+Q.length:"Wiederholung "+(pos+1)+" / "+queue.length}
@@ -428,14 +494,14 @@ var Quiz=(function(){
   var last=pos+1>=queue.length;$('[data-q="weiter"]').textContent=last?"Zur Auswertung":(pos+1===Q.length&&round===1&&queue.length>Q.length?"Zu den Wiederholungen":"Weiter");
   sheet.classList.add("on",ok?"ok":"no");
   requestAnimationFrame(function(){var sh=sheet.offsetHeight;st.style.setProperty("--sh",sh+"px");var o=card.querySelector(".wq-opts"),t=o.offsetTop+o.offsetHeight-(view.clientHeight-sh)+20;if(t>view.scrollTop)setTimeout(function(){view.scrollTo({top:t,behavior:RM?"auto":"smooth"})},60)});
-  progress();sichern(true);setTimeout(function(){$('[data-q="weiter"]').focus({preventScroll:true})},60)}
+  Buddy.antwort(ok,streak,unit.id,q[0]);progress();sichern(true);setTimeout(function(){$('[data-q="weiter"]').focus({preventScroll:true})},60)}
  /* Stand nach jeder Antwort sichern, damit ein unterbrochenes Quiz an derselben Stelle weitergeht */
  function sichern(ans){var P=jLes(PKEY,{});if(!P||typeof P!=="object")P={};
   var f=round===1?Math.min(pos+(ans?2:1),Q.length):0;
   P[unit.id]={n:Q.length,queue:queue,pos:pos,round:round,att:att,right:right,firstWrong:firstWrong,done:done,streak:streak,ans:!!ans,f:f,t:Date.now()};jSchr(PKEY,P)}
  function next(){if(!answered)return;weiter()}
  function weiter(){pos++;
-  if(pos<queue.length&&pos===Q.length&&round===1){queue=queue.slice(pos);pos=0;round=2;sichern(false);pause();return}
+  if(pos<queue.length&&pos===Q.length&&round===1){queue=queue.slice(pos);pos=0;round=2;sichern(false);pause();Buddy.pause(right,Q.length);return}
   if(pos>=queue.length){ende();return}sichern(false);ask()}
  function fort(){var o=offen(unit.id);if(!o){reset();ask();return}
   queue=o.queue;pos=o.pos;round=o.round;att=o.att;right=o.right;firstWrong=o.firstWrong||[];done=o.done;streak=o.streak||0;answered=false;
@@ -448,7 +514,7 @@ var Quiz=(function(){
   var reps=att.reduce(function(s,a){return s+a-1},0),R=lesen(),alt=R[unit.id];
   var heute=new Date(),dat=heute.getFullYear()+"-"+String(heute.getMonth()+1).padStart(2,"0")+"-"+String(heute.getDate()).padStart(2,"0"),fehler=Q.length-right;
   R[unit.id]={right:right,total:Q.length,reps:reps,datum:dat,mal:(alt&&alt.mal||0)+1,best:Math.max(right,alt&&alt.best||0)};schreiben(R);
-  var LG=laeufe();LG.push({d:dat,id:unit.id,t:unit.titel,r:right,n:Q.length,w:reps});jSchr(LKEY,LG);offenWeg(unit.id);
+  Buddy.ende(right,Q.length);var LG=laeufe();LG.push({d:dat,id:unit.id,t:unit.titel,r:right,n:Q.length,w:reps});jSchr(LKEY,LG);offenWeg(unit.id);
   var ms=monatStat(dat.slice(0,7)),zahl=`<div class="wq-zahl"><div><b>${right}/${Q.length}</b><small>auf Anhieb</small></div><div><b>${fehler}</b><small>Fehler</small></div><div><b>${reps}</b><small>${reps===1?"Wiederholung":"Wiederholungen"}</small></div></div>`+(ms?`<p class="wq-note">Im ${E(MON[heute.getMonth()])} bisher: ${ms.l} ${ms.l===1?"Durchlauf":"Durchläufe"}, ${ms.pct} % auf Anhieb richtig, ${ms.w} Wiederholungen.</p>`:"");
   var miss=firstWrong.length?`<div class="wq-miss"><h4>Diese Fragen hatten dich erwischt</h4><ol>${firstWrong.filter(function(v,i,a){return a.indexOf(v)===i}).map(function(i){return `<li><span>${E(Q[i][0])}</span><b>${E(Q[i][1][Q[i][2]])}</b></li>`}).join("")}</ol></div>`:"";
   swap(`<h3 class="wq-q">Auswertung</h3><div class="wq-ausw"></div><p class="wq-note">Antippen spielt die Auswertung nochmal ab.</p>${zahl}${miss}<div class="wq-ends"><button class="wq-go" data-q="neu" type="button">Quiz neu starten</button><button class="wq-ghost" data-q="zu" type="button">Zurück zur Einheit</button></div>`,function(nu){
@@ -456,10 +522,10 @@ var Quiz=(function(){
    var fb=function(){el.style.cssText="padding:20px;color:#fff";el.textContent=right+" von "+Q.length+" auf Anhieb, "+reps+(reps===1?" Wiederholung":" Wiederholungen")+"."};
    var go=function(){try{window.zeigeAuswertung(el,p)}catch(e){fb()}};
    if(window.zeigeAuswertung)go();else{var s=document.createElement("script");s.src="fortbildung/auswertung.js";s.onload=go;s.onerror=fb;document.head.append(s)}})}
- function auf(e){bauen();unit=e;Q=e.fragen;reset();st.hidden=false;document.documentElement.classList.add("wi-auf");
+ function auf(e){bauen();unit=e;Buddy.einheit(e.id);buddyKnopf(false);Q=e.fragen;reset();st.hidden=false;document.documentElement.classList.add("wi-auf");
   if(!RM)st.animate([{opacity:0,transform:"translateY(16px)"},{opacity:1,transform:"none"}],{duration:320,easing:"cubic-bezier(.23,1,.32,1)"});
   view.innerHTML="";var o=offen(e.id);if(o&&o.n===Q.length&&Array.isArray(o.queue))fortFrage(o);else{offenWeg(e.id);ask()}}
- function zu(){st.hidden=true;sheetZu();document.documentElement.classList.remove("wi-auf");if(WI_st.modus==="wdh")WI_zeige()}
+ function zu(){st.hidden=true;sheetZu();Buddy.still();Buddy.weg();document.documentElement.classList.remove("wi-auf");if(WI_st.modus==="wdh")WI_zeige()}
  return{auf:auf}})();
 window.WDH_Quiz=Quiz;
 document.addEventListener("click",function(ev){var im=ev.target.closest(".wd-figs img");if(im)lupe(im)});
