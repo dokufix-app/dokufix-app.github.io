@@ -8,6 +8,7 @@ Neue Versionen kommen oben dazu.
 
 | Version | Datum | Commit | Was sich geändert hat |
 |---|---|---|---|
+| v226 | 21.11.2026 | (folgt) | Wissen › Wiederholung › Techniken › PNF: letzte Skizzen ersetzt. F09 Initial Stretch (nach Skript S. 237) als Foto im Text und als Titelbild, Pattern-Atlas bekommt Titelbild FLEX/ABD/AR mit Ellbogenflexion (nach S. 226). Das Diagonalen-Schaubild bleibt im Text |
 | v225 | 21.11.2026 | dc592fc | Wissen › Wiederholung › Techniken › PNF: Titelbilder der Einheiten sind jetzt die nachgebauten Kursfotos statt Skizzen (11 Einheiten). Neues Foto F17 (Greifen, FLEX/ABD/AR mit Ellbogenflexion im Sitz, nach Skript S. 227) als Titelbild für „Welche Technik wofür?“. Skizze bleibt nur noch bei F09 Initial Stretch und im Pattern-Atlas |
 | v224 | 21.11.2026 | 40f0be7 | Wissen › Wiederholung › Techniken › PNF: 14 weitere Fotos statt Platzhalter (F01, F03–F08, F10–F16), je nach Kursfoto aus dem Skript nachgebaut, mit anderen Personen und Räumen, Handstellungen einzeln geprüft. Nur F09 (Initial Stretch / Re-Stretch) bleibt Skizze, weil das Skript dazu kein Foto hat |
 | v223 | 21.11.2026 | e02ca00 | Wissen › Wiederholung › Techniken › PNF: erstes Foto statt Platzhalter, F02 Hold Relax M. pectoralis im Sitz (nach Kursfoto Skript S. 229 nachgebaut, andere Personen, Handstellung geprüft) |
