@@ -28,7 +28,7 @@ function monatBlock(m,titel,cls){var s=monatStat(m);
  return `<section class="wd-mon${cls||""}"><h2>${E(titel)}</h2><div class="wd-mon-g"><div><b>${s.l}</b><small>Durchläufe</small></div><div><b>${s.ein}</b><small>Einheiten</small></div><div><b>${s.pct} %</b><small>auf Anhieb richtig</small></div><div><b>${s.f}</b><small>Fehler in Runde 1</small></div><div><b>${s.w}</b><small>Wiederholungen nötig</small></div><div><b>${s.wd}</b><small>Einheiten erneut gemacht</small></div></div>${s.schwach.length?`<p class="wd-mon-s">Am meisten Fehler: ${s.schwach.map(function(u){return E(u.t)+" ("+u.r+"/"+u.n+")"}).join(" · ")}</p>`:""}</section>`}
 function lade(src,cb){if(ladend[src])return;ladend[src]=1;var s=document.createElement("script");s.src=src;s.onload=cb||null;s.onerror=function(){ladend[src]=0};document.head.append(s)}
 function index(){if(window.WDH_INDEX){IDX=window.WDH_INDEX;return IDX}lade("fortbildung/index.js?t="+Date.now(),function(){IDX=window.WDH_INDEX||[];if(WI_st.modus==="wdh")WI_zeige()});return null}
-var PFADE={pnf:"fortbildung/techniken-pnf.js",tape:"fortbildung/techniken-tape.js"},PFAD_NAME={pnf:"PNF",tape:"Tape"};
+var PFADE={pnf:"fortbildung/techniken-pnf.js",tape:"fortbildung/techniken-tape.js",studien:"fortbildung/techniken-studien.js"},PFAD_NAME={pnf:"PNF",tape:"Tape",studien:"Studien"};
 function woche(kw){if(PFADE[kw]){if(!W[kw])lade(PFADE[kw]);return W[kw]}var e=(IDX||[]).find(function(x){return x.kw===kw});if(!W[kw]&&e)lade(e.datei);return W[kw]}
 function alleE(w){return w?(w.einheiten||[]).concat(w.anatomie||[],(w.techniken||[]).filter(function(x){return !x.bald})):[]}
 function heuteKw(){var d=new Date(),t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())),n=t.getUTCDay()||7;t.setUTCDate(t.getUTCDate()+4-n);var j=new Date(Date.UTC(t.getUTCFullYear(),0,1));return t.getUTCFullYear()+"-W"+String(Math.ceil(((t-j)/864e5+1)/7)).padStart(2,"0")}
@@ -251,7 +251,7 @@ var h=wahl+`<div class="wd-pfad"><div><b>${E(w.titel)}</b><span>${E(w.unter||"")
 function seiteListe(){
  var l=index(),z=WI_st.wdhZweig==="ana"||WI_st.wdhZweig==="tech"?WI_st.wdhZweig:"kl",feld=z==="ana"?"anatomie":"einheiten";
  var kopf=`<div class="wi-seite"><button class="wi-zur" data-a="zu">‹ Mehr</button><h1>Wissen</h1><p class="wi-unter">Wiederholung · jede Woche neue Einheiten mit Quiz</p>${WI_umschWdh()}
- <div class="wd-zweig" role="tablist"><button role="tab" data-zweig="kl" aria-selected="${z==="kl"}"><b>Krankheitslehre</b><small>Krankheitsbilder und Forschung</small></button><button role="tab" data-zweig="ana" aria-selected="${z==="ana"}"><b>Anatomie</b><small>Gelenke und Regionen</small></button><button role="tab" data-zweig="tech" aria-selected="${z==="tech"}"><b>Techniken</b><small>PNF und Tape</small></button></div>`;
+ <div class="wd-zweig" role="tablist"><button role="tab" data-zweig="kl" aria-selected="${z==="kl"}"><b>Krankheitslehre</b><small>Krankheitsbilder und Forschung</small></button><button role="tab" data-zweig="ana" aria-selected="${z==="ana"}"><b>Anatomie</b><small>Gelenke und Regionen</small></button><button role="tab" data-zweig="tech" aria-selected="${z==="tech"}"><b>Techniken</b><small>PNF, Tape, Studien</small></button></div>`;
  if(z==="tech")return kopf+pfadListe()+`</div>`;
  if(!l)return kopf+`<p class="wd-hinweis">Lade die Einheiten …</p></div>`;
  var kw=aktuelleKw(),w=woche(kw),meta=l.find(function(x){return x.kw===kw})||{},liste=w?(w[feld]||[]):null;
