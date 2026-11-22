@@ -1,6 +1,19 @@
 /* Wochenliste für Wissen › Wiederholung, neueste zuerst. */
 window.WDH_INDEX=[
  {
+  "kw": "2026-W48",
+  "von": "2026-11-23",
+  "bis": "2026-11-29",
+  "datei": "fortbildung/2026-W48.js",
+  "titel": [
+   "Nicht-spezifischer Nackenschmerz",
+   "Lumbale Radikulopathie und Bandscheibenvorfall",
+   "Rotatorenmanschetten-Tendinopathie",
+   "Schlaganfall-Reha: neue AHA-Leitlinie 2026",
+   "Koxarthrose"
+  ]
+ },
+ {
   "kw": "2026-W47",
   "von": "2026-11-16",
   "bis": "2026-11-22",

@@ -616,6 +616,43 @@
  ],
  "wochen": [
   {
+   "kw": "2026-W48",
+   "einheiten": [
+    {
+     "id": "w48-nack",
+     "kb": "WS05",
+     "art": "kb",
+     "titel": "Nicht-spezifischer Nackenschmerz"
+    },
+    {
+     "id": "w48-rad",
+     "kb": "WS02",
+     "art": "kb",
+     "titel": "Lumbale Radikulopathie und Bandscheibenvorfall"
+    },
+    {
+     "id": "w48-rm",
+     "kb": "SH01",
+     "art": "kb",
+     "titel": "Rotatorenmanschetten-Tendinopathie"
+    },
+    {
+     "id": "w48-aha",
+     "kb": "NE01",
+     "art": "neu",
+     "titel": "Schlaganfall-Reha: neue AHA-Leitlinie 2026",
+     "thema": "AHA/ASA 2026 Guideline for Adult Stroke Rehabilitation and Recovery (27.08.2026)"
+    },
+    {
+     "id": "w48-hue",
+     "kb": "HU01",
+     "art": "kb",
+     "titel": "Koxarthrose"
+    }
+   ],
+   "notiz": "WS05 und WS02 auf Brunos Wunsch nach Nachprüfung der Karten; SH01, AHA 2026 und HU01 nachgebaut, weil der automatische Lauf am 22.11. am Nutzungslimit scheiterte. Keine Wiederholung fällig (erste fällig in W50)."
+  },
+  {
    "kw": "2026-W47",
    "einheiten": [
     {
@@ -737,10 +774,39 @@
    "wiederholt": [],
    "faellig": "2026-W50",
    "notiz": "Zusatzthema 20.11.2026 nach Deep Research; Krankheitsbild NE11 neu in v220"
+  },
+  "WS05": {
+   "zuerst": "2026-W48",
+   "wiederholt": [],
+   "faellig": "2026-W51",
+   "notiz": "Rasmussen-Barr 2023, Peters 2025, JOSPT-Revision angekündigt"
+  },
+  "WS02": {
+   "zuerst": "2026-W48",
+   "wiederholt": [],
+   "faellig": "2026-W51",
+   "notiz": "Zhu 2025 NMA, NICE 07/2026, S3 151-005"
+  },
+  "SH01": {
+   "zuerst": "2026-W48",
+   "wiederholt": [],
+   "faellig": "2026-W51"
+  },
+  "HU01": {
+   "zuerst": "2026-W48",
+   "wiederholt": [],
+   "faellig": "2026-W51"
+  },
+  "AHA-STROKE-2026": {
+   "zuerst": "2026-W48",
+   "wiederholt": [],
+   "faellig": "2026-W51",
+   "notiz": "Neu aus der Forschung, Karte NE01"
   }
  },
  "forschung": [
   "2026-W47: JOSPT CPG Karpaltunnelsyndrom 2026",
-  "2026-W47: NICE NG59 Rückzug psychologische Therapie (in WS01)"
+  "2026-W47: NICE NG59 Rückzug psychologische Therapie (in WS01)",
+  "2026-W48: AHA/ASA 2026 Leitlinie Schlaganfall-Reha (in NE01)"
  ]
 }
