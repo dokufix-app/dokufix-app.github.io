@@ -453,7 +453,108 @@ ${prog.filter((x) => BY[x.id]).map((x, i) => { const k = BY[x.id]; return `<div 
     document.body.append(w);
     document.body.classList.add('ha-print');
     const zu = () => { w.remove(); document.body.classList.remove('ha-print') };
-    w.onclick = (ev) => { const b = ev.target.closest('[data-a]'); if (!b) return; if (b.dataset.a === 'zu') zu(); if (b.dataset.a === 'p') window.print(); };
+    w.onclick = (ev) => { const b = ev.target.closest('[data-a]'); if (!b) return; if (b.dataset.a === 'zu') zu(); if (b.dataset.a === 'p') teilen(b, prog, oft, dat); };
+  }
+
+  // iOS druckt aus der Web-App auf dem Home-Bildschirm nicht (window.print bleibt stumm).
+  // Deshalb wird das Blatt als PDF gezeichnet und über das Teilen-Menü (Drucken, AirDrop, Dateien) weitergegeben.
+  const SCHRIFT = '-apple-system, "Helvetica Neue", Arial, sans-serif';
+  const ladeBild = (src) => new Promise((ok) => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => ok(null); i.src = src; });
+  function zeilen(g, text, breite) {
+    const out = [];
+    for (const absatz of String(text || '').split('\n')) {
+      let z = '';
+      for (const wort of absatz.split(/\s+/).filter(Boolean)) {
+        const t = z ? z + ' ' + wort : wort;
+        if (g.measureText(t).width > breite && z) { out.push(z); z = wort; } else z = t;
+      }
+      out.push(z);
+    }
+    return out;
+  }
+  function deckend(g, img, x, y, w, hh) {
+    g.save(); g.beginPath(); if (g.roundRect) g.roundRect(x, y, w, hh, 12); else g.rect(x, y, w, hh); g.clip();
+    g.fillStyle = '#e9e4e1'; g.fillRect(x, y, w, hh);
+    if (img) { const s = Math.max(w / img.width, hh / img.height), iw = img.width * s, ih = img.height * s; g.drawImage(img, x + (w - iw) / 2, y + (hh - ih) / 2, iw, ih); }
+    g.restore();
+  }
+  async function blattSeiten(prog, oft, dat) {
+    const W = 1240, H = 1754, M = 90, seiten = [];
+    let c, g, y;
+    const neu = () => { c = document.createElement('canvas'); c.width = W; c.height = H; g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, W, H); g.textBaseline = 'top'; seiten.push(c); y = M; };
+    const schrift = (px, fett) => { g.font = `${fett ? '700' : '400'} ${px}px ${SCHRIFT}`; };
+    neu();
+    // Kopf
+    g.fillStyle = '#6b6e64'; schrift(22); g.fillText('Physiotherapie', M, y);
+    g.fillStyle = '#1a1a1a'; schrift(50, true); g.fillText('Ihr Heimprogramm', M, y + 30);
+    g.textAlign = 'right'; schrift(24); g.fillStyle = '#1a1a1a'; g.fillText(dat, W - M, y + 6);
+    g.fillStyle = '#6b6e64'; schrift(22); g.fillText('Name: ____________________', W - M, y + 44);
+    g.textAlign = 'left'; y += 104;
+    g.fillStyle = '#4f6d10'; g.fillRect(M, y, W - 2 * M, 4); y += 26;
+    schrift(24); g.fillStyle = '#33352f';
+    for (const z of zeilen(g, `Bitte üben Sie ${oft || 'täglich'} in Ruhe. Die Bilder zeigen die Ausgangsstellung links und die Endstellung rechts.`, W - 2 * M)) { g.fillText(z, M, y); y += 34; }
+    y += 14;
+    const liste = prog.filter((x) => BY[x.id]);
+    const BW = 300, BH = 240, TX = M + 2 * BW + 24 + 36, TW = W - M - TX;
+    for (let i = 0; i < liste.length; i++) {
+      const x = liste[i], k = BY[x.id];
+      const [a, e] = await Promise.all([ladeBild(bild(x.id, 'start')), ladeBild(bild(x.id, 'ende'))]);
+      const nah = NAH[x.id] ? await ladeBild(nahBild(NAH[x.id])) : null;
+      // Textblock vorab messen
+      schrift(30, true); const titel = zeilen(g, `${i + 1}. ${k.n}`, TW);
+      schrift(22); const besch = zeilen(g, k.t, TW);
+      schrift(22); const hinw = x.h ? zeilen(g, x.h, TW - 24) : [];
+      const textH = titel.length * 38 + 40 + besch.length * 31 + (hinw.length ? hinw.length * 31 + 22 : 0) + 64;
+      const bildH = BH + (nah ? 150 : 0);
+      const reihe = Math.max(textH, bildH) + 40;
+      if (y + reihe > H - M) neu();
+      deckend(g, a, M, y, BW, BH); deckend(g, e, M + BW + 24, y, BW, BH);
+      schrift(18, true);
+      for (const [t, xx] of [['Start', M], ['Ende', M + BW + 24]]) { const tw = g.measureText(t).width; g.fillStyle = 'rgba(255,255,255,.9)'; g.fillRect(xx + 10, y + 10, tw + 18, 28); g.fillStyle = '#1a1a1a'; g.fillText(t, xx + 19, y + 15); }
+      if (nah) { deckend(g, nah, M, y + BH + 12, 112, 138); g.fillStyle = '#4a4d44'; schrift(18); g.fillText('So das Band anlegen', M + 126, y + BH + 20); }
+      let ty = y;
+      g.fillStyle = '#1a1a1a'; schrift(30, true); for (const z of titel) { g.fillText(z, TX, ty); ty += 38; }
+      g.fillStyle = '#4f6d10'; schrift(24, true); g.fillText(`${x.s} Serien × ${x.w} Wiederholungen`, TX, ty + 4); ty += 40;
+      g.fillStyle = '#33352f'; schrift(22); for (const z of besch) { g.fillText(z, TX, ty); ty += 31; }
+      if (hinw.length) { ty += 8; g.fillStyle = '#f3f6e8'; g.fillRect(TX, ty - 6, TW, hinw.length * 31 + 12); g.fillStyle = '#33352f'; for (const z of hinw) { g.fillText(z, TX + 12, ty); ty += 31; } ty += 14; }
+      ty += 10; schrift(15);
+      ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'].forEach((t, j) => { const bx = TX + j * 48; g.strokeStyle = '#c9ccc0'; g.lineWidth = 2; g.strokeRect(bx, ty, 40, 40); g.fillStyle = '#8a8d82'; g.textAlign = 'center'; g.fillText(t, bx + 20, ty + 4); g.textAlign = 'left'; });
+      y += reihe;
+      g.fillStyle = '#e1e4d8'; g.fillRect(M, y - 20, W - 2 * M, 2);
+    }
+    // Fuß
+    schrift(21);
+    const fuss = [['Sicherheit: ', 'Langsam und kontrolliert üben, ruhig weiteratmen. Bei Schwindel oder Unsicherheit eine feste Stütze nutzen.'], ['Schmerz: ', 'Leichtes Ziehen ist in Ordnung. Stärkere Schmerzen, die nach dem Üben anhalten, bitte beim nächsten Termin ansprechen.']]
+      .map(([k, t]) => zeilen(g, k + t, W - 2 * M));
+    const fh = fuss.reduce((s, z) => s + z.length * 30 + 10, 0) + 10;
+    if (y + fh > H - M) neu();
+    y += 6; g.fillStyle = '#4a4d44';
+    for (const z of fuss) { for (const l of z) { g.fillText(l, M, y); y += 30; } y += 10; }
+    return seiten;
+  }
+  async function blattPdf(prog, oft, dat) {
+    const seiten = [];
+    for (const c of await blattSeiten(prog, oft, dat)) {
+      const b = await new Promise((ok, no) => c.toBlob((x) => x ? ok(x) : no(Error('Bild')), 'image/jpeg', 0.9));
+      seiten.push({ d: new Uint8Array(await b.arrayBuffer()), w: c.width, h: c.height });
+    }
+    return PDF_bau(seiten);
+  }
+  async function teilen(b, prog, oft, dat) {
+    if (b.disabled) return;
+    const txt = b.textContent; b.disabled = true; b.textContent = 'Wird erstellt …';
+    try {
+      const pdf = await blattPdf(prog, oft, dat), name = `Heimprogramm_${dat.replace(/\./g, '-')}.pdf`;
+      let ok;
+      if (typeof window.Ic === 'function') ok = await window.Ic(pdf, name);
+      else {
+        const f = new File([pdf], name, { type: 'application/pdf' });
+        if (navigator.canShare && navigator.canShare({ files: [f] })) { try { await navigator.share({ files: [f], title: name }); ok = true; } catch (e) { ok = e && e.name === 'AbortError' ? null : false; } }
+        else { const u = URL.createObjectURL(pdf), l = document.createElement('a'); l.href = u; l.download = name; document.body.append(l); l.click(); l.remove(); setTimeout(() => URL.revokeObjectURL(u), 1000); ok = true; }
+      }
+      b.textContent = ok === false ? 'Hat nicht geklappt, nochmal tippen' : txt;
+    } catch (e) { console.warn('Heimprogramm-PDF', e); b.textContent = 'Hat nicht geklappt, nochmal tippen'; }
+    b.disabled = false;
   }
 
   // ---------- Mehr › Hausaufgaben (ohne Patient) ----------
