@@ -167,6 +167,9 @@
     ['serratus-push-wand', 'Serratus-Push an der Wand', 'Wand', 'schulter', 'stand', 'ohne', 'Eine knappe Armlänge vor der Wand stehen, die Hände auf Schulterhöhe an die Wand, die Arme bleiben gestreckt. Die Brust zwischen den Schultern etwas zur Wand sinken lassen, dann die Wand wegdrücken, bis die Schulterblätter nach vorn gleiten und der obere Rücken leicht rund wird. Die Ellenbogen bleiben gerade.'],
     ['serratus-push-unterarmstuetz', 'Serratus-Push im Unterarmstütz', 'Matte', 'schulter ruecken', 'liegen', 'ohne', 'Unterarmstütz auf den Fußspitzen, die Ellenbogen unter den Schultern, der Körper in einer Linie. Die Brust zwischen den Schultern sinken lassen, dann die Unterarme in den Boden drücken, bis der obere Rücken rund wird. Becken und Beine bleiben in Linie.'],
     ['loop-armheben-sitz', 'Arme heben mit Loopband im Sitz', 'Stuhl, Mini-Loopband', 'schulter', 'sitz', 'band', 'Aufrecht sitzen, das Loopband um beide Handgelenke. Die Ellenbogen 90° gebeugt am Körper, die Unterarme zeigen nach vorn. Die Hände nach außen gegen das Band drücken und so halten. Dann beide Oberarme nach vorn heben, bis sie waagerecht stehen, die Unterarme zeigen nach oben. Langsam zurück, die Spannung im Band bleibt.'],
+    ['y-bauchlage', 'Y in Bauchlage', 'Matte', 'schulter hws', 'liegen', 'ohne', 'Bauchlage, die Arme gestreckt schräg nach vorn über dem Kopf wie ein Y, Daumen zeigen nach oben. Die Schulterblätter nach hinten unten ziehen, dann Arme und Kopf eine Handbreit abheben. Das Kinn bleibt eingezogen, der Blick geht zur Matte. Kurz halten und langsam ablegen.'],
+    ['t-bauchlage', 'T in Bauchlage', 'Matte', 'schulter hws', 'liegen', 'ohne', 'Bauchlage, die Arme gestreckt seitlich auf Schulterhöhe wie ein T, Daumen zeigen nach oben. Die Schulterblätter zusammenziehen, dann Arme und Kopf eine Handbreit abheben. Das Kinn bleibt eingezogen, der Blick geht zur Matte. Kurz halten und langsam ablegen.'],
+    ['w-bauchlage', 'W in Bauchlage', 'Matte', 'schulter hws', 'liegen', 'ohne', 'Bauchlage, die Oberarme seitlich auf Schulterhöhe, die Ellenbogen 90° gebeugt, die Unterarme zeigen nach vorn. Die Schulterblätter nach hinten unten ziehen, dann die ganzen Arme und den Kopf eine Handbreit abheben, Daumen nach oben. Das Kinn bleibt eingezogen, das Brustbein bleibt auf der Matte. Kurz halten und langsam ablegen.'],
   ];
   const KAT = K.map(([id, n, z, r, p, h, t]) => ({ id, n, z, r: r.split(' '), p, h, t }));
   const BY = Object.fromEntries(KAT.map((x) => [x.id, x]));
@@ -249,6 +252,7 @@
   const posVon = (txt) => { const t = NORM(txt); const h = POSRE.find(([, r]) => r.test(t)); return h ? h[0] : null; };
   // feste Zuordnung für die wichtigsten Heimübungen, sonst aus Name und Text
   const MV = {
+    'y-bauchlage': 'shoch skap hws', 't-bauchlage': 'skap hws', 'w-bauchlage': 'sar skap hws',
     'bruecke': 'hext', 'bruecke-einbeinig': 'hext', 'seitlage-abspreizen': 'habd', 'muschel-loopband': 'habd sar', 'bauchlage-hueftstreckung': 'hext',
     'fersenschub': 'kflex hflex', 'quadrizeps-rolle': 'kext', 'gestrecktes-bein-heben': 'hflex kext', 'bein-gleiten': 'habd', 'aufstehen-stuhl': 'kext hext',
     'kniestreckung-sitz': 'kext', 'kniebeugung-sitz': 'kflex', 'abduktion-sitz-loopband': 'habd', 'adduktion-ball': 'hadd', 'bein-abspreizen': 'habd',
