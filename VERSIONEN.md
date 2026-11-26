@@ -8,7 +8,8 @@ Neue Versionen kommen oben dazu.
 
 | Version | Datum | Commit | Was sich geändert hat |
 |---|---|---|---|
-| v281 | 26.11.2026 | (dieser) | Hausaufgaben Schulter: Außenrotation mit Theraband, Arm vorn (Fortgeschritten) und Wand-Slides mit Loopband (Aufbau), mit Bildern und Clips |
+| v282 | 26.11.2026 | (dieser) | Hausaufgaben Hüfte/Knie: Brücke mit Marschieren, Brücke mit Loopband, Seitstütz auf den Knien mit Abduktion, Seitlicher Ausfallschritt; Personen um die 45, mit Bildern und Clips |
+| v281 | 26.11.2026 | df31684 | Hausaufgaben Schulter: Außenrotation mit Theraband, Arm vorn (Fortgeschritten) und Wand-Slides mit Loopband (Aufbau), mit Bildern und Clips |
 | v280 | 26.11.2026 | 51711d5 | Hausaufgaben, Wirbelsäule fortgeschritten: Dead Bug mit Theraband, Vierfüßler Ellenbogen zum Knie, Unterarmstütz auf den Füßen, Unterarmstütz mit Beinheben; Personen um die 45, mit Bildern und Clips |
 | v279 | 26.11.2026 | 79db074 | Hausaufgaben: Seitstütz mit Rotation (Arm unter dem Körper durch, dann zur Decke), Stufe Fortgeschritten, mit Bildern und Clip |
 | v278 | 26.11.2026 | de0bee5 | Hausaufgaben: Seitstütz auf dem Unterarm auf den Füßen (Rücken, Hüfte, Schulter, Stufe Fortgeschritten), Person um die 45, mit Bildern und Clip |
