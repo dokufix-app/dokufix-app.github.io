@@ -699,10 +699,11 @@ ${prog.filter((x) => BY[x.id]).map((x, i) => { const k = BY[x.id]; return `<div 
       const drin = (id) => frei.some((x) => x.id === id);
       const regs = REG.map(([r, n2]) => [r, n2, KAT.filter((k) => k.r.includes(r))]).filter((x) => x[2].length);
       const ag = el.__ag, ar = el.__ar;
-      const kach = (k) => `<div class="hb-ka${drin(k.id) ? ' drin' : ''}"><button type="button" class="hb-auf" data-a="ainfo" data-id="${k.id}" aria-label="Details zu ${esc(k.n)}"><i class="hb-bild"><img src="${bild(k.id, 'start')}" alt="" loading="lazy"><video muted loop playsinline preload="none" src="${clip(k.id)}" aria-hidden="true"></video></i><span><b>${esc(k.n)}</b><small>${esc(k.z)}</small></span></button><button type="button" class="hb-plus" data-a="aadd" data-id="${k.id}" aria-label="${drin(k.id) ? 'Aus dem Programm nehmen' : 'Zum Programm'}">${drin(k.id) ? IC.hak : IC.plus}</button></div>`;
-      const ai = el.__ai && BY[el.__ai];
+      const kach = (k) => `<div class="hb-ka${drin(k.id) ? ' drin' : ''}"><button type="button" class="hb-auf" data-a="ainfo" data-id="${k.id}" aria-label="Details zu ${esc(k.n)}"><i class="hb-bild"><img src="${bild(k.id, 'start')}" alt="" loading="lazy"><video muted loop playsinline preload="none" data-src="${clip(k.id)}" aria-hidden="true"></video></i><span><b>${esc(k.n)}</b><small>${esc(k.z)}</small></span></button><button type="button" class="hb-plus" data-a="aadd" data-id="${k.id}" aria-label="${drin(k.id) ? 'Aus dem Programm nehmen' : 'Zum Programm'}">${drin(k.id) ? IC.hak : IC.plus}</button></div>`;
+      const detF = (aid) => { const ai = aid && BY[aid];
       const inV = ai ? VORL.filter((t) => t.ids.includes(ai.id)).map((t) => t.n) : [];
-      const det = ai ? `<div class="hb-dim" data-a="ainfo" data-id="${ai.id}"></div><section class="hb-det" role="dialog" aria-label="${esc(ai.n)}"><div class="hb-det-k"><div><h4>${esc(ai.n)}</h4><small>${esc(ai.z)}</small></div><button type="button" class="hp-ic" data-a="ainfo" data-id="${ai.id}" aria-label="Schließen">${IC.weg}</button></div><div class="hb-det-b"><figure><img src="${bild(ai.id, 'start')}" alt="Ausgangsstellung"><figcaption>Start</figcaption></figure><figure><img src="${bild(ai.id, 'ende')}" alt="Endstellung"><figcaption>Ende</figcaption></figure></div><div class="hb-det-m"><span>${ai.r.map(regName).join(', ')}</span><span>${esc(POS.find((x) => x[0] === ai.p)?.[1] ?? '')}</span><span>${ai.h === 'ohne' ? 'ohne Hilfsmittel' : esc(HM.find((x) => x[0] === ai.h)?.[1] ?? '')}</span></div><p class="hb-det-t">${esc(ai.t)}</p>${inV.length ? `<p class="hb-det-v"><b>In Vorlagen:</b> ${inV.map(esc).join(', ')}</p>` : ''}<button type="button" class="hp-kn${drin(ai.id) ? ' zwei' : ''} hb-det-los" data-a="aadd" data-id="${ai.id}">${drin(ai.id) ? IC.hak + 'Im Programm · entfernen' : IC.plus + 'Zum Programm'}</button></section>` : '';
+      const det = ai ? `<div class="hb-dim" data-a="ainfo" data-id="${ai.id}"></div><section class="hb-det" role="dialog" aria-label="${esc(ai.n)}"><div class="hb-det-k"><div><h4>${esc(ai.n)}</h4><small>${esc(ai.z)}</small></div><button type="button" class="hp-ic" data-a="ainfo" data-id="${ai.id}" aria-label="Schließen">${IC.weg}</button></div><div class="hb-det-b"><figure><img src="${bild(ai.id, 'start')}" alt="Ausgangsstellung"><figcaption>Start</figcaption></figure><figure><img src="${bild(ai.id, 'ende')}" alt="Endstellung"><figcaption>Ende</figcaption></figure></div><div class="hb-det-m"><span>${ai.r.map(regName).join(', ')}</span><span>${esc(POS.find((x) => x[0] === ai.p)?.[1] ?? '')}</span><span>${ai.h === 'ohne' ? 'ohne Hilfsmittel' : esc(HM.find((x) => x[0] === ai.h)?.[1] ?? '')}</span></div><p class="hb-det-t">${esc(ai.t)}</p>${inV.length ? `<p class="hb-det-v"><b>In Vorlagen:</b> ${inV.map(esc).join(', ')}</p>` : ''}<button type="button" class="hp-kn${drin(ai.id) ? ' zwei' : ''} hb-det-los" data-a="aadd" data-id="${ai.id}">${drin(ai.id) ? IC.hak + 'Im Programm · entfernen' : IC.plus + 'Zum Programm'}</button></section>` : ''; return det; };
+      el.__detF = detF; const det = detF(el.__ai);
       ansHtml = `<div class="hb-alle"><div class="hb-sprung" role="group" aria-label="Bereich wählen">${GRP.map(([g, t, rs]) => `<button type="button" class="hb-g" data-a="agrp" data-v="${g}" aria-pressed="${ag === g}">${t}<i class="hx2-pf" aria-hidden="true"></i><span>${KAT.filter((k) => inReg(k, 'g:' + g)).length}</span></button>`).join('')}${ag ? `<div class="hb-sprung2">${regs.filter(([r]) => GRP.find((g) => g[0] === ag)[2].includes(r)).map(([r, n2, L]) => `<button type="button" data-a="areg2" data-v="${r}" aria-pressed="${ar === r}">${n2}<span>${L.length}</span></button>`).join('')}</div>` : ''}</div>${regs.filter(([r]) => ar ? r === ar : !ag || GRP.find((g) => g[0] === ag)[2].includes(r)).map(([r, n2, L]) => `<section class="hb-reg" id="hb-r-${r}"><h3>${n2}<span>${L.length} Übungen</span></h3><div class="hb-grid">${mitStufen(L, kach)}</div></section>`).join('')}</div>${det}`;
     }
     html = `<div class="hp hy hy-2">
@@ -716,11 +717,11 @@ ${frei.length ? `<div class="hy-chips"><span>Vorlage dazu</span>${alleV.map((t) 
     // Alle Übungen: Clip Start→Ende läuft nur, solange Maus oder Stift über der Kachel ist
     if (!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
       const vid = (e) => e.pointerType !== 'touch' && e.target.closest?.('.hb-ka')?.querySelector('video');
-      // Startbild bleibt sichtbar, bis der Clip wirklich läuft (kein beiger Blitz beim Laden)
-      el.onpointerover = (e) => { const v = vid(e); if (!v || !v.paused) return; v.onplaying = () => v.closest('.hb-ka')?.classList.add('laeuft'); v.play?.().catch(() => {}); };
-      el.onpointerout = (e) => { const v = vid(e); if (!v || e.relatedTarget?.closest?.('.hb-ka') === v.closest('.hb-ka')) return; v.closest('.hb-ka')?.classList.remove('laeuft'); v.pause?.(); try { v.currentTime = 0 } catch { } };
-      // Clips der sichtbaren Kacheln vorab laden, damit sie sofort starten
-      if ('IntersectionObserver' in window) { const io = new IntersectionObserver((es) => es.forEach((x) => { if (x.isIntersecting) { x.target.preload = 'auto'; io.unobserve(x.target); } }), { rootMargin: '200px' }); el.querySelectorAll('.hb-ka video').forEach((v) => io.observe(v)); }
+      // Startbild bleibt sichtbar, bis der Clip läuft. Nur ein Clip zur Zeit; die Quelle wird erst beim
+      // Drüberfahren gesetzt und danach wieder freigegeben, sonst bremsen viele Videos das iPad aus
+      const stopp = (v) => { if (!v) return; v.closest('.hb-ka')?.classList.remove('laeuft'); v.onplaying = null; v.pause?.(); v.removeAttribute('src'); try { v.load() } catch { } };
+      el.onpointerover = (e) => { const v = vid(e); if (!v || el.__vid === v) return; stopp(el.__vid); el.__vid = v; v.onplaying = () => v.closest('.hb-ka')?.classList.add('laeuft'); v.src = v.dataset.src; v.play?.().catch(() => {}); };
+      el.onpointerout = (e) => { const v = vid(e); if (!v || e.relatedTarget?.closest?.('.hb-ka') === v.closest('.hb-ka')) return; stopp(v); if (el.__vid === v) el.__vid = null; };
     }
     el.onclick = (ev) => {
       const b = ev.target.closest('[data-a]'); if (!b || b.disabled) return;
@@ -741,8 +742,10 @@ ${frei.length ? `<div class="hy-chips"><span>Vorlage dazu</span>${alleV.map((t) 
       if (a === 'ans') { el.__ans = b.dataset.v; el.__vd = null; el.__ai = null; male(); return nachOben(); }
       if (a === 'vsehen') { el.__vd = b.dataset.k; male(); return nachOben(); }
       if (a === 'vzur') { el.__vd = null; return male(); }
-      if (a === 'ainfo') { el.__ai = el.__ai === b.dataset.id ? null : b.dataset.id; return male(); }
+      // Details nur ein- und ausblenden, ohne die ganze Liste neu zu bauen (sonst hängt es auf dem iPad)
+      if (a === 'ainfo') { el.__ai = el.__ai === b.dataset.id ? null : b.dataset.id; el.querySelectorAll('.hb-dim,.hb-det').forEach((x) => x.remove()); if (el.__ai && el.__detF) el.querySelector('.hb-alle')?.insertAdjacentHTML('afterend', el.__detF(el.__ai)); el.__html = null; return; }
       if (a === 'aadd') { const id = b.dataset.id; return setze(frei.some((x) => x.id === id) ? frei.filter((x) => x.id !== id) : [...frei, { id, s: 3, w: 10 }]); }
+      if (el.__vid) { el.__vid.pause?.(); }
       if (a === 'agrp') { el.__ag = el.__ag === b.dataset.v ? null : b.dataset.v; el.__ar = null; return male(); }
       if (a === 'areg2') { el.__ar = el.__ar === b.dataset.v ? null : b.dataset.v; return male(); }
       if (a === 'areg') { el.querySelector(`#hb-r-${b.dataset.v}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
