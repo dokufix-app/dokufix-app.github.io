@@ -8,7 +8,8 @@ Neue Versionen kommen oben dazu.
 
 | Version | Datum | Commit | Was sich geändert hat |
 |---|---|---|---|
-| v278 | 26.11.2026 | (dieser) | Hausaufgaben: Seitstütz auf dem Unterarm auf den Füßen (Rücken, Hüfte, Schulter, Stufe Fortgeschritten), Person um die 45, mit Bildern und Clip |
+| v279 | 26.11.2026 | (dieser) | Hausaufgaben: Seitstütz mit Rotation (Arm unter dem Körper durch, dann zur Decke), Stufe Fortgeschritten, mit Bildern und Clip |
+| v278 | 26.11.2026 | de0bee5 | Hausaufgaben: Seitstütz auf dem Unterarm auf den Füßen (Rücken, Hüfte, Schulter, Stufe Fortgeschritten), Person um die 45, mit Bildern und Clip |
 | v277 | 26.11.2026 | 69381c7 | Hausaufgaben: Liegestütz auf den Füßen (Schulter, Stufe Fortgeschritten), Person um die 45, mit Bildern und Clip |
 | v276 | 26.11.2026 | 1e5b8d2 | Hausaufgaben: Übungen je Region und Gruppe von leicht nach schwer sortiert, mit Zwischenüberschriften „Früh und bei starken Beschwerden“, „Aufbau“, „Fortgeschritten“ (beim Hinzufügen und unter Alle Übungen; Stufen als Entwurf, fachlich prüfen) |
 | v275 | 26.11.2026 | 31e66db | Hausaufgaben › Alle Übungen: dieselbe Einteilung wie beim Hinzufügen (Gruppe antippen zeigt alle Übungen der Gruppe, darunter die Regionen zum Eingrenzen); Leiste im Dunkelmodus nicht mehr hellgrau |

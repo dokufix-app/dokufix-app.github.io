@@ -173,6 +173,7 @@
     ['ueberzug-tuer', 'Überzug mit Theraband an der Tür', 'Theraband, Türanker oben in der Tür', 'schulter ruecken', 'stand', 'band', 'Das Band mit der Mitte oben in der Tür festklemmen, je ein Ende in jeder Hand. Mit dem Gesicht zur Tür etwa zwei Schritte davor stehen, Knie leicht gebeugt. Die Arme fast gestreckt vorn auf Kopfhöhe. Die Arme im Bogen nach unten bis neben die Hüfte ziehen, die Ellenbogen bleiben fast gestreckt, die Schultern unten. Langsam zurück.'],
     ['liegestuetz', 'Liegestütz', 'Matte', 'schulter', 'liegen', 'ohne', 'Auf die Fußspitzen und die Hände stützen, die Hände etwas breiter als schulterbreit unter den Schultern, die Arme gestreckt. Der Körper bildet eine gerade Linie von Kopf bis Ferse, Bauch und Gesäß fest. Die Ellenbogen beugen, sie zeigen schräg nach hinten, bis die Brust eine Faustbreit über der Matte ist. Wieder hochdrücken, das Becken bleibt in Linie.'],
     ['seitstuetz-unterarm', 'Seitstütz auf dem Unterarm', 'Matte', 'ruecken hue schulter', 'liegen', 'ohne', 'Auf der Seite liegen, auf den Unterarm stützen, der Ellenbogen genau unter der Schulter. Die Beine gestreckt übereinander. Das Becken anheben, bis Kopf, Becken und Füße eine gerade Linie bilden. Die Schultern stehen übereinander, der Oberkörper knickt nicht zur Seite ab. Halten und langsam ablegen.'],
+    ['seitstuetz-rotation', 'Seitstütz mit Rotation', 'Matte', 'ruecken schulter hue', 'liegen', 'ohne', 'Hoher Seitstütz auf dem Unterarm, der Ellenbogen unter der Schulter, die Beine gestreckt übereinander, das Becken oben. Den oberen Arm unter dem Körper durchfädeln, der Blick geht zur Matte. Dann den Oberkörper aufdrehen und den Arm gestreckt zur Decke führen, der Blick folgt der Hand. Das Becken bleibt die ganze Zeit oben.'],
   ];
   const KAT = K.map(([id, n, z, r, p, h, t]) => ({ id, n, z, r: r.split(' '), p, h, t }));
   const BY = Object.fromEntries(KAT.map((x) => [x.id, x]));
@@ -183,7 +184,7 @@
   // Stufen von leicht nach schwer: 1 früh nach Verletzung oder bei starken Beschwerden, 2 Aufbau, 3 fortgeschritten (Entwurf, fachlich prüfen)
   const STUFE = {};
   'fersenschub quadrizeps-rolle bein-gleiten kniestreckung-sitz kniebeugung-sitz adduktion-ball fusswippe fusspumpe plantarfaszie-dehnen handtuch-zehen becken-kippen knie-brust knie-pendeln katzenbuckel paeckchensitz offenes-buch hochdruecken-bauchlage nervengleiten-sitz pendeln tisch-gleiten wand-hochwandern stab-rueckenlage aussenrotation-stab kinn-einziehen kopfnicken trapez-dehnung levator-dehnung schultern-hochziehen nacken-halten ellenbogen-beugen unterarm-drehen dehnung-unterarm-strecker dehnung-unterarm-beuger handgelenk-heben faust daumen-finger sehnengleiten gewichtsverlagerung blickstabilisation lippenbremse kutschersitz torwartstellung abstuetzen-tisch bauchatmung flankenatmung huffing-kissen halbmond-dehnlage kiefer-ruhelage oeffnen-zunge-gaumen oeffnen-finger-gelenk isometrisch-oeffnen isometrisch-seitlich masseter-lockern fersenheben-sitz fuss-beugen-sitz ball-rollen-fusssohle fersenschub-bett knie-fallen-bett knie-loopband-bett arme-heben-bett beinpresse-band-bett wadenpresse-band-bett auf-seite-drehen nach-oben-rutschen aufsetzen-bettkante schneidemesser-bettkante aufstehen-bettkante wade-dehnen-handtuch-bett'.split(' ').forEach((id) => { STUFE[id] = 1; });
-  'bruecke-einbeinig stufe-abwaerts wandsitz ausfallschritt wadenheben-exzentrisch einbeinstand-kissen einbeinstand-augen-zu tandemgang-rueckwaerts achterlauf gehen-kopfdrehen pnf-diagonale-theraband tyler-twist hammer-heben einbeinstand-tippen-band zehenstand-flasche-band wadenheben-stufe-band stufe-abwaerts-band serratus-push-unterarmstuetz liegestuetz seitstuetz-unterarm y-bauchlage t-bauchlage w-bauchlage'.split(' ').forEach((id) => { STUFE[id] = 3; });
+  'bruecke-einbeinig stufe-abwaerts wandsitz ausfallschritt wadenheben-exzentrisch einbeinstand-kissen einbeinstand-augen-zu tandemgang-rueckwaerts achterlauf gehen-kopfdrehen pnf-diagonale-theraband tyler-twist hammer-heben einbeinstand-tippen-band zehenstand-flasche-band wadenheben-stufe-band stufe-abwaerts-band serratus-push-unterarmstuetz liegestuetz seitstuetz-unterarm seitstuetz-rotation y-bauchlage t-bauchlage w-bauchlage'.split(' ').forEach((id) => { STUFE[id] = 3; });
   const stufe = (k) => STUFE[k.id] ?? 2;
   const STUFE_N = ['', 'Früh und bei starken Beschwerden', 'Aufbau', 'Fortgeschritten'];
   const nachStufe = (L) => L.map((k, i) => [k, i]).sort((a, b) => stufe(a[0]) - stufe(b[0]) || a[1] - b[1]).map((x) => x[0]);
@@ -267,6 +268,7 @@
   const posVon = (txt) => { const t = NORM(txt); const h = POSRE.find(([, r]) => r.test(t)); return h ? h[0] : null; };
   // feste Zuordnung für die wichtigsten Heimübungen, sonst aus Name und Text
   const MV = {
+    'seitstuetz-rotation': 'rumpf rot skap',
     'seitstuetz-unterarm': 'rumpf skap',
     'liegestuetz': 'skap',
     'ueberzug-tuer': 'skap',
