@@ -170,6 +170,7 @@
     ['y-bauchlage', 'Y in Bauchlage', 'Matte', 'schulter hws', 'liegen', 'ohne', 'Bauchlage, die Arme gestreckt schräg nach vorn über dem Kopf wie ein Y, Daumen zeigen nach oben. Die Schulterblätter nach hinten unten ziehen, dann Arme und Kopf eine Handbreit abheben. Das Kinn bleibt eingezogen, der Blick geht zur Matte. Kurz halten und langsam ablegen.'],
     ['t-bauchlage', 'T in Bauchlage', 'Matte', 'schulter hws', 'liegen', 'ohne', 'Bauchlage, die Arme gestreckt seitlich auf Schulterhöhe wie ein T, Daumen zeigen nach oben. Die Schulterblätter zusammenziehen, dann Arme und Kopf eine Handbreit abheben. Das Kinn bleibt eingezogen, der Blick geht zur Matte. Kurz halten und langsam ablegen.'],
     ['w-bauchlage', 'W in Bauchlage', 'Matte', 'schulter hws', 'liegen', 'ohne', 'Bauchlage, die Oberarme seitlich auf Schulterhöhe, die Ellenbogen 90° gebeugt, die Unterarme zeigen nach vorn. Die Schulterblätter nach hinten unten ziehen, dann die ganzen Arme und den Kopf eine Handbreit abheben, Daumen nach oben. Das Kinn bleibt eingezogen, das Brustbein bleibt auf der Matte. Kurz halten und langsam ablegen.'],
+    ['ueberzug-tuer', 'Überzug mit Theraband an der Tür', 'Theraband, Türanker oben in der Tür', 'schulter ruecken', 'stand', 'band', 'Das Band mit der Mitte oben in der Tür festklemmen, je ein Ende in jeder Hand. Mit dem Gesicht zur Tür etwa zwei Schritte davor stehen, Knie leicht gebeugt. Die Arme fast gestreckt vorn auf Kopfhöhe. Die Arme im Bogen nach unten bis neben die Hüfte ziehen, die Ellenbogen bleiben fast gestreckt, die Schultern unten. Langsam zurück.'],
   ];
   const KAT = K.map(([id, n, z, r, p, h, t]) => ({ id, n, z, r: r.split(' '), p, h, t }));
   const BY = Object.fromEntries(KAT.map((x) => [x.id, x]));
@@ -252,6 +253,7 @@
   const posVon = (txt) => { const t = NORM(txt); const h = POSRE.find(([, r]) => r.test(t)); return h ? h[0] : null; };
   // feste Zuordnung für die wichtigsten Heimübungen, sonst aus Name und Text
   const MV = {
+    'ueberzug-tuer': 'skap',
     'y-bauchlage': 'shoch skap hws', 't-bauchlage': 'skap hws', 'w-bauchlage': 'sar skap hws',
     'bruecke': 'hext', 'bruecke-einbeinig': 'hext', 'seitlage-abspreizen': 'habd', 'muschel-loopband': 'habd sar', 'bauchlage-hueftstreckung': 'hext',
     'fersenschub': 'kflex hflex', 'quadrizeps-rolle': 'kext', 'gestrecktes-bein-heben': 'hflex kext', 'bein-gleiten': 'habd', 'aufstehen-stuhl': 'kext hext',
