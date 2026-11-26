@@ -8,7 +8,8 @@ Neue Versionen kommen oben dazu.
 
 | Version | Datum | Commit | Was sich geändert hat |
 |---|---|---|---|
-| v274 | 26.11.2026 | (dieser) | Hausaufgaben, Übung hinzufügen: Regionen von Kopf bis Fuß, gruppiert in Wirbelsäule (Kiefer, HWS, Rücken), Obere Extremität (Schulter, Ellenbogen/Hand), Untere Extremität (Hüfte, Knie, Fuß) und Weitere (Gleichgewicht, Atmung). Gruppe antippen klappt auf und zeigt alle Übungen der Gruppe, Region antippen zeigt nur diese |
+| v275 | 26.11.2026 | (dieser) | Hausaufgaben › Alle Übungen: dieselbe Einteilung wie beim Hinzufügen (Gruppe antippen zeigt alle Übungen der Gruppe, darunter die Regionen zum Eingrenzen); Leiste im Dunkelmodus nicht mehr hellgrau |
+| v274 | 26.11.2026 | 27943e1 | Hausaufgaben, Übung hinzufügen: Regionen von Kopf bis Fuß, gruppiert in Wirbelsäule (Kiefer, HWS, Rücken), Obere Extremität (Schulter, Ellenbogen/Hand), Untere Extremität (Hüfte, Knie, Fuß) und Weitere (Gleichgewicht, Atmung). Gruppe antippen klappt auf und zeigt alle Übungen der Gruppe, Region antippen zeigt nur diese |
 | v273 | 26.11.2026 | 8ca33e5 | Hausaufgaben: Überzug mit Theraband an der Tür (Band oben in der Tür, Arme fast gestreckt von Kopfhöhe bis neben die Hüfte), mit Bildern und Clip |
 | v272 | 26.11.2026 | 4d513a2 | Werkzeuge: Kachel Therapiebericht öffnet direkt die Formular-Werkstatt, zurück mit „‹ Werkzeuge“. Fällige Berichte weiter im Verlauf und unter Mehr › Therapiebericht. |
 | v271 | 25.11.2026 | 130a3ea | Hausaufgaben: Y, T und W in Bauchlage für HWS und Schultergürtel (Arme und Kopf mit eingezogenem Kinn abheben), Personen um die 45, mit Bildern und Clips, Zuordnung für die Vorschläge in der Schnell-Doku |
