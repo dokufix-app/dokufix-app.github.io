@@ -178,6 +178,8 @@
     ['vierfuessler-ellenbogen-knie', 'Vierfüßler: Ellenbogen zum Knie', 'Matte', 'ruecken hue', 'vierfuessler', 'ohne', 'Im Vierfüßlerstand einen Arm und das Gegenbein lang strecken, der Rücken bleibt gerade. Dann Ellenbogen und Knie unter dem Bauch zusammenführen, der Rücken rundet sich leicht. Wieder lang strecken. Seiten wechseln.'],
     ['unterarmstuetz-fuesse', 'Unterarmstütz auf den Füßen', 'Matte', 'ruecken schulter', 'liegen', 'ohne', 'In Bauchlage die Unterarme schulterbreit aufsetzen, die Ellenbogen unter den Schultern, die Fußspitzen aufstellen. Den Körper abheben, bis Kopf, Rücken, Becken und Beine eine gerade Linie bilden. Das Becken hängt nicht durch und geht nicht hoch. Halten und ruhig weiteratmen.'],
     ['unterarmstuetz-beinheben', 'Unterarmstütz mit Beinheben', 'Matte', 'ruecken hue', 'liegen', 'ohne', 'Im Unterarmstütz auf den Füßen, der Körper in einer geraden Linie. Abwechselnd ein Bein gestreckt eine Fußlänge anheben, nicht höher als die Körperlinie. Das Becken bleibt waagerecht und ruhig, kein Hohlkreuz.'],
+    ['aussenrotation-armvorn-band', 'Außenrotation mit Theraband, Arm vorn', 'Theraband an der Türklinke', 'schulter', 'stand', 'band', 'Das Band an der Türklinke festknoten, mit dem Gesicht zur Tür stehen, das Bandende in der Faust. Den Arm gestreckt nach vorn auf Schulterhöhe. Den Ellenbogen auf Schulterhöhe halten und beugen, bis der Unterarm senkrecht steht und die Faust auf Ohrhöhe ist. Langsam zurück. Die Schulter bleibt unten.'],
+    ['wand-slides-loopband', 'Wand-Slides mit Loopband', 'Wand, Mini-Loopband', 'schulter', 'stand', 'band', 'Mit dem Gesicht zur Wand stehen, das Loopband um beide Unterarme knapp unter den Handgelenken. Die Arme auf Schulterhöhe an die Wand, die Unterarme drücken leicht nach außen gegen das Band. Die Arme an der Wand nach oben schieben, die Spannung im Band bleibt. Schultern unten, kein Hohlkreuz. Langsam zurück.'],
   ];
   const KAT = K.map(([id, n, z, r, p, h, t]) => ({ id, n, z, r: r.split(' '), p, h, t }));
   const BY = Object.fromEntries(KAT.map((x) => [x.id, x]));
@@ -188,7 +190,7 @@
   // Stufen von leicht nach schwer: 1 früh nach Verletzung oder bei starken Beschwerden, 2 Aufbau, 3 fortgeschritten (Entwurf, fachlich prüfen)
   const STUFE = {};
   'fersenschub quadrizeps-rolle bein-gleiten kniestreckung-sitz kniebeugung-sitz adduktion-ball fusswippe fusspumpe plantarfaszie-dehnen handtuch-zehen becken-kippen knie-brust knie-pendeln katzenbuckel paeckchensitz offenes-buch hochdruecken-bauchlage nervengleiten-sitz pendeln tisch-gleiten wand-hochwandern stab-rueckenlage aussenrotation-stab kinn-einziehen kopfnicken trapez-dehnung levator-dehnung schultern-hochziehen nacken-halten ellenbogen-beugen unterarm-drehen dehnung-unterarm-strecker dehnung-unterarm-beuger handgelenk-heben faust daumen-finger sehnengleiten gewichtsverlagerung blickstabilisation lippenbremse kutschersitz torwartstellung abstuetzen-tisch bauchatmung flankenatmung huffing-kissen halbmond-dehnlage kiefer-ruhelage oeffnen-zunge-gaumen oeffnen-finger-gelenk isometrisch-oeffnen isometrisch-seitlich masseter-lockern fersenheben-sitz fuss-beugen-sitz ball-rollen-fusssohle fersenschub-bett knie-fallen-bett knie-loopband-bett arme-heben-bett beinpresse-band-bett wadenpresse-band-bett auf-seite-drehen nach-oben-rutschen aufsetzen-bettkante schneidemesser-bettkante aufstehen-bettkante wade-dehnen-handtuch-bett'.split(' ').forEach((id) => { STUFE[id] = 1; });
-  'bruecke-einbeinig stufe-abwaerts wandsitz ausfallschritt wadenheben-exzentrisch einbeinstand-kissen einbeinstand-augen-zu tandemgang-rueckwaerts achterlauf gehen-kopfdrehen pnf-diagonale-theraband tyler-twist hammer-heben einbeinstand-tippen-band zehenstand-flasche-band wadenheben-stufe-band stufe-abwaerts-band serratus-push-unterarmstuetz liegestuetz seitstuetz-unterarm dead-bug-band vierfuessler-ellenbogen-knie unterarmstuetz-fuesse unterarmstuetz-beinheben seitstuetz-rotation y-bauchlage t-bauchlage w-bauchlage'.split(' ').forEach((id) => { STUFE[id] = 3; });
+  'bruecke-einbeinig stufe-abwaerts wandsitz ausfallschritt wadenheben-exzentrisch einbeinstand-kissen einbeinstand-augen-zu tandemgang-rueckwaerts achterlauf gehen-kopfdrehen pnf-diagonale-theraband tyler-twist hammer-heben einbeinstand-tippen-band zehenstand-flasche-band wadenheben-stufe-band stufe-abwaerts-band serratus-push-unterarmstuetz liegestuetz seitstuetz-unterarm aussenrotation-armvorn-band dead-bug-band vierfuessler-ellenbogen-knie unterarmstuetz-fuesse unterarmstuetz-beinheben seitstuetz-rotation y-bauchlage t-bauchlage w-bauchlage'.split(' ').forEach((id) => { STUFE[id] = 3; });
   const stufe = (k) => STUFE[k.id] ?? 2;
   const STUFE_N = ['', 'Früh und bei starken Beschwerden', 'Aufbau', 'Fortgeschritten'];
   const nachStufe = (L) => L.map((k, i) => [k, i]).sort((a, b) => stufe(a[0]) - stufe(b[0]) || a[1] - b[1]).map((x) => x[0]);
@@ -272,6 +274,8 @@
   const posVon = (txt) => { const t = NORM(txt); const h = POSRE.find(([, r]) => r.test(t)); return h ? h[0] : null; };
   // feste Zuordnung für die wichtigsten Heimübungen, sonst aus Name und Text
   const MV = {
+    'aussenrotation-armvorn-band': 'sar shoch',
+    'wand-slides-loopband': 'shoch skap',
     'dead-bug-band': 'rumpf',
     'vierfuessler-ellenbogen-knie': 'rumpf',
     'unterarmstuetz-fuesse': 'rumpf skap',
