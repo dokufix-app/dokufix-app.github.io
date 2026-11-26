@@ -174,7 +174,10 @@
   ];
   const KAT = K.map(([id, n, z, r, p, h, t]) => ({ id, n, z, r: r.split(' '), p, h, t }));
   const BY = Object.fromEntries(KAT.map((x) => [x.id, x]));
-  const REG = [['hue', 'Hüfte'], ['knie', 'Knie'], ['fuss', 'Fuß'], ['ruecken', 'Rücken'], ['hws', 'HWS'], ['schulter', 'Schulter'], ['hand', 'Ellenbogen/Hand'], ['gg', 'Gleichgewicht'], ['atem', 'Atmung'], ['kiefer', 'Kiefer']];
+  // Grundeinteilung für die Auswahl, innerhalb von Kopf bis Fuß
+  const GRP = [['ws', 'Wirbelsäule', ['kiefer', 'hws', 'ruecken']], ['oe', 'Obere Extremität', ['schulter', 'hand']], ['ue', 'Untere Extremität', ['hue', 'knie', 'fuss']], ['mehr', 'Weitere', ['gg', 'atem']]];
+  const inReg = (k, r) => r?.startsWith('g:') ? (GRP.find((g) => 'g:' + g[0] === r)?.[2] ?? []).some((x) => k.r.includes(x)) : k.r.includes(r);
+  const REG = [['kiefer', 'Kiefer'], ['hws', 'HWS'], ['schulter', 'Schulter'], ['hand', 'Ellenbogen/Hand'], ['ruecken', 'Rücken'], ['hue', 'Hüfte'], ['knie', 'Knie'], ['fuss', 'Fuß'], ['gg', 'Gleichgewicht'], ['atem', 'Atmung']];
   const POS = [['liegen', 'Liegen'], ['vierf', 'Vierfüßler'], ['sitz', 'Sitz'], ['stand', 'Stand']];
   const HM = [['ohne', 'ohne'], ['band', 'Band'], ['ball', 'Ball'], ['hantel', 'Hantel'], ['stab', 'Stab']];
   const SER = [1, 2, 3], WDH = [8, 10, 12, 15, 20];
@@ -368,24 +371,26 @@
       const sc = huelle.querySelector('.ha-sheet')?.scrollTop ?? 0;
       setTimeout(() => { const sh = huelle.querySelector('.ha-sheet'); if (sh) sh.scrollTop = sc; });
       const q = ST.q.trim().toLowerCase();
-      let L = KAT.filter((k) => q ? (k.n + ' ' + k.z).toLowerCase().includes(q) : k.r.includes(ST.reg));
+      let L = KAT.filter((k) => q ? (k.n + ' ' + k.z).toLowerCase().includes(q) : inReg(k, ST.reg));
       if (!q && ST.pos) L = L.filter((k) => k.p === ST.pos);
       if (!q && ST.hm) L = L.filter((k) => k.h === ST.hm);
       const vor = q ? [] : regs.flatMap((r) => VOR[r] ?? []).filter((id, i, a) => a.indexOf(id) === i && !hat(id)).slice(0, 3).map((id) => BY[id]);
       const chip = (gr, [k, t]) => `<button type="button" class="ha-chip" aria-pressed="${ST[gr] === k}" data-a="f" data-g="${gr}" data-v="${k}">${t}</button>`;
       const bv = 'b2';
-      const nReg = (r) => KAT.filter((k) => k.r.includes(r)).length;
+      const nReg = (r) => KAT.filter((k) => inReg(k, r)).length;
       const such = `<label class="hx-such">${IC.lupe}<input class="ha-such" type="search" placeholder="Übung suchen" aria-label="Übung suchen" value="${esc(ST.q)}"></label>`;
       const tabs = `<div class="hx-tabs" role="tablist">${REG.map(([k, t]) => `<button type="button" role="tab" aria-selected="${!q && ST.reg === k}" data-a="f" data-g="reg" data-v="${k}">${t}<small>${nReg(k)}</small></button>`).join('')}</div>`;
       const fAnz = (ST.pos ? 1 : 0) + (ST.hm ? 1 : 0);
       const fertig = `<button type="button" class="hx-fertig" data-a="zu">Fertig${prog.length ? `<span>${prog.length}</span>` : ''}</button>`;
-      const titel = q ? `${L.length} Treffer für „${esc(ST.q.trim())}“` : `${esc(REG.find((x) => x[0] === ST.reg)?.[1])}${ST.pos ? ' · ' + POS.find((x) => x[0] === ST.pos)[1] : ''}${ST.hm ? ' · ' + HM.find((x) => x[0] === ST.hm)[1] : ''} · ${L.length} ${L.length === 1 ? 'Übung' : 'Übungen'}`;
+      const titel = q ? `${L.length} Treffer für „${esc(ST.q.trim())}“` : `${esc(REG.find((x) => x[0] === ST.reg)?.[1] ?? GRP.find((g) => 'g:' + g[0] === ST.reg)?.[1])}${ST.pos ? ' · ' + POS.find((x) => x[0] === ST.pos)[1] : ''}${ST.hm ? ' · ' + HM.find((x) => x[0] === ST.hm)[1] : ''} · ${L.length} ${L.length === 1 ? 'Übung' : 'Übungen'}`;
       const leer = '<p class="ha-leer">Keine Übung passt. Filter lösen oder anders suchen.</p>';
       const vorBox = vor.length ? `<section class="hx-vor"><h5>Passend zum Befund</h5><div class="ha-liste">${vor.map(kachel).join('')}</div></section>` : '';
       let inhalt = '';
       {
         const grp = (t, gr, L2) => `<div class="hx2-gr"><h5>${t}</h5><div>${L2.map((r) => chip(gr, r)).join('')}</div></div>`;
-        const nav = `<div class="hx2-nav" role="navigation">${REG.map(([k, t]) => `<button type="button" aria-current="${!q && ST.reg === k}" data-a="f" data-g="reg" data-v="${k}"><span>${t}</span><small>${nReg(k)}</small></button>`).join('')}${grp('Ausgangsstellung', 'pos', POS)}${grp("Hilfsmittel", "hm", HM)}</div>`;
+        const navB = ([k, t], c = '') => `<button type="button"${c} aria-current="${!q && ST.reg === k}" data-a="f" data-g="reg" data-v="${k}"><span>${t}</span><small>${nReg(k)}</small></button>`;
+        const offen = (g, rs) => !q && (ST.reg === 'g:' + g || rs.includes(ST.reg));
+        const nav = `<div class="hx2-nav" role="navigation">${GRP.map(([g, t, rs]) => navB(['g:' + g, t + '<i class="hx2-pf" aria-hidden="true"></i>'], ` class="hx2-g" aria-expanded="${offen(g, rs)}"`) + (offen(g, rs) ? rs.map((r) => navB(REG.find((x) => x[0] === r))).join('') : '')).join('')}${grp('Ausgangsstellung', 'pos', POS)}${grp("Hilfsmittel", "hm", HM)}</div>`;
         const stapel = prog.slice(0, 4).map((x) => BY[x.id] ? `<img src="${bild(x.id, 'ende')}" alt="">` : '').join('');
         inhalt = `<div class="hx-kopf"><b>Übung hinzufügen</b><button type="button" class="hx-text" data-a="zu">Schließen</button></div><div class="hx2">${nav}<div class="hx2-rechts">${such}${q ? '' : vorBox}<p class="ha-zahl">${titel}</p><div class="ha-liste">${L.map(kachel).join('') || leer}</div></div></div>${dv === 'd2' && ST.info && BY[ST.info] ? (() => { const i = L.findIndex((x) => x.id === ST.info), vo = L[i - 1], na = L[i + 1]; return `<div class="hz2-dim" data-a="info" data-id="${ST.info}"></div>${detail(BY[ST.info], 'hz2', `<span class="hz2-nav"><button type="button" class="hp-ic" data-a="info2" data-id="${vo?.id ?? ''}"${vo ? '' : ' disabled'} aria-label="Vorherige Übung">${IC.zurueck}</button><button type="button" class="hp-ic hz-vor" data-a="info2" data-id="${na?.id ?? ''}"${na ? '' : ' disabled'} aria-label="Nächste Übung">${IC.zurueck}</button></span>`)}`; })() : ''}<div class="hx2-leiste"><span class="hx2-stapel">${stapel}</span><span class="hx2-n">${prog.length ? `<b>${prog.length}</b> im Programm` : 'Noch keine Übung gewählt'}</span><button type="button" class="hx2-ok" data-a="zu"${prog.length ? '' : ' disabled'}>Fertig</button></div>`;
       }
@@ -878,6 +883,7 @@ ${frei.length ? `<div class="hy-chips"><span>Vorlage dazu</span>${alleV.map((t) 
 .hx2{display:grid;grid-template-columns:236px 1fr;gap:20px;align-items:start;padding-bottom:84px}
 .hx2-nav{position:sticky;top:0;display:flex;flex-direction:column;gap:2px;padding-top:8px}
 .hx2-nav>button{display:flex;flex-direction:row;justify-content:space-between;align-items:center;min-height:44px;padding:0 12px;border:0;border-radius:12px;background:none;font:inherit;font-size:1rem;font-weight:600;color:var(--schrift,#1a1a1a);cursor:pointer;text-align:left}
+.hx2-nav>button.hx2-g{margin-top:6px;min-height:44px;font-size:1rem;font-weight:700}.hx2-nav>button.hx2-g span{display:inline-flex;align-items:center;gap:8px}.hx2-pf{width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);transition:transform .2s cubic-bezier(.23,1,.32,1);opacity:.6}.hx2-g[aria-expanded="true"] .hx2-pf{transform:rotate(45deg)}.hx2-nav>button.hx2-g:first-child{margin-top:0}.hx2-nav>button:not(.hx2-g){padding-left:20px}
 .hx2-nav>button small{color:var(--schrift2,#5f6556);font-weight:500;font-variant-numeric:tabular-nums}
 .hx2-nav>button[aria-current="true"]{background:color-mix(in srgb,var(--tape,#4f6d10) 13%,var(--flaeche,#fff));color:var(--tape,#4f6d10)}
 .hx2-gr{margin-top:16px;padding:0 4px}.hx2-gr>div{display:flex;flex-wrap:wrap;gap:6px}.hx2-gr .ha-chip{min-height:34px;font-size:.8125rem}
@@ -886,7 +892,7 @@ ${frei.length ? `<div class="hy-chips"><span>Vorlage dazu</span>${alleV.map((t) 
 .hx2-stapel{display:flex}.hx2-stapel img{width:44px;height:30px;object-fit:cover;border-radius:7px;border:2px solid var(--flaeche,#fff);margin-left:-14px}.hx2-stapel img:first-child{margin-left:0}
 .hx2-n{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--schrift2,#5f6556)}.hx2-n b{color:var(--schrift,#1a1a1a);font-variant-numeric:tabular-nums}
 .hx2-ok:disabled{opacity:.4}
-@container (max-width:640px){.hx2{grid-template-columns:1fr;gap:6px}.hx2-nav{position:static;flex-direction:row;flex-wrap:nowrap;overflow-x:auto;gap:4px;padding:0;scrollbar-width:none}.hx2-nav>button{flex:none;gap:6px}.hx2-gr{display:none}}
+@container (max-width:640px){.hx2{grid-template-columns:1fr;gap:6px}.hx2-nav{position:static;flex-direction:row;flex-wrap:nowrap;overflow-x:auto;gap:4px;padding:0;scrollbar-width:none}.hx2-nav>button{flex:none;gap:6px}.hx2-nav>button:not(.hx2-g){padding-left:12px}.hx2-nav>button.hx2-g{margin:0 0 0 10px;border:1px solid color-mix(in srgb,var(--schrift2,#5f6556) 30%,transparent)}.hx2-nav>button.hx2-g:first-child{margin-left:0}.hx2-gr{display:none}}
 .hv{position:fixed;inset:0;z-index:2147482000;background:var(--grund,#f3f5ee);color:var(--schrift,#1a1a1a);overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;will-change:clip-path}
 .hv svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .hv-kopf{position:sticky;top:0;z-index:2;padding:calc(10px + env(safe-area-inset-top)) 16px 8px;background:color-mix(in srgb,var(--grund,#f3f5ee) 86%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
