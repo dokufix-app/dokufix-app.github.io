@@ -8,7 +8,8 @@ Neue Versionen kommen oben dazu.
 
 | Version | Datum | Commit | Was sich geändert hat |
 |---|---|---|---|
-| v283 | 26.11.2026 | (dieser) | Hausaufgaben: Standwaage (Hüfte, Rücken, Gleichgewicht; Fortgeschritten), mit Bildern und Clip |
+| v284 | 26.11.2026 | (dieser) | Hausaufgaben › Alle Übungen: Kacheln zeigen das Startbild und spielen beim Drüberfahren mit Maus oder Stift den Clip Start→Ende ab (wie bei Übung hinzufügen) |
+| v283 | 26.11.2026 | c3c7972 | Hausaufgaben: Standwaage (Hüfte, Rücken, Gleichgewicht; Fortgeschritten), mit Bildern und Clip |
 | v282 | 26.11.2026 | b1bdc37 | Hausaufgaben Hüfte/Knie: Brücke mit Marschieren, Brücke mit Loopband, Seitstütz auf den Knien mit Abduktion, Seitlicher Ausfallschritt; Personen um die 45, mit Bildern und Clips |
 | v281 | 26.11.2026 | df31684 | Hausaufgaben Schulter: Außenrotation mit Theraband, Arm vorn (Fortgeschritten) und Wand-Slides mit Loopband (Aufbau), mit Bildern und Clips |
 | v280 | 26.11.2026 | 51711d5 | Hausaufgaben, Wirbelsäule fortgeschritten: Dead Bug mit Theraband, Vierfüßler Ellenbogen zum Knie, Unterarmstütz auf den Füßen, Unterarmstütz mit Beinheben; Personen um die 45, mit Bildern und Clips |

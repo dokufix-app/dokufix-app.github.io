@@ -699,7 +699,7 @@ ${prog.filter((x) => BY[x.id]).map((x, i) => { const k = BY[x.id]; return `<div 
       const drin = (id) => frei.some((x) => x.id === id);
       const regs = REG.map(([r, n2]) => [r, n2, KAT.filter((k) => k.r.includes(r))]).filter((x) => x[2].length);
       const ag = el.__ag, ar = el.__ar;
-      const kach = (k) => `<div class="hb-ka${drin(k.id) ? ' drin' : ''}"><button type="button" class="hb-auf" data-a="ainfo" data-id="${k.id}" aria-label="Details zu ${esc(k.n)}"><img src="${bild(k.id, 'ende')}" alt="" loading="lazy"><span><b>${esc(k.n)}</b><small>${esc(k.z)}</small></span></button><button type="button" class="hb-plus" data-a="aadd" data-id="${k.id}" aria-label="${drin(k.id) ? 'Aus dem Programm nehmen' : 'Zum Programm'}">${drin(k.id) ? IC.hak : IC.plus}</button></div>`;
+      const kach = (k) => `<div class="hb-ka${drin(k.id) ? ' drin' : ''}"><button type="button" class="hb-auf" data-a="ainfo" data-id="${k.id}" aria-label="Details zu ${esc(k.n)}"><video muted loop playsinline preload="none" poster="${bild(k.id, 'start')}" src="${clip(k.id)}" aria-hidden="true"></video><span><b>${esc(k.n)}</b><small>${esc(k.z)}</small></span></button><button type="button" class="hb-plus" data-a="aadd" data-id="${k.id}" aria-label="${drin(k.id) ? 'Aus dem Programm nehmen' : 'Zum Programm'}">${drin(k.id) ? IC.hak : IC.plus}</button></div>`;
       const ai = el.__ai && BY[el.__ai];
       const inV = ai ? VORL.filter((t) => t.ids.includes(ai.id)).map((t) => t.n) : [];
       const det = ai ? `<div class="hb-dim" data-a="ainfo" data-id="${ai.id}"></div><section class="hb-det" role="dialog" aria-label="${esc(ai.n)}"><div class="hb-det-k"><div><h4>${esc(ai.n)}</h4><small>${esc(ai.z)}</small></div><button type="button" class="hp-ic" data-a="ainfo" data-id="${ai.id}" aria-label="Schließen">${IC.weg}</button></div><div class="hb-det-b"><figure><img src="${bild(ai.id, 'start')}" alt="Ausgangsstellung"><figcaption>Start</figcaption></figure><figure><img src="${bild(ai.id, 'ende')}" alt="Endstellung"><figcaption>Ende</figcaption></figure></div><div class="hb-det-m"><span>${ai.r.map(regName).join(', ')}</span><span>${esc(POS.find((x) => x[0] === ai.p)?.[1] ?? '')}</span><span>${ai.h === 'ohne' ? 'ohne Hilfsmittel' : esc(HM.find((x) => x[0] === ai.h)?.[1] ?? '')}</span></div><p class="hb-det-t">${esc(ai.t)}</p>${inV.length ? `<p class="hb-det-v"><b>In Vorlagen:</b> ${inV.map(esc).join(', ')}</p>` : ''}<button type="button" class="hp-kn${drin(ai.id) ? ' zwei' : ''} hb-det-los" data-a="aadd" data-id="${ai.id}">${drin(ai.id) ? IC.hak + 'Im Programm · entfernen' : IC.plus + 'Zum Programm'}</button></section>` : '';
@@ -713,6 +713,12 @@ ${frei.length ? `<div class="hy-chips"><span>Vorlage dazu</span>${alleV.map((t) 
     html = ans === 'prog' ? html.replace('<div class="hp hy hy-2">', '<div class="hp hy hy-2">' + tabs) : `<div class="hp hy hy-2 hb-ans-${ans}">${tabs}${ansHtml}</div>`;
     if (el.__html !== html) { el.innerHTML = html; el.__html = html; }
     function male() { el.__html = null; panel(el); }
+    // Alle Übungen: Clip Start→Ende läuft nur, solange Maus oder Stift über der Kachel ist
+    if (!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      const vid = (e) => e.pointerType !== 'touch' && e.target.closest?.('.hb-ka')?.querySelector('video');
+      el.onpointerover = (e) => { const v = vid(e); if (v && v.paused) v.play?.().catch(() => {}); };
+      el.onpointerout = (e) => { const v = vid(e); if (!v || e.relatedTarget?.closest?.('.hb-ka') === v.closest('.hb-ka')) return; v.pause?.(); try { v.currentTime = 0 } catch { } };
+    }
     el.onclick = (ev) => {
       const b = ev.target.closest('[data-a]'); if (!b || b.disabled) return;
       const a = b.dataset.a, i = +b.dataset.i;
@@ -1144,7 +1150,7 @@ ${frei.length ? `<div class="hy-chips"><span>Vorlage dazu</span>${alleV.map((t) 
 .hb-ka{position:relative;background:var(--flaeche,#fff);border-radius:14px;overflow:hidden;box-shadow:0 0 0 1px var(--linie,#e3e5dc),0 4px 12px -10px rgba(20,40,10,.25)}
 .hb-ka.drin{box-shadow:0 0 0 2px var(--tape,#4f6d10)}
 .hb-auf{display:flex;flex-direction:column;width:100%;border:0;padding:0;background:none;text-align:left;font:inherit;color:inherit;cursor:pointer;transition:transform 160ms cubic-bezier(.23,1,.32,1)}
-.hb-auf img{width:100%;aspect-ratio:16/10;object-fit:cover;background:#ece7e4;display:block}
+.hb-auf img,.hb-auf video{width:100%;aspect-ratio:16/10;object-fit:cover;background:#ece7e4;display:block;pointer-events:none}
 .hb-auf span{display:flex;flex-direction:column;gap:2px;padding:8px 44px 10px 10px}
 .hb-auf b{font-size:.875rem;font-weight:620;line-height:1.25}.hb-auf small{font-size:.75rem;color:var(--schrift2,#5f6556);line-height:1.25}
 .hb-plus{position:absolute;right:6px;bottom:6px;width:34px;height:34px;border-radius:50%;border:0;display:grid;place-items:center;background:var(--seite,#eef0e7);color:var(--tape,#4f6d10);cursor:pointer;transition:transform 160ms cubic-bezier(.23,1,.32,1)}
