@@ -4050,11 +4050,265 @@ html[data-theme="dark"] .stm{--st-plus:#5AD08A;--st-minus:#FF7A5C;--st-plus-w:rg
       if (b.dataset.a === "weg") { if (b.dataset.sicher) { try { TRESOR.removeItem(K); } catch (e) { } panel(el); } else { b.dataset.sicher = "1"; b.textContent = "Wirklich alle Zahlen löschen?"; } }
     };
   }
-  window.NZ = { zaehle: zaehle, tab: tab, start: start, ende: ende, panel: panel, mehrText: mehrText, auswertung: auswertung, teilenText: teilenText };
+  function zeitraum(von, bis) {
+    var D = lies(), d = [], f = 0;
+    Object.keys(D.tage || {}).forEach(function (k) { if (k < von || k > bis) return; var T = D.tage[k]; f += T.f || 0; d = d.concat(T.d || []); });
+    var s = d.map(function (e) { return e.s; });
+    return { dokus: f, median: median(s), unter2: s.filter(function (x) { return x <= 120; }).length, gemessen: s.length };
+  }
+  window.NZ = { zaehle: zaehle, tab: tab, start: start, ende: ende, panel: panel, mehrText: mehrText, auswertung: auswertung, teilenText: teilenText, zeitraum: zeitraum };
   // Therapieplan mitzählen, ohne tp-js anzufassen
   try { if (typeof window.TP_auf === "function" && !window.TP_auf.nz) { var tp = window.TP_auf; window.TP_auf = function () { zaehle("therapieplan"); return tp.apply(this, arguments); }; window.TP_auf.nz = 1; } } catch (e) { }
 })();
 </script>
+<script type="text/plain" data-ts id="aw-js">
+/* Auswertung: rechnet aus den Patienten auf diesem Gerät, welche Krankheitsbilder wie oft vorkommen,
+   wie die Doku läuft und wie viele Patienten durchgehen. Alles läuft nur hier auf dem Gerät.
+   Beim Teilen gehen nur Zahlen raus, keine Namen. */
+(function () {
+  var REGION = { HWS: "HWS", BWS: "BWS", LWS: "LWS", SCHULTER: "Schulter", ELLENBOGEN: "Ellenbogen", HANDGELENK: "Handgelenk", FINGER: "Finger", HUEFTE: "Hüfte", KNIE: "Knie", OSG: "Sprunggelenk", USG: "Sprunggelenk", FUSS: "Fuß", ZEHEN: "Zehen", KIEFER: "Kiefer" };
+  var NEURO = /parkinson|multiple sklerose|\bms\b|schlaganfall|apoplex|insult|hemipar|polyneuropath|querschnitt|ataxie|neuropath|zns|enzephal|guillain|als\b|demenz|zerebral/i;
+  var POSTOP = /z\.?\s*n\.?|tep\b|endoprothe|plastik|naht|osteosynth|\bop\b|operation|fraktur|ruptur|arthroskop|meniskektom|dekompress|spondylodese/i;
+  // Krankheitsbilder zusammenfassen (Schlagworte, Reihenfolge zählt)
+  var BILDER = [
+    [/frozen|kapsulitis/i, "Frozen Shoulder"],
+    [/rotatorenmanschette|supraspinatus.*(ruptur|naht)/i, "Rotatorenmanschette (Läsion/Naht)"],
+    [/impingement|subakromial/i, "Subakromiales Schmerzsyndrom"],
+    [/kalkschulter|tendinosis calcarea/i, "Kalkschulter"],
+    [/vkb|kreuzband/i, "Kreuzband (VKB)"],
+    [/menisk/i, "Meniskus"],
+    [/patellofemoral|chondropathia patellae|patellaspitz/i, "Patellofemoraler Schmerz"],
+    [/(knie|hüft|hüfte|schulter).{0,12}tep|tep.{0,12}(knie|hüft|hüfte|schulter)|endoprothe/i, "Z. n. Gelenkersatz (TEP)"],
+    [/gonarthrose/i, "Gonarthrose"],
+    [/coxarthrose/i, "Coxarthrose"],
+    [/arthrose/i, "Arthrose (andere)"],
+    [/bandscheibe|prolaps|protrusion|diskus|nukleus|radikul|ischialg|lumboischialg/i, "Bandscheibe / Radikulopathie"],
+    [/spinalkanalstenose|stenose/i, "Spinalkanalstenose"],
+    [/lumbalgie|kreuzschmerz|lws-syndrom|lumbago|lumbal/i, "Kreuzschmerz (LWS)"],
+    [/thorakal|bws-syndrom/i, "BWS-Syndrom"],
+    [/zervik|hws-syndrom|nacken|cervik/i, "Nackenschmerz (HWS)"],
+    [/epicondyl|tennisarm|golferarm/i, "Epicondylopathie"],
+    [/karpaltunnel/i, "Karpaltunnelsyndrom"],
+    [/instabilit.*sprung|sprung.*instabilit|supinationstrauma|distorsion|außenband|aussenband/i, "Sprunggelenk (Distorsion/Instabilität)"],
+    [/achill/i, "Achillessehne"],
+    [/fersensporn|plantar/i, "Plantarfasziopathie"],
+    [/trochanter|glutealtendin|bursitis trochanterica/i, "Lateraler Hüftschmerz"],
+    [/fraktur/i, "Fraktur"],
+    [/parkinson/i, "Morbus Parkinson"],
+    [/multiple sklerose|\bms\b/i, "Multiple Sklerose"],
+    [/schlaganfall|apoplex|insult|hemipar/i, "Schlaganfall / Hemiparese"],
+    [/polyneuropath/i, "Polyneuropathie"],
+    [/schwindel|vertigo/i, "Schwindel"],
+    [/kiefer|cmd|tmd/i, "Kiefer (CMD)"],
+    [/skoliose/i, "Skoliose"],
+    [/osteoporose/i, "Osteoporose"]
+  ];
+  function seiteWeg(t) { return String(t || "").replace(/\b(rechts|links|beidseits|beidseitig|bds\.?|re\.|li\.)/gi, "").replace(/\s{2,}/g, " ").replace(/[\s,;.-]+$/, "").trim(); }
+  function bild(diag) { var d = String(diag || ""); for (var i = 0; i < BILDER.length; i++) if (BILDER[i][0].test(d)) return BILDER[i][1]; var s = seiteWeg(d); return s ? s.charAt(0).toUpperCase() + s.slice(1) : "Ohne Diagnose"; }
+  function bereich(diag) { var d = String(diag || ""); if (NEURO.test(d)) return "Neurologie"; if (POSTOP.test(d)) return "Postoperativ / Trauma"; return d.trim() ? "Orthopädie" : "Ohne Diagnose"; }
+
+  function zustand() {
+    if (window.__dfZustand && Array.isArray(window.__dfZustand.patienten)) return window.__dfZustand;
+    try { return JSON.parse(TRESOR.getItem("physio-doku-v1") || "null"); } catch (e) { return null; }
+  }
+  function iso(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+  function tg(s) { return typeof s === "string" ? s.slice(0, 10) : ""; }
+  function tageZw(a, b) { return Math.round((new Date(b + "T12:00:00") - new Date(a + "T12:00:00")) / 864e5); }
+  function median(a) { if (!a.length) return null; var b = a.slice().sort(function (x, y) { return x - y; }), m = b.length >> 1; return b.length % 2 ? b[m] : (b[m - 1] + b[m]) / 2; }
+  function zahl(x, st) { if (x == null || isNaN(x)) return "–"; return (Math.round(x * Math.pow(10, st || 0)) / Math.pow(10, st || 0)).toString().replace(".", ","); }
+  function pz(a, b) { return b ? Math.round(a / b * 100) + " %" : "–"; }
+  function esc(t) { return String(t == null ? "" : t).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function zaehl(o, k, n) { o[k] = (o[k] || 0) + (n == null ? 1 : n); }
+  function sortiert(o) { return Object.keys(o).sort(function (a, b) { return o[b] - o[a] || a.localeCompare(b, "de"); }).map(function (k) { return [k, o[k]]; }); }
+  function schmerz(stellen) { var w = null; (stellen || []).forEach(function (s) { var v = s && (s.bewegung != null ? s.bewegung : s.ruhe); if (typeof v === "number" && (w == null || v > w)) w = v; }); return w; }
+  function montag(d) { var x = new Date(d + "T12:00:00"), w = (x.getDay() + 6) % 7; x.setDate(x.getDate() - w); return iso(x); }
+
+  function monatsGrenzen(m) { var j = +m.slice(0, 4), mo = +m.slice(5, 7); return { ab: m + "-01", bis: iso(new Date(j, mo, 0)) }; }
+  function rechnen(opt) {
+    var Z = zustand(), P = (Z && Z.patienten) || [], heute = iso(new Date()), tage = typeof opt === "number" ? opt : 0, monat = typeof opt === "string" ? opt : null;
+    var ab = tage ? (function () { var x = new Date(); x.setHours(12, 0, 0, 0); x.setDate(x.getDate() - tage + 1); return iso(x); })() : "0000", bis = "9999";
+    if (monat) { var g = monatsGrenzen(monat); ab = g.ab; bis = g.bis; }
+    var stich = bis < heute ? bis : heute;
+    var R = { tage: tage, monat: monat, ab: ab, bis: stich, faelle: 0, personen: {}, neu: 0, abgeschlossen: 0, einheiten: 0, notizen: 0, bereich: {}, region: {}, bilder: {}, woertlich: {}, einhJeFall: [], dauerAbg: [], neubefund: 0,
+      laufend: 0, ruhend: [], monate: {}, wochen: {}, wtag: [0, 0, 0, 0, 0, 0, 0], eb: 0, kurz: 0, ebZiele: 0, ebTests: 0, ebRed: 0, ebSchmerz: 0, ebPsfs: 0, mitBefinden: 0, mitSchmerz: 0, matte: 0,
+      verlauf: [], verlaufRegion: {} };
+    P.forEach(function (p) {
+      var E = ((p.verlauf && p.verlauf.einheiten) || []).filter(function (e) { return e && e.datum && e.datum <= stich; }).slice().sort(function (a, b) { return a.datum < b.datum ? -1 : 1; });
+      var erst = tg(p.erstellt) || (E[0] && E[0].datum) || "", letzt = E.length ? E[E.length - 1].datum : erst;
+      if (erst > stich) return;
+      var abg = p.abgeschlossen && p.abgeschlossen <= stich ? p.abgeschlossen : null;
+      var imZ = E.filter(function (e) { return e.datum >= ab; });
+      var aktivImZ = imZ.length > 0 || (erst >= ab) || (abg && abg >= ab);
+      if (!aktivImZ) return;
+      var eb = p.erstbefund || {}, diag = eb.diagnose || "", kurz = p.art === "nurVerlauf";
+      R.faelle++; R.personen[p.gruppe || p.id] = 1;
+      if (erst >= ab) { R.neu++; zaehl(R.monate, erst.slice(0, 7)); }
+      if (abg && abg >= ab) R.abgeschlossen++;
+      if (p.neubefund) R.neubefund++;
+      zaehl(R.bereich, bereich(diag));
+      var reg = (eb.stellen && eb.stellen[0] && eb.stellen[0].region) || (E.find(function (e) { return e.stellen && e.stellen[0]; }) || { stellen: [{}] }).stellen[0].region;
+      zaehl(R.region, REGION[reg] || (NEURO.test(diag) ? "Neurologisch (ganzer Körper)" : "Ohne Region"));
+      zaehl(R.bilder, bild(diag)); zaehl(R.woertlich, seiteWeg(diag) || "Ohne Diagnose");
+      R.einheiten += imZ.length;
+      imZ.forEach(function (e) {
+        if (e.notiz !== undefined) R.notizen++;
+        if (e.befinden != null) R.mitBefinden++;
+        if (schmerz(e.stellen) != null) R.mitSchmerz++;
+        if (e.matte) R.matte++;
+        zaehl(R.wochen, montag(e.datum)); R.wtag[(new Date(e.datum + "T12:00:00").getDay() + 6) % 7]++;
+      });
+      R.einhJeFall.push(E.length);
+      if (abg && abg >= ab && erst) R.dauerAbg.push(Math.max(0, tageZw(erst, abg)) / 7);
+      if (!abg) { var still = letzt ? tageZw(letzt, stich) : 0; if (still > 21) R.ruhend.push({ name: p.name || "?", tage: still }); else R.laufend++; }
+      if (kurz) R.kurz++; else {
+        R.eb++;
+        var zi = eb.ziele || {}; if (zi.patientenziel || (zi.aktivitaeten && zi.aktivitaeten.length)) R.ebZiele++;
+        if (eb.tests && Object.keys(eb.tests).some(function (k) { return eb.tests[k]; })) R.ebTests++;
+        if (eb.anamnese && eb.anamnese.redGeprueft) R.ebRed++;
+        if (schmerz(eb.stellen) != null) R.ebSchmerz++;
+        if (Array.isArray(eb.psfs) && eb.psfs.length) R.ebPsfs++;
+      }
+      // Schmerzverlauf: erster und letzter Wert (Erstbefund zählt als erster)
+      var werte = []; if (!kurz && schmerz(eb.stellen) != null) werte.push(schmerz(eb.stellen));
+      E.forEach(function (e) { var w = schmerz(e.stellen); if (w != null) werte.push(w); });
+      if (werte.length >= 2) { var d = werte[werte.length - 1] - werte[0]; R.verlauf.push({ von: werte[0], bis: werte[werte.length - 1], d: d }); var rn = REGION[reg] || "Andere"; (R.verlaufRegion[rn] = R.verlaufRegion[rn] || []).push(d); }
+    });
+    R.ruhend.sort(function (a, b) { return b.tage - a.tage; });
+    var nz = null; try { nz = monat ? window.NZ && window.NZ.zeitraum && window.NZ.zeitraum(ab, stich) : window.NZ && window.NZ.auswertung(Math.min(tage || 60, 60)); } catch (e) { }
+    R.nz = nz;
+    return R;
+  }
+
+  function balken(paare, max, n) {
+    if (!paare.length) return '<p class="nz-klein">Noch nichts da.</p>';
+    max = max || paare[0][1] || 1;
+    return '<div class="nz-liste">' + paare.slice(0, n || 99).map(function (x) { return '<div class="nz-z aw-z"><span title="' + esc(x[0]) + '">' + esc(x[0]) + '</span><i><s style="width:' + Math.max(4, Math.round(x[1] / max * 100)) + '%"></s></i><b>' + x[1] + '</b></div>'; }).join("") + '</div>';
+  }
+  function saeulen(paare, fmt) {
+    var max = Math.max.apply(null, paare.map(function (x) { return x[1]; }).concat([1]));
+    return '<div class="aw-saeulen">' + paare.map(function (x) { return '<div class="aw-s"><b>' + (x[1] || "") + '</b><i><s style="height:' + (x[1] ? Math.max(6, Math.round(x[1] / max * 100)) : 0) + '%"></s></i><span>' + esc(fmt(x[0])) + '</span></div>'; }).join("") + '</div>';
+  }
+  function anteil(t, a, b) { return '<div class="aw-a"><span>' + esc(t) + '</span><i><s style="width:' + (b ? Math.round(a / b * 100) : 0) + '%"></s></i><b>' + pz(a, b) + '</b></div>'; }
+  var MON = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
+
+  function panel(el) {
+    if (!el) return;
+    var fm = faelligMonat(); if (fm && !el.dataset.tage) { el.dataset.tage = "m"; el.dataset.monat = fm; gesehen(fm); }
+    var tg0 = el.dataset.tage === "m" ? "m" : el.dataset.tage != null ? +el.dataset.tage : 90, mm = el.dataset.monat || vorMonat(), R = rechnen(tg0 === "m" ? mm : tg0);
+    if (tg0 === "m") archiv(mm, R);
+    var bilder = sortiert(R.bilder), woe = sortiert(R.woertlich);
+    // letzte 6 Monate und 8 Wochen
+    var h = new Date(R.bis + "T12:00:00"), mon = [], wo = [];
+    for (var i = 5; i >= 0; i--) { var m = new Date(h.getFullYear(), h.getMonth() - i, 1); var k = m.getFullYear() + "-" + String(m.getMonth() + 1).padStart(2, "0"); mon.push([k, R.monate[k] || 0]); }
+    var mo = montag(iso(h)); for (var j = 7; j >= 0; j--) { var x = new Date(mo + "T12:00:00"); x.setDate(x.getDate() - 7 * j); var kk = iso(x); wo.push([kk, R.wochen[kk] || 0]); }
+    var vb = R.verlauf, vbBesser = vb.filter(function (v) { return v.d <= -2; }).length, vbGleich = vb.filter(function (v) { return v.d > -2 && v.d < 2; }).length, vbSchl = vb.filter(function (v) { return v.d >= 2; }).length;
+    var dMed = median(R.dauerAbg), eMed = median(R.einhJeFall);
+    var nz = R.nz, nzZeit = nz && nz.median != null ? (nz.median >= 60 ? Math.floor(nz.median / 60) + ":" + String(nz.median % 60).padStart(2, "0") + " min" : nz.median + " s") : "–";
+    var vReg = Object.keys(R.verlaufRegion).map(function (k) { var a = R.verlaufRegion[k]; return { r: k, n: a.length, d: a.reduce(function (s, x) { return s + x; }, 0) / a.length }; }).sort(function (a, b) { return b.n - a.n; });
+
+    el.innerHTML =
+      '<div class="nz-seg" role="tablist">' + [["m", "Monat"], [30, "30 Tage"], [90, "90 Tage"], [365, "1 Jahr"], [0, "Alles"]].map(function (n) { return '<button type="button" role="tab" aria-selected="' + (n[0] === tg0) + '" data-t="' + n[0] + '">' + n[1] + '</button>'; }).join("") + '</div>' +
+      (tg0 === "m" ? '<div class="aw-monat"><button type="button" data-m="-1" aria-label="Monat zurück">‹</button><b>' + MONL[+mm.slice(5, 7) - 1] + " " + mm.slice(0, 4) + (mm === iso(new Date()).slice(0, 7) ? " (bis heute)" : "") + '</b><button type="button" data-m="1" aria-label="Monat vor"' + (mm >= iso(new Date()).slice(0, 7) ? " disabled" : "") + '>›</button></div>' : "") +
+      (R.faelle ? "" : '<p class="nz-klein">In diesem Zeitraum gibt es noch keine Patienten.</p>') +
+      '<div class="nz-kacheln aw-k4"><div><b>' + R.faelle + '</b><span>Fälle (' + Object.keys(R.personen).length + ' Patienten)</span></div><div><b>' + R.neu + '</b><span>neu aufgenommen</span></div><div><b>' + R.abgeschlossen + '</b><span>abgeschlossen</span></div><div><b>' + R.einheiten + '</b><span>Einheiten dokumentiert</span></div></div>' +
+
+      '<h5>Krankheitsbilder</h5>' + balken(bilder, 0, 10) +
+      (bilder.length > 10 ? '<p class="nz-klein">Dazu ' + (bilder.length - 10) + ' weitere mit je ' + (bilder[10] ? bilder[10][1] : 1) + ' oder weniger.</p>' : "") +
+      '<details class="aw-det"><summary>Diagnosen wörtlich (' + woe.length + ')</summary>' + balken(woe) + '<p class="nz-klein">Oben zusammengefasst nach Schlagworten in der Diagnose, Seite weggelassen. Hier steht, was du eingetragen hast.</p></details>' +
+      '<div class="aw-zwei"><div><h5>Fachbereich</h5>' + balken(sortiert(R.bereich)) + '</div><div><h5>Körperregion</h5>' + balken(sortiert(R.region)) + '</div></div>' +
+
+      '<h5>Durchlauf</h5>' +
+      '<div class="nz-kacheln"><div><b>' + zahl(eMed, 1) + '</b><span>Einheiten je Fall (Median)</span></div><div><b>' + (dMed == null ? "–" : zahl(dMed, 1) + " Wo.") + '</b><span>bis Abschluss (Median, ' + R.dauerAbg.length + ' Fälle)</span></div><div><b>' + R.neubefund + '</b><span>Neubefundungen</span></div></div>' +
+      '<div class="aw-zwei"><div><h6>Neu aufgenommen je Monat</h6>' + saeulen(mon, function (k) { return MON[+k.slice(5, 7) - 1]; }) + '</div>' +
+      '<div><h6>Stand der Fälle</h6>' + balken([["laufend", R.laufend], ["abgeschlossen", R.abgeschlossen], ["über 3 Wochen ohne Einheit", R.ruhend.length]].filter(function (x) { return x[1]; })) + '</div></div>' +
+      (R.ruhend.length ? '<details class="aw-det"><summary>Über 3 Wochen ohne Einheit, nicht abgeschlossen (' + R.ruhend.length + ')</summary><div class="aw-ruhe">' + R.ruhend.map(function (r) { return '<div><span>' + esc(r.name) + '</span><b>' + r.tage + ' Tage</b></div>'; }).join("") + '</div><p class="nz-klein">Abschließen oder in der Kartei behalten, wenn noch ein Rezept kommt.</p></details>' : "") +
+
+      '<h5>Dokumentation</h5>' +
+      '<div class="nz-kacheln"><div><b>' + R.eb + ' / ' + R.kurz + '</b><span>Erstbefund / nur Verlauf</span></div><div><b>' + nzZeit + '</b><span>Dauer je Doku (Median)</span></div><div><b>' + (nz && nz.gemessen ? Math.round(nz.unter2 / nz.gemessen * 100) + " %" : "–") + '</b><span>unter 2 min</span></div></div>' +
+      '<div class="aw-zwei"><div><h6>Einheiten je Woche</h6>' + saeulen(wo, function (k) { return k.slice(8, 10) + "." + k.slice(5, 7) + "."; }) + '</div>' +
+      '<div><h6>Wochentage</h6>' + saeulen(["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"].map(function (t, i) { return [t, R.wtag[i]]; }).filter(function (x, i) { return i < 5 || x[1]; }), function (k) { return k; }) + '</div></div>' +
+      (R.eb ? '<h6>Erstbefund vollständig</h6>' + anteil("Schmerz (NRS) erfasst", R.ebSchmerz, R.eb) + anteil("Ziele gesetzt", R.ebZiele, R.eb) + anteil("Red Flags geprüft", R.ebRed, R.eb) + anteil("Tests eingetragen", R.ebTests, R.eb) + anteil("PSFS erhoben", R.ebPsfs, R.eb) : "") +
+      (R.einheiten ? '<h6>Einheiten</h6>' + anteil("mit Befinden", R.mitBefinden, R.einheiten) + anteil("mit Schmerzwert", R.mitSchmerz, R.einheiten) + anteil("als Freitext übernommen", R.notizen, R.einheiten) : "") +
+      (nz ? '<p class="nz-klein">Dauer aus dem Nutzungszähler' + (R.monat ? "" : ", höchstens die letzten 60 Tage") + ' (' + nz.gemessen + ' gemessen). Der Zähler hebt 60 Tage auf.</p>' : "") +
+
+      '<h5>Schmerzverlauf</h5>' +
+      (vb.length ? '<div class="nz-kacheln"><div><b>' + pz(vbBesser, vb.length) + '</b><span>mind. 2 Punkte besser</span></div><div><b>' + pz(vbGleich, vb.length) + '</b><span>etwa gleich</span></div><div><b>' + pz(vbSchl, vb.length) + '</b><span>mind. 2 Punkte schlechter</span></div></div>' +
+        '<div class="aw-ruhe aw-tab">' + vReg.map(function (v) { return '<div><span>' + esc(v.r) + ' (' + v.n + ')</span><b>' + (v.d > 0 ? "+" : "") + zahl(v.d, 1) + ' NRS</b></div>'; }).join("") + '</div>' +
+        '<p class="nz-klein">Erster gegen letzten Schmerzwert (Bewegung, sonst Ruhe) bei ' + vb.length + ' Fällen mit mindestens zwei Werten. 2 Punkte gelten auf der NRS als spürbare Veränderung (MCID). Kein Vergleich zwischen Patienten, nur dein eigener Überblick.</p>'
+        : '<p class="nz-klein">Noch zu wenige Fälle mit zwei Schmerzwerten.</p>') +
+
+      '<button type="button" class="mh2-knopf" data-a="teilen" style="margin-top:16px">Zahlen teilen</button>' +
+      '<p class="nz-klein">Alles wird hier auf dem Gerät gerechnet. Beim Teilen gehen nur Zahlen und die zusammengefassten Krankheitsbilder raus, keine Namen und keine Texte.</p>';
+
+    el.onclick = function (ev) {
+      var b = ev.target.closest("button"); if (!b) return;
+      if (b.dataset.t != null) { el.dataset.tage = b.dataset.t; panel(el); return; }
+      if (b.dataset.m) { var d = new Date(mm + "-15T12:00:00"); d.setMonth(d.getMonth() + +b.dataset.m); el.dataset.monat = iso(d).slice(0, 7); panel(el); return; }
+      if (b.dataset.a === "teilen") { var t = teilenText(R, bilder, vb, vbBesser); if (navigator.share) navigator.share({ title: "Doku-Fix Auswertung", text: t }).catch(function () { }); else if (navigator.clipboard) navigator.clipboard.writeText(t).then(function () { b.textContent = "Kopiert ✓"; }); }
+    };
+  }
+  function teilenText(R, bilder, vb, vbBesser) {
+    var L = ["Doku-Fix Auswertung, " + (R.monat ? MONL[+R.monat.slice(5, 7) - 1] + " " + R.monat.slice(0, 4) : R.tage ? "letzte " + R.tage + " Tage" : "gesamt"), "Fälle: " + R.faelle + " (neu " + R.neu + ", abgeschlossen " + R.abgeschlossen + ", über 3 Wochen ohne Einheit " + R.ruhend.length + ")",
+      "Einheiten: " + R.einheiten + ", je Fall Median " + zahl(median(R.einhJeFall), 1), "Erstbefund / nur Verlauf: " + R.eb + " / " + R.kurz, "Schmerz mind. 2 Punkte besser: " + pz(vbBesser, vb.length) + " von " + vb.length, "", "Krankheitsbilder:"];
+    bilder.forEach(function (x) { L.push("  " + x[0] + ": " + x[1]); });
+    L.push("", "Körperregion:"); sortiert(R.region).forEach(function (x) { L.push("  " + x[0] + ": " + x[1]); });
+    return L.join("\n");
+  }
+  // Monatsauswertung: am letzten Tag des Monats und in den ersten 5 Tagen danach fällig, bis sie einmal geöffnet wurde.
+  // Beim Öffnen wird der Monat als Zahlen-Schnappschuss (ohne Namen) auf dem Gerät abgelegt.
+  var KS = "doku-fix-auswertung";
+  function liesA() { try { var D = JSON.parse(TRESOR.getItem(KS) || "{}"); return D && typeof D === "object" ? D : {}; } catch (e) { return {}; } }
+  function schreibA(D) { try { TRESOR.setItem(KS, JSON.stringify(D)); } catch (e) { } }
+  function vorMonat() { var d = new Date(); d.setDate(1); d.setMonth(d.getMonth() - 1); return iso(d).slice(0, 7); }
+  function faelligMonat() {
+    var d = new Date(), heute = iso(d), morgen = new Date(d); morgen.setDate(d.getDate() + 1);
+    var m = morgen.getDate() === 1 ? heute.slice(0, 7) : d.getDate() <= 5 ? vorMonat() : null;
+    if (!m) return null; var Z = zustand(); if (!Z || !Z.patienten || !Z.patienten.length) return null;
+    return (liesA().gesehen || {})[m] ? null : m;
+  }
+  function gesehen(m) { var D = liesA(); D.gesehen = D.gesehen || {}; D.gesehen[m] = iso(new Date()); schreibA(D); }
+  function archiv(m, R) { if (m >= iso(new Date()).slice(0, 7) && !faelligHeute(m)) return; var D = liesA(); D.monate = D.monate || {}; D.monate[m] = { stand: iso(new Date()), faelle: R.faelle, neu: R.neu, abgeschlossen: R.abgeschlossen, einheiten: R.einheiten, bilder: R.bilder, region: R.region, bereich: R.bereich, eb: R.eb, kurz: R.kurz, nzMedian: R.nz ? R.nz.median : null }; schreibA(D); }
+  function faelligHeute(m) { var d = new Date(), morgen = new Date(d); morgen.setDate(d.getDate() + 1); return morgen.getDate() === 1 && iso(d).slice(0, 7) === m; }
+  var MONL = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
+  function mehrText() { try { var R = rechnen(90); return R.faelle ? R.faelle + " Fälle · 90 Tage" : ""; } catch (e) { return ""; } }
+  function faellig() { try { var m = faelligMonat(); return m ? MONL[+m.slice(5, 7) - 1] : null; } catch (e) { return null; } }
+  function sicherung() { try { var x = TRESOR.getItem(KS); return x ? { auswertung: JSON.parse(x) } : {}; } catch (e) { return {}; } }
+  window.AW = { panel: panel, rechnen: rechnen, mehrText: mehrText, bild: bild, faellig: faellig, sicherung: sicherung };
+})();
+</script>
+<style id="aw-css">
+.awm h5{margin:20px 0 8px;font-size:.8125rem;text-transform:uppercase;letter-spacing:.04em;color:var(--schrift2,#8e8e93)}
+.awm h6{margin:14px 0 6px;font-size:.875rem;font-weight:600;color:var(--schrift)}
+.nz-kacheln.aw-k4{grid-template-columns:repeat(4,1fr)}
+@media (max-width:1100px){.nz-kacheln.aw-k4{grid-template-columns:repeat(2,1fr)}}
+.nz-z.aw-z{grid-template-columns:minmax(0,15rem) minmax(3rem,1fr) auto}
+.nz-z.aw-z span{white-space:normal;line-height:1.25}
+.aw-zwei{display:block}
+.aw-zwei h5{margin-top:20px}
+@media (max-width:420px){.aw-zwei{grid-template-columns:1fr;gap:0}}
+.aw-saeulen{display:flex;align-items:flex-end;gap:6px;height:112px;background:var(--flaeche,#fff);border-radius:14px;padding:10px 10px 6px}
+.aw-s{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;align-items:center;gap:3px}
+.aw-s b{font-size:.75rem;font-variant-numeric:tabular-nums;min-height:1em}
+.aw-s i{flex:1;width:100%;max-width:28px;display:flex;align-items:flex-end}
+.aw-s s{display:block;width:100%;border-radius:5px 5px 2px 2px;background:var(--tape,#2E8FBF)}
+.aw-s span{font-size:.6875rem;color:var(--schrift2,#8e8e93);white-space:nowrap}
+.aw-a{display:grid;grid-template-columns:minmax(0,13rem) 1fr 3.2rem;align-items:center;gap:10px;font-size:.9375rem;margin:5px 0}
+.aw-a i{height:8px;border-radius:4px;background:var(--rahmen,#e5e5ea);overflow:hidden}
+.aw-a s{display:block;height:100%;border-radius:4px;background:#34c759}
+.aw-a b{text-align:right;font-variant-numeric:tabular-nums}
+.aw-a span{line-height:1.25}
+.aw-monat{display:flex;align-items:center;justify-content:space-between;margin:0 0 12px}
+.aw-monat b{font-size:1.25rem}
+.aw-monat button{width:40px;height:40px;border:0;border-radius:20px;background:var(--flaeche,#fff);color:var(--tape,#2E8FBF);font-size:1.4rem;font-weight:600}
+.aw-monat button:disabled{opacity:.3}
+.aw-det{margin-top:10px;background:var(--flaeche,#fff);border-radius:14px;padding:10px 12px}
+.aw-det summary{font-weight:600;font-size:.9375rem;cursor:pointer;color:var(--tape,#2E8FBF)}
+.aw-det[open] summary{margin-bottom:8px}
+.aw-ruhe{display:flex;flex-direction:column;gap:6px;font-size:.9375rem}
+.aw-ruhe div{display:flex;justify-content:space-between;gap:10px}
+.aw-ruhe b{font-variant-numeric:tabular-nums;font-weight:600}
+.aw-tab{margin-top:10px;background:var(--flaeche,#fff);border-radius:14px;padding:10px 12px}
+</style>
 <style id="nz-css">
 .nz-seg{display:flex;gap:4px;background:var(--rahmen,#e5e5ea);border-radius:10px;padding:3px;margin:4px 0 12px}
 .nz-seg button{flex:1;border:0;border-radius:8px;background:transparent;color:var(--schrift);font:inherit;font-size:0.9375rem;font-weight:600;padding:7px 0}
@@ -8870,13 +9124,15 @@ MH_Neu = ({ z, mutiere, wz }) => {
   let heute = [];
   if (offen.length) heute.push(Z({ id: "offen", ic: "vd", titel: "Doku offen", chip: offen.length }));
   if (berichte.length) heute.push(Z({ id: "bericht", ic: "tb", titel: "Bericht fällig", chip: berichte.length }));
+  { let awM = (() => { try { return window.AW?.faellig() } catch { return null } })(); if (awM) heute.push(Z({ id: "aw", ic: "vd", icEl: f("svg", { viewBox: "0 0 24 24", width: 20, height: 20, fill: "none", stroke: "currentColor", strokeWidth: "1.9", strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true", children: [u("path", { d: "M4 20h16" }), u("path", { d: "M7 16v-5" }), u("path", { d: "M12 16V7" }), u("path", { d: "M17 16v-8" })] }), titel: "Monatsauswertung", chip: awM })); }
   if (erinnern && sicherFaellig) heute.push(Z({ id: "si", ic: "si", titel: "Sicherung", chip: letzt ? `vor ${alter} T.` : "nie" }));
   let links = f("div", { className: "mh2-liste", children: [
     heute.length > 0 && u("h4", { children: "Heute" }), heute.length > 0 && u("div", { className: "mh2-gruppe", children: heute }),
     u("h4", { children: "Dokumentation" }), f("div", { className: "mh2-gruppe", children: [
       Z({ id: "vd", ic: "vd", titel: "Verlaufsdoku", rechts: KD_stil() === "kurz" ? "kurz" : "ausführlich" }),
       Z({ id: "dx", ic: "dx", icEl: mic, titel: "Diktat", rechts: dxWeg === "live" ? "Live" : dxWeg === "geraet" ? "Auf dem Gerät" : "Automatisch" }),
-      Z({ id: "tx", ic: "tx", titel: "Gelernte Vorschläge", rechts: txN || "leer" })] }),
+      Z({ id: "tx", ic: "tx", titel: "Gelernte Vorschläge", rechts: txN || "leer" }),
+       Z({ id: "aw", ic: "vd", icEl: f("svg", { viewBox: "0 0 24 24", width: 20, height: 20, fill: "none", stroke: "currentColor", strokeWidth: "1.9", strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true", children: [u("path", { d: "M4 20h16" }), u("path", { d: "M7 16v-5" }), u("path", { d: "M12 16V7" }), u("path", { d: "M17 16v-8" })] }), titel: "Auswertung", rechts: (() => { try { return window.AW?.mehrText() ?? "" } catch { return "" } })() })] }),
     u("h4", { children: "App" }), f("div", { className: "mh2-gruppe", children: [
       Z({ id: "ds", ic: "ds", titel: "Darstellung", rechts: dsName }),
       Z({ id: "nz", ic: "ds", titel: "Nutzung", rechts: nzT }),
@@ -8890,7 +9146,9 @@ MH_Neu = ({ z, mutiere, wz }) => {
       u("button", { type: "button", className: "mh2-knopf zwei", style: { marginTop: 8 }, onClick: () => mutiere((Q) => { Q.tab = "dienst"; Q.abschluss = dt() }), children: "Feierabend-Abschluss" })] }),
     fk: () => f(J, { children: [MH_Kopf("fk", "Fahrtkosten/Hausbesuche", "Touren aus dem Dienstplan, km und Betrag je Monat", fkIc),
       u("div", { className: "hbm", ref: (el) => { if (el) try { window.HB?.mehrPanel(el) } catch (er) { console.warn(er) } } }, "mh-hbm")] }),
-    nz: () => f(J, { children: [MH_Kopf("ds", "Nutzung", "Nur Zahlen, keine Namen und keine Texte. Bleibt auf dem Gerät."),
+    aw: () => f(J, { children: [MH_Kopf("vd", "Auswertung", "Krankheitsbilder, Durchlauf und Doku. Wird nur hier auf dem Gerät gerechnet.", f("svg", { viewBox: "0 0 24 24", width: 20, height: 20, fill: "none", stroke: "currentColor", strokeWidth: "1.9", strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true", children: [u("path", { d: "M4 20h16" }), u("path", { d: "M7 16v-5" }), u("path", { d: "M12 16V7" }), u("path", { d: "M17 16v-8" })] })),
+       u("div", { className: "nzm awm", ref: (el) => { if (el) try { window.AW?.panel(el) } catch (er) { console.warn(er) } } }, "mh-awm")] }),
+     nz: () => f(J, { children: [MH_Kopf("ds", "Nutzung", "Nur Zahlen, keine Namen und keine Texte. Bleibt auf dem Gerät."),
       u("div", { className: "nzm", ref: (el) => { if (el) try { window.NZ?.panel(el) } catch (er) { console.warn(er) } } }, "mh-nzm")] }),
     st: () => f(J, { children: [MH_Kopf("st", "Stunden", "Arbeitszeit aus dem Dienstplan, Plus/Minus und Urlaub", stIc),
       u("div", { className: "stm", ref: (el) => { if (el) try { window.ST?.panel(el) } catch (er) { console.warn(er) } } })] }),
@@ -8960,7 +9218,7 @@ MH_WbNeu = ({ neu }) => {
   let dazu = () => { if (!a.trim() || !b.trim() || !window.DiktatSprache) return; let w = window.DiktatSprache.woerterbuch(); if (!w.some((x) => x.falsch.toLowerCase() === a.trim().toLowerCase())) w.push({ falsch: a.trim(), richtig: b.trim() }); window.DiktatSprache.woerterbuchSetzen(w); setA(""); setB(""); neu() };
   return f("div", { className: "mh2-wbneu", children: [u("input", { className: "eingabe", value: a, placeholder: "falsch erkannt", "aria-label": "falsch erkannt", onChange: (x) => setA(x.target.value) }), u("span", { children: "→" }), u("input", { className: "eingabe", value: b, placeholder: "richtig", "aria-label": "richtig", onChange: (x) => setB(x.target.value) }), u("button", { type: "button", className: "mh2-knopf zwei", onClick: dazu, children: "+ Eintrag" })] });
 };
-function K0({z:e,mutiere:n,wechsel:t}){let[i,r]=H(""),[a,l]=H(null),[s,o]=H({}),h=e.patienten.filter((m)=>m.art==="nurVerlauf"),g=h.find((m)=>m.id===e.aktivKurz)??null,k=(m)=>n((c)=>{let p=c.patienten.find((v)=>v.id===c.aktivKurz);if(p)m(p)}),d=(m)=>k((c)=>m(c.erstbefund)),b=()=>{let m=Math.random().toString(36).slice(2,9);n((c)=>{c.patienten.unshift(av(i,m)),c.aktivKurz=m}),r(""),t?.()};if(!g&&(DSW.f=(q0,pr)=>{if(q0>=0)return!1;if(!pr)n((Q)=>{Q.tab="patienten"});return!0},!0))return f("div",{className:"schritt",children:[u(O,{hinweis:"Für Patienten, die schon länger bei dir sind oder nur zur Vertretung kommen. Du hältst nur den Verlauf fest, einen Erstbefund gibt es nicht. Im Test nur erfundene Daten verwenden.",children:"Wen dokumentierst du?"}),f("div",{className:"knopfreihe",style:{marginTop:0},children:[u("input",{className:"eingabe",style:{flex:1,minWidth:160},value:i,placeholder:"Name suchen oder neu anlegen","aria-label":"Name des Patienten ohne Erstbefund",autoComplete:"off",onChange:(m)=>r(m.target.value),onKeyDown:(m)=>{if(m.key==="Enter")b()}}),u("button",{type:"button",className:"weiter",style:{flex:"none",width:"auto",padding:"0 20px",marginTop:0},onClick:b,children:"Anlegen"})]}),u(PX_Knopf,{name:i,alle:e.patienten,mutiere:n,root:!0}),h.length===0?u("p",{className:"hinweis",style:{marginTop:18},children:"Noch kein Patient. Lege oben den ersten an."}):i.trim()?f("div",{className:"kz-treffer",children:[PV_filter(h,i).length?u("p",{className:"gruppe",style:{margin:"10px 0 6px"},children:"Passende Patienten"}):u("p",{className:"hinweis klein",style:{margin:"10px 0 0"},children:"Kein Patient passt. Mit „Anlegen“ neu anlegen."}),PV_filter(h,i).map((m)=>f("div",{className:"pt-zeile",children:[f("button",{type:"button",className:"haupt",onClick:()=>{n((c)=>{c.aktivKurz=m.id}),t?.()},children:[f("div",{className:"pt-name",children:[PV_name(m.name,i),FA_tag(m,h)]}),f("div",{className:"sek",children:[m.erstbefund.diagnose.trim()?lv(m.erstbefund.diagnose.trim(),40):"Diagnose noch offen"," · ",m.verlauf?.einheiten.length??0," Einheiten"]})]}),a===m.id?u("button",{type:"button",className:"kleinknopf rot",onClick:()=>{n((c)=>{if(c.patienten=c.patienten.filter((p)=>p.id!==m.id),c.aktivKurz===m.id)c.aktivKurz=null}),l(null)},children:"Wirklich löschen?"}):u("button",{type:"button",className:"kleinknopf rot",onClick:()=>l(m.id),children:"Löschen"})]},m.id))]}):f("details",{className:"aufklapp kz-alle",children:[f("summary",{children:[u("span",{children:"Alle Patienten"}),u("span",{className:"zaehler",children:h.length})]}),f("div",{className:"inhalt",children:[...h].sort((x,y)=>(!!x.abgeschlossen-!!y.abgeschlossen)||x.name.localeCompare(y.name,"de")).map((m)=>f("div",{className:"pt-zeile",children:[f("button",{type:"button",className:"haupt",onClick:()=>{n((c)=>{c.aktivKurz=m.id}),t?.()},children:[f("div",{className:"pt-name",children:[PV_name(m.name,i),FA_tag(m,h)]}),f("div",{className:"sek",children:[m.erstbefund.diagnose.trim()?lv(m.erstbefund.diagnose.trim(),40):"Diagnose noch offen"," · ",m.verlauf?.einheiten.length??0," Einheiten"]})]}),a===m.id?u("button",{type:"button",className:"kleinknopf rot",onClick:()=>{n((c)=>{if(c.patienten=c.patienten.filter((p)=>p.id!==m.id),c.aktivKurz===m.id)c.aktivKurz=null}),l(null)},children:"Wirklich löschen?"}):u("button",{type:"button",className:"kleinknopf rot",onClick:()=>l(m.id),children:"Löschen"})]},m.id))})]}),]});let S=g.erstbefund,z=()=>n((m)=>{m.kartAuf=DP_schluessel(g.name)||g.id;m.tab="patienten";m.aktivKurz=null;delete m.zurueck});if(!g.kurzFertig){let m=tv(S),c=Math.min(S.schritt,m.length-1),p=()=>c+1>=m.length?k(rv):d((v)=>{v.schritt=c+1});DSW.f=(q0,pr)=>{let n0=c+q0;if(n0<0||n0>=m.length)return!1;if(!pr)d((v)=>{v.schritt=n0});return!0};return f("div",{children:[f("div",{className:"v-kopf",children:[(c!==0||e.zurueck?.pid!==g.id)&&u("button",{type:"button",className:"kleinknopf",onClick:()=>{if(m[c]==="region"&&s.bereich){if(s.seite)o({bereich:s.bereich,region:s.region});else if(s.region)o({bereich:s.bereich});else o({});return}if(c===0)z();else d((v)=>{v.schritt=c-1})},children:c===0?"‹ Patienten":"‹ Zurück"}),f("span",{className:"zahl",children:[FA_name(g,h)," · Schritt ",c+1,"/",m.length]})]}),m[c]==="diagnose"&&u(Su,{e:S,aendern:d,weiter:p,name:g.name}),m[c]==="bsv"&&u(Bu,{e:S,aendern:d,weiter:p}),m[c]==="ursache"&&u(UR_Schritt,{e:S,aendern:(m0)=>k((c0)=>{m0(c0.erstbefund);UR_merke(c0)}),weiter:p}),m[c]==="region"&&u(zu,{e:S,aendern:d,weiter:p,entwurf:s,setEntwurf:o})]})}let K=!!rl(g);let KE=!K&&f("div",{className:"kurz-extras",children:[u("p",{className:"hinweis klein",children:[S.diagnose.trim(),(S.ursachen??[]).join(", "),S.stellen.map(se).join(", ")].filter(Boolean).join(" · ")||"Ohne Diagnose und Region"}),f("div",{className:"kurz-klein",children:[u("button",{type:"button",className:"kleinknopf",onClick:()=>k((m)=>{m.kurzFertig=!1,m.erstbefund.schritt=0}),children:"Diagnose, Auslöser oder Region ändern"})]}),u(FA_Wahl,{P:g,mutiere:n})]});return f("div",{children:[u(_u,{patient:g,mutiere:k,kurz:!0,extras:KE,zumPlan:()=>n((m)=>{m.tab="dienst"}),loeschen:()=>n((m)=>{qs(m,g.id)})})]})}var N0={ruhe:null,bewegung:null,tageszeit:[],schmerzBei:""};function sv(e){let n=[{art:"diagnose"},...st(e)?[{art:"bsv"}]:[],{art:"beginn"},{art:"ursache"},{art:"region"},...PF_RE.test((e.diagnose??"")+" "+(e.krankheitsbild??""))?[{art:"pfad"}]:[],{art:"vorgeschichte"},{art:"sozial"},{art:"flags"}];if(!e.stellen.length&&(e.diagnoseKat==="neuro"||pr(e)))n.push({art:"nschmerz"});if(e.stellen.forEach((t)=>n.push({art:"schmerz",stelle:t.id},{art:"beweg",stelle:t.id},{art:"schwellung",stelle:t.id})),Rb(e))n.push({art:"wurzel"});if(ru(e).length)n.push({art:"tests"});n.push({art:"ziel"});if(n.push({art:"befund"}),kr(e))n.push({art:"neurobv"});return e.stellen.forEach((t)=>n.push({art:"deton",stelle:t.id},{art:"mobi",stelle:t.id},{art:"uebung",stelle:t.id})),n.push({art:"ausgabe"}),n}var G0=(e,n)=>e.length>n?e.slice(0,n-1).trimEnd()+"…":e,uv=()=>Math.random().toString(36).slice(2,9),BH_ARTEN=new Set(["neurobv","deton","mobi","uebung"]),BH_liste=(l,bh)=>bh?[...l.filter((x)=>BH_ARTEN.has(x.art)),{art:"ausgabe"}]:l.filter((x)=>!BH_ARTEN.has(x.art)&&x.art!=="ausgabe"),Lu={dienst:f("svg",{viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",strokeWidth:"1.8",children:[u("rect",{x:"3.5",y:"5",width:"17",height:"15.5",rx:"2.5"}),u("path",{d:"M3.5 10h17M8 3v4M16 3v4"}),u("path",{d:"M8 14h2M14 14h2M8 17.5h2"})]}),beh:f("svg",{viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",strokeWidth:"1.8",children:[u("path",{d:"M7 11V6a1.5 1.5 0 0 1 3 0v4"}),u("path",{d:"M10 10V4.5a1.5 1.5 0 0 1 3 0V10"}),u("path",{d:"M13 10V5.5a1.5 1.5 0 0 1 3 0V12"}),u("path",{d:"M16 9.5a1.5 1.5 0 0 1 3 0V14a7 7 0 0 1-7 7h-.5a6 6 0 0 1-4.6-2.2L4.2 15.4a1.6 1.6 0 0 1 2.4-2.1L7 14v-3"})]}),pat:f("svg",{viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",strokeWidth:"1.8",children:[u("circle",{cx:"12",cy:"8",r:"4"}),u("path",{d:"M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"})]}),erst:f("svg",{viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",strokeWidth:"1.8",children:[u("rect",{x:"5",y:"3",width:"14",height:"18",rx:"2"}),u("path",{d:"M9 8h6M9 12h6M9 16h4"})]}),verl:u("svg",{viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",strokeWidth:"1.8",children:u("path",{d:"M3 18l5-6 4 3 5-8 4 5"})}),kurz:f("svg",{viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",strokeWidth:"1.8",children:[u("path",{d:"M4 6h16M4 12h10M4 18h6"}),u("path",{d:"M17 15l3 3-3 3"})]})};var DSW={f:null,x:0,y:0,t:0,ok:!1,lock:0,dx:0,m:null,hist:[]},DS_quer=(el,stop)=>{try{for(let n=el;n&&n!==stop&&n!==document.body;n=n.parentElement){if(n.scrollWidth>n.clientWidth+1){let o=getComputedStyle(n).overflowX;if(o==="auto"||o==="scroll")return!0}}}catch{}return!1},DS_ruhig=()=>!!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches,DS_EZ="cubic-bezier(.3,.7,.3,1)",DS_kopf=()=>document.querySelector(".links header"),DS_kopfReset=(hd,weich)=>{if(!hd)return;if(weich){hd.style.transition=`transform .32s ${DS_EZ},opacity .32s ${DS_EZ}`;setTimeout(()=>{hd.style.transition=""},340)}else hd.style.transition="";hd.style.transform="";hd.style.opacity=""},DS_aufraeumen=()=>{document.querySelectorAll(".ds-klon").forEach((x)=>x.remove());document.body.classList.remove("ds-kommt");document.querySelector(".links")?.classList.remove("ds-clip");document.querySelectorAll(".ds-kopfklon").forEach((x)=>x.remove());DS_kopfReset(DS_kopf());let m0=document.querySelector("main");if(m0&&!DSW.lock){m0.style.transform="";m0.style.opacity="";m0.style.transition=""}},DS_v=()=>{let h=DSW.hist,n=h.length;if(n<2)return 0;let b=h[n-1],a=h[0];for(let i=n-2;i>=0;i--){a=h[i];if(b.t-h[i].t>=80)break}let dt=b.t-a.t;return dt>0?(b.x-a.x)/dt:0},DS_start=(ev)=>{DS_aufraeumen();let q=ev.touches?.[0];DSW.lock=0;DSW.dx=0;DSW.hist=[];if(!q||ev.touches.length>1||!DSW.f){DSW.ok=!1;return}let el=ev.target;DSW.ok=!(el.closest&&el.closest('input,textarea,select,svg,.chips,.ziele,.nj-rolle,.pw-seg,.sn-liste,.tx-vorschlag,.pf-leiste,[role="tablist"],[role="slider"]'))&&!DS_quer(el,ev.currentTarget);DSW.x=q.clientX;DSW.y=q.clientY;DSW.t=Date.now();DSW.m=ev.currentTarget;DSW.hist=[{x:q.clientX,t:performance.now()}]},DS_zug=(ev)=>{if(!DSW.ok)return;let q=ev.touches?.[0];if(!q)return;let jetzt=performance.now();DSW.hist.push({x:q.clientX,t:jetzt});while(DSW.hist.length>2&&jetzt-DSW.hist[0].t>150)DSW.hist.shift();let dx=q.clientX-DSW.x,dy=q.clientY-DSW.y;if(!DSW.lock){if(Math.abs(dx)<10&&Math.abs(dy)<10)return;DSW.lock=Math.abs(dx)>Math.abs(dy)*1.3?1:-1}if(DSW.lock!==1)return;let m=DSW.m;if(!m)return;let geht=DSW.f?.(dx<0?1:-1,!0);if(!geht){if(m.style.transform)DS_zurueck(m);DSW.dx=0;return}DSW.dx=dx;m.style.transition="none";m.style.willChange="transform";m.classList.add("ds-zieht");m.style.transform=`translate3d(${dx}px,0,0)`;if(DSW.titel){let hd=DS_kopf(),w0=m.clientWidth||1;if(hd){hd.style.transition="none";hd.style.transform=`translate3d(${dx*.5}px,0,0)`;hd.style.opacity=String(Math.max(0,1-Math.abs(dx)/(w0*.5)))}}},DS_zurueck=(m)=>{m.classList.remove("ds-zieht");DS_kopfReset(DS_kopf(),!0);m.style.transition=`transform .32s ${DS_EZ}`;m.style.transform="translate3d(0,0,0)";m.style.opacity="";setTimeout(()=>{m.style.transition="";m.style.transform="";m.style.willChange=""},340)},DS_ende=(ev)=>{let m=DSW.m;if(!DSW.ok||DSW.lock!==1||!m){return}let q=ev.changedTouches?.[0];if(q)DSW.hist.push({x:q.clientX,t:performance.now()});let dx=q?q.clientX-DSW.x:DSW.dx,w=m.clientWidth||1,dir=dx<0?1:-1,v=DS_v(),va=Math.abs(v),schwung=va>.35&&Math.sign(v)===Math.sign(dx)&&Math.abs(dx)>30,zurueckSchwung=va>.35&&Math.sign(v)!==Math.sign(dx);if(!DSW.dx||zurueckSchwung||!(Math.abs(dx)>w*.35||schwung)||!DSW.f?.(dir,!0)){DS_zurueck(m);return}if(DS_ruhig()){m.style.transform="";m.style.transition="";DSW.f(dir);return}let rest=Math.max(0,w-Math.abs(dx)),dauer=Math.round(Math.min(420,Math.max(240,2.3*rest/Math.max(va,.7)))),r=m.getBoundingClientRect(),cs=getComputedStyle(m),st=m.scrollTop,k=document.createElement("div");for(let c0 of m.childNodes)k.appendChild(c0.cloneNode(!0));k.className="ds-klon";k.setAttribute("aria-hidden","true");k.inert=!0;Object.assign(k.style,{display:cs.display,flexDirection:cs.flexDirection,gap:cs.gap,padding:cs.padding,boxSizing:"border-box",position:"fixed",left:r.left+"px",top:r.top+"px",width:r.width+"px",height:r.height+"px",margin:"0",overflow:"hidden",zIndex:"40",pointerEvents:"none",background:getComputedStyle(document.body).backgroundColor,transform:`translate3d(${dx}px,0,0)`,willChange:"transform"});document.body.appendChild(k);k.scrollTop=st;setTimeout(()=>k.remove(),dauer+400);let L=document.querySelector(".links");L?.classList.add("ds-clip");document.documentElement.style.setProperty("--ds-x",dir*w+"px");document.body.classList.add("ds-kommt");m.classList.remove("ds-zieht");m.style.transition="none";m.style.transform="";m.style.willChange="";let h1=document.querySelector(".links header h1"),t0=h1?.textContent,hd=DSW.titel?DS_kopf():null,hk=null,hx=0,ho=1;if(hd){let hr=hd.getBoundingClientRect();hx=dx*.5;ho=Math.max(0,1-Math.abs(dx)/(w*.5));hk=hd.cloneNode(!0);hk.className="ds-kopfklon";hk.setAttribute("aria-hidden","true");hk.inert=!0;Object.assign(hk.style,{position:"fixed",left:hr.left+"px",top:hr.top+"px",width:hr.width+"px",margin:"0",zIndex:"41",pointerEvents:"none",transform:`translate3d(${hx}px,0,0)`,opacity:String(ho)});document.body.appendChild(hk);setTimeout(()=>hk.remove(),dauer+400);hd.style.transition="none";hd.style.transform=`translate3d(${dir*w*.5}px,0,0)`;hd.style.opacity="0"}DSW.lock=0;DSW.f(dir);requestAnimationFrame(()=>{let neu=document.querySelector("main"),opt={duration:dauer,easing:DS_EZ,fill:"both"};document.body.classList.remove("ds-kommt");try{if(neu){neu.classList.add("ds-zieht");neu.style.willChange="transform";neu.animate([{transform:`translate3d(${dir*w}px,0,0)`},{transform:"translate3d(0,0,0)"}],opt)}k.animate([{transform:`translate3d(${dx}px,0,0)`},{transform:`translate3d(${-dir*w}px,0,0)`}],opt)}catch{k.remove()}if(hd)try{let hd2=DS_kopf()||hd;hd2.style.transition="none";hd2.style.transform="";hd2.style.opacity="";hd2.animate([{transform:`translate3d(${dir*w*.5}px,0,0)`,opacity:0},{transform:"translate3d(0,0,0)",opacity:1}],{duration:dauer,easing:DS_EZ,fill:"both"});hk.animate([{transform:`translate3d(${hx}px,0,0)`,opacity:ho},{transform:`translate3d(${-dir*w*.5}px,0,0)`,opacity:0}],{duration:Math.round(dauer*.7),easing:DS_EZ,fill:"forwards"})}catch{hk?.remove();DS_kopfReset(DS_kopf())}let h2=document.querySelector(".links header h1");if(!hd&&h2&&h2.textContent!==t0)try{h2.animate([{opacity:0,transform:`translate3d(${dir*24}px,0,0)`},{opacity:1,transform:"none"}],{duration:Math.min(300,dauer),easing:DS_EZ})}catch{}setTimeout(()=>{k.remove();hk?.remove();let hd3=DS_kopf();if(hd3){hd3.getAnimations?.().forEach((x)=>x.cancel());DS_kopfReset(hd3)}document.querySelector(".links")?.classList.remove("ds-clip");if(neu){neu.classList.remove("ds-zieht");neu.getAnimations?.().forEach((x)=>x.cancel());neu.style.transition="";neu.style.transform="";neu.style.willChange=""}},dauer+40)})};var DF_VERSION="v287",DP_KEY="doku-fix-dienstplan",
+function K0({z:e,mutiere:n,wechsel:t}){let[i,r]=H(""),[a,l]=H(null),[s,o]=H({}),h=e.patienten.filter((m)=>m.art==="nurVerlauf"),g=h.find((m)=>m.id===e.aktivKurz)??null,k=(m)=>n((c)=>{let p=c.patienten.find((v)=>v.id===c.aktivKurz);if(p)m(p)}),d=(m)=>k((c)=>m(c.erstbefund)),b=()=>{let m=Math.random().toString(36).slice(2,9);n((c)=>{c.patienten.unshift(av(i,m)),c.aktivKurz=m}),r(""),t?.()};if(!g&&(DSW.f=(q0,pr)=>{if(q0>=0)return!1;if(!pr)n((Q)=>{Q.tab="patienten"});return!0},!0))return f("div",{className:"schritt",children:[u(O,{hinweis:"Für Patienten, die schon länger bei dir sind oder nur zur Vertretung kommen. Du hältst nur den Verlauf fest, einen Erstbefund gibt es nicht. Im Test nur erfundene Daten verwenden.",children:"Wen dokumentierst du?"}),f("div",{className:"knopfreihe",style:{marginTop:0},children:[u("input",{className:"eingabe",style:{flex:1,minWidth:160},value:i,placeholder:"Name suchen oder neu anlegen","aria-label":"Name des Patienten ohne Erstbefund",autoComplete:"off",onChange:(m)=>r(m.target.value),onKeyDown:(m)=>{if(m.key==="Enter")b()}}),u("button",{type:"button",className:"weiter",style:{flex:"none",width:"auto",padding:"0 20px",marginTop:0},onClick:b,children:"Anlegen"})]}),u(PX_Knopf,{name:i,alle:e.patienten,mutiere:n,root:!0}),h.length===0?u("p",{className:"hinweis",style:{marginTop:18},children:"Noch kein Patient. Lege oben den ersten an."}):i.trim()?f("div",{className:"kz-treffer",children:[PV_filter(h,i).length?u("p",{className:"gruppe",style:{margin:"10px 0 6px"},children:"Passende Patienten"}):u("p",{className:"hinweis klein",style:{margin:"10px 0 0"},children:"Kein Patient passt. Mit „Anlegen“ neu anlegen."}),PV_filter(h,i).map((m)=>f("div",{className:"pt-zeile",children:[f("button",{type:"button",className:"haupt",onClick:()=>{n((c)=>{c.aktivKurz=m.id}),t?.()},children:[f("div",{className:"pt-name",children:[PV_name(m.name,i),FA_tag(m,h)]}),f("div",{className:"sek",children:[m.erstbefund.diagnose.trim()?lv(m.erstbefund.diagnose.trim(),40):"Diagnose noch offen"," · ",m.verlauf?.einheiten.length??0," Einheiten"]})]}),a===m.id?u("button",{type:"button",className:"kleinknopf rot",onClick:()=>{n((c)=>{if(c.patienten=c.patienten.filter((p)=>p.id!==m.id),c.aktivKurz===m.id)c.aktivKurz=null}),l(null)},children:"Wirklich löschen?"}):u("button",{type:"button",className:"kleinknopf rot",onClick:()=>l(m.id),children:"Löschen"})]},m.id))]}):f("details",{className:"aufklapp kz-alle",children:[f("summary",{children:[u("span",{children:"Alle Patienten"}),u("span",{className:"zaehler",children:h.length})]}),f("div",{className:"inhalt",children:[...h].sort((x,y)=>(!!x.abgeschlossen-!!y.abgeschlossen)||x.name.localeCompare(y.name,"de")).map((m)=>f("div",{className:"pt-zeile",children:[f("button",{type:"button",className:"haupt",onClick:()=>{n((c)=>{c.aktivKurz=m.id}),t?.()},children:[f("div",{className:"pt-name",children:[PV_name(m.name,i),FA_tag(m,h)]}),f("div",{className:"sek",children:[m.erstbefund.diagnose.trim()?lv(m.erstbefund.diagnose.trim(),40):"Diagnose noch offen"," · ",m.verlauf?.einheiten.length??0," Einheiten"]})]}),a===m.id?u("button",{type:"button",className:"kleinknopf rot",onClick:()=>{n((c)=>{if(c.patienten=c.patienten.filter((p)=>p.id!==m.id),c.aktivKurz===m.id)c.aktivKurz=null}),l(null)},children:"Wirklich löschen?"}):u("button",{type:"button",className:"kleinknopf rot",onClick:()=>l(m.id),children:"Löschen"})]},m.id))})]}),]});let S=g.erstbefund,z=()=>n((m)=>{m.kartAuf=DP_schluessel(g.name)||g.id;m.tab="patienten";m.aktivKurz=null;delete m.zurueck});if(!g.kurzFertig){let m=tv(S),c=Math.min(S.schritt,m.length-1),p=()=>c+1>=m.length?k(rv):d((v)=>{v.schritt=c+1});DSW.f=(q0,pr)=>{let n0=c+q0;if(n0<0||n0>=m.length)return!1;if(!pr)d((v)=>{v.schritt=n0});return!0};return f("div",{children:[f("div",{className:"v-kopf",children:[(c!==0||e.zurueck?.pid!==g.id)&&u("button",{type:"button",className:"kleinknopf",onClick:()=>{if(m[c]==="region"&&s.bereich){if(s.seite)o({bereich:s.bereich,region:s.region});else if(s.region)o({bereich:s.bereich});else o({});return}if(c===0)z();else d((v)=>{v.schritt=c-1})},children:c===0?"‹ Patienten":"‹ Zurück"}),f("span",{className:"zahl",children:[FA_name(g,h)," · Schritt ",c+1,"/",m.length]})]}),m[c]==="diagnose"&&u(Su,{e:S,aendern:d,weiter:p,name:g.name}),m[c]==="bsv"&&u(Bu,{e:S,aendern:d,weiter:p}),m[c]==="ursache"&&u(UR_Schritt,{e:S,aendern:(m0)=>k((c0)=>{m0(c0.erstbefund);UR_merke(c0)}),weiter:p}),m[c]==="region"&&u(zu,{e:S,aendern:d,weiter:p,entwurf:s,setEntwurf:o})]})}let K=!!rl(g);let KE=!K&&f("div",{className:"kurz-extras",children:[u("p",{className:"hinweis klein",children:[S.diagnose.trim(),(S.ursachen??[]).join(", "),S.stellen.map(se).join(", ")].filter(Boolean).join(" · ")||"Ohne Diagnose und Region"}),f("div",{className:"kurz-klein",children:[u("button",{type:"button",className:"kleinknopf",onClick:()=>k((m)=>{m.kurzFertig=!1,m.erstbefund.schritt=0}),children:"Diagnose, Auslöser oder Region ändern"})]}),u(FA_Wahl,{P:g,mutiere:n})]});return f("div",{children:[u(_u,{patient:g,mutiere:k,kurz:!0,extras:KE,zumPlan:()=>n((m)=>{m.tab="dienst"}),loeschen:()=>n((m)=>{qs(m,g.id)})})]})}var N0={ruhe:null,bewegung:null,tageszeit:[],schmerzBei:""};function sv(e){let n=[{art:"diagnose"},...st(e)?[{art:"bsv"}]:[],{art:"beginn"},{art:"ursache"},{art:"region"},...PF_RE.test((e.diagnose??"")+" "+(e.krankheitsbild??""))?[{art:"pfad"}]:[],{art:"vorgeschichte"},{art:"sozial"},{art:"flags"}];if(!e.stellen.length&&(e.diagnoseKat==="neuro"||pr(e)))n.push({art:"nschmerz"});if(e.stellen.forEach((t)=>n.push({art:"schmerz",stelle:t.id},{art:"beweg",stelle:t.id},{art:"schwellung",stelle:t.id})),Rb(e))n.push({art:"wurzel"});if(ru(e).length)n.push({art:"tests"});n.push({art:"ziel"});if(n.push({art:"befund"}),kr(e))n.push({art:"neurobv"});return e.stellen.forEach((t)=>n.push({art:"deton",stelle:t.id},{art:"mobi",stelle:t.id},{art:"uebung",stelle:t.id})),n.push({art:"ausgabe"}),n}var G0=(e,n)=>e.length>n?e.slice(0,n-1).trimEnd()+"…":e,uv=()=>Math.random().toString(36).slice(2,9),BH_ARTEN=new Set(["neurobv","deton","mobi","uebung"]),BH_liste=(l,bh)=>bh?[...l.filter((x)=>BH_ARTEN.has(x.art)),{art:"ausgabe"}]:l.filter((x)=>!BH_ARTEN.has(x.art)&&x.art!=="ausgabe"),Lu={dienst:f("svg",{viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",strokeWidth:"1.8",children:[u("rect",{x:"3.5",y:"5",width:"17",height:"15.5",rx:"2.5"}),u("path",{d:"M3.5 10h17M8 3v4M16 3v4"}),u("path",{d:"M8 14h2M14 14h2M8 17.5h2"})]}),beh:f("svg",{viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",strokeWidth:"1.8",children:[u("path",{d:"M7 11V6a1.5 1.5 0 0 1 3 0v4"}),u("path",{d:"M10 10V4.5a1.5 1.5 0 0 1 3 0V10"}),u("path",{d:"M13 10V5.5a1.5 1.5 0 0 1 3 0V12"}),u("path",{d:"M16 9.5a1.5 1.5 0 0 1 3 0V14a7 7 0 0 1-7 7h-.5a6 6 0 0 1-4.6-2.2L4.2 15.4a1.6 1.6 0 0 1 2.4-2.1L7 14v-3"})]}),pat:f("svg",{viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",strokeWidth:"1.8",children:[u("circle",{cx:"12",cy:"8",r:"4"}),u("path",{d:"M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"})]}),erst:f("svg",{viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",strokeWidth:"1.8",children:[u("rect",{x:"5",y:"3",width:"14",height:"18",rx:"2"}),u("path",{d:"M9 8h6M9 12h6M9 16h4"})]}),verl:u("svg",{viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",strokeWidth:"1.8",children:u("path",{d:"M3 18l5-6 4 3 5-8 4 5"})}),kurz:f("svg",{viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",strokeWidth:"1.8",children:[u("path",{d:"M4 6h16M4 12h10M4 18h6"}),u("path",{d:"M17 15l3 3-3 3"})]})};var DSW={f:null,x:0,y:0,t:0,ok:!1,lock:0,dx:0,m:null,hist:[]},DS_quer=(el,stop)=>{try{for(let n=el;n&&n!==stop&&n!==document.body;n=n.parentElement){if(n.scrollWidth>n.clientWidth+1){let o=getComputedStyle(n).overflowX;if(o==="auto"||o==="scroll")return!0}}}catch{}return!1},DS_ruhig=()=>!!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches,DS_EZ="cubic-bezier(.3,.7,.3,1)",DS_kopf=()=>document.querySelector(".links header"),DS_kopfReset=(hd,weich)=>{if(!hd)return;if(weich){hd.style.transition=`transform .32s ${DS_EZ},opacity .32s ${DS_EZ}`;setTimeout(()=>{hd.style.transition=""},340)}else hd.style.transition="";hd.style.transform="";hd.style.opacity=""},DS_aufraeumen=()=>{document.querySelectorAll(".ds-klon").forEach((x)=>x.remove());document.body.classList.remove("ds-kommt");document.querySelector(".links")?.classList.remove("ds-clip");document.querySelectorAll(".ds-kopfklon").forEach((x)=>x.remove());DS_kopfReset(DS_kopf());let m0=document.querySelector("main");if(m0&&!DSW.lock){m0.style.transform="";m0.style.opacity="";m0.style.transition=""}},DS_v=()=>{let h=DSW.hist,n=h.length;if(n<2)return 0;let b=h[n-1],a=h[0];for(let i=n-2;i>=0;i--){a=h[i];if(b.t-h[i].t>=80)break}let dt=b.t-a.t;return dt>0?(b.x-a.x)/dt:0},DS_start=(ev)=>{DS_aufraeumen();let q=ev.touches?.[0];DSW.lock=0;DSW.dx=0;DSW.hist=[];if(!q||ev.touches.length>1||!DSW.f){DSW.ok=!1;return}let el=ev.target;DSW.ok=!(el.closest&&el.closest('input,textarea,select,svg,.chips,.ziele,.nj-rolle,.pw-seg,.sn-liste,.tx-vorschlag,.pf-leiste,[role="tablist"],[role="slider"]'))&&!DS_quer(el,ev.currentTarget);DSW.x=q.clientX;DSW.y=q.clientY;DSW.t=Date.now();DSW.m=ev.currentTarget;DSW.hist=[{x:q.clientX,t:performance.now()}]},DS_zug=(ev)=>{if(!DSW.ok)return;let q=ev.touches?.[0];if(!q)return;let jetzt=performance.now();DSW.hist.push({x:q.clientX,t:jetzt});while(DSW.hist.length>2&&jetzt-DSW.hist[0].t>150)DSW.hist.shift();let dx=q.clientX-DSW.x,dy=q.clientY-DSW.y;if(!DSW.lock){if(Math.abs(dx)<10&&Math.abs(dy)<10)return;DSW.lock=Math.abs(dx)>Math.abs(dy)*1.3?1:-1}if(DSW.lock!==1)return;let m=DSW.m;if(!m)return;let geht=DSW.f?.(dx<0?1:-1,!0);if(!geht){if(m.style.transform)DS_zurueck(m);DSW.dx=0;return}DSW.dx=dx;m.style.transition="none";m.style.willChange="transform";m.classList.add("ds-zieht");m.style.transform=`translate3d(${dx}px,0,0)`;if(DSW.titel){let hd=DS_kopf(),w0=m.clientWidth||1;if(hd){hd.style.transition="none";hd.style.transform=`translate3d(${dx*.5}px,0,0)`;hd.style.opacity=String(Math.max(0,1-Math.abs(dx)/(w0*.5)))}}},DS_zurueck=(m)=>{m.classList.remove("ds-zieht");DS_kopfReset(DS_kopf(),!0);m.style.transition=`transform .32s ${DS_EZ}`;m.style.transform="translate3d(0,0,0)";m.style.opacity="";setTimeout(()=>{m.style.transition="";m.style.transform="";m.style.willChange=""},340)},DS_ende=(ev)=>{let m=DSW.m;if(!DSW.ok||DSW.lock!==1||!m){return}let q=ev.changedTouches?.[0];if(q)DSW.hist.push({x:q.clientX,t:performance.now()});let dx=q?q.clientX-DSW.x:DSW.dx,w=m.clientWidth||1,dir=dx<0?1:-1,v=DS_v(),va=Math.abs(v),schwung=va>.35&&Math.sign(v)===Math.sign(dx)&&Math.abs(dx)>30,zurueckSchwung=va>.35&&Math.sign(v)!==Math.sign(dx);if(!DSW.dx||zurueckSchwung||!(Math.abs(dx)>w*.35||schwung)||!DSW.f?.(dir,!0)){DS_zurueck(m);return}if(DS_ruhig()){m.style.transform="";m.style.transition="";DSW.f(dir);return}let rest=Math.max(0,w-Math.abs(dx)),dauer=Math.round(Math.min(420,Math.max(240,2.3*rest/Math.max(va,.7)))),r=m.getBoundingClientRect(),cs=getComputedStyle(m),st=m.scrollTop,k=document.createElement("div");for(let c0 of m.childNodes)k.appendChild(c0.cloneNode(!0));k.className="ds-klon";k.setAttribute("aria-hidden","true");k.inert=!0;Object.assign(k.style,{display:cs.display,flexDirection:cs.flexDirection,gap:cs.gap,padding:cs.padding,boxSizing:"border-box",position:"fixed",left:r.left+"px",top:r.top+"px",width:r.width+"px",height:r.height+"px",margin:"0",overflow:"hidden",zIndex:"40",pointerEvents:"none",background:getComputedStyle(document.body).backgroundColor,transform:`translate3d(${dx}px,0,0)`,willChange:"transform"});document.body.appendChild(k);k.scrollTop=st;setTimeout(()=>k.remove(),dauer+400);let L=document.querySelector(".links");L?.classList.add("ds-clip");document.documentElement.style.setProperty("--ds-x",dir*w+"px");document.body.classList.add("ds-kommt");m.classList.remove("ds-zieht");m.style.transition="none";m.style.transform="";m.style.willChange="";let h1=document.querySelector(".links header h1"),t0=h1?.textContent,hd=DSW.titel?DS_kopf():null,hk=null,hx=0,ho=1;if(hd){let hr=hd.getBoundingClientRect();hx=dx*.5;ho=Math.max(0,1-Math.abs(dx)/(w*.5));hk=hd.cloneNode(!0);hk.className="ds-kopfklon";hk.setAttribute("aria-hidden","true");hk.inert=!0;Object.assign(hk.style,{position:"fixed",left:hr.left+"px",top:hr.top+"px",width:hr.width+"px",margin:"0",zIndex:"41",pointerEvents:"none",transform:`translate3d(${hx}px,0,0)`,opacity:String(ho)});document.body.appendChild(hk);setTimeout(()=>hk.remove(),dauer+400);hd.style.transition="none";hd.style.transform=`translate3d(${dir*w*.5}px,0,0)`;hd.style.opacity="0"}DSW.lock=0;DSW.f(dir);requestAnimationFrame(()=>{let neu=document.querySelector("main"),opt={duration:dauer,easing:DS_EZ,fill:"both"};document.body.classList.remove("ds-kommt");try{if(neu){neu.classList.add("ds-zieht");neu.style.willChange="transform";neu.animate([{transform:`translate3d(${dir*w}px,0,0)`},{transform:"translate3d(0,0,0)"}],opt)}k.animate([{transform:`translate3d(${dx}px,0,0)`},{transform:`translate3d(${-dir*w}px,0,0)`}],opt)}catch{k.remove()}if(hd)try{let hd2=DS_kopf()||hd;hd2.style.transition="none";hd2.style.transform="";hd2.style.opacity="";hd2.animate([{transform:`translate3d(${dir*w*.5}px,0,0)`,opacity:0},{transform:"translate3d(0,0,0)",opacity:1}],{duration:dauer,easing:DS_EZ,fill:"both"});hk.animate([{transform:`translate3d(${hx}px,0,0)`,opacity:ho},{transform:`translate3d(${-dir*w*.5}px,0,0)`,opacity:0}],{duration:Math.round(dauer*.7),easing:DS_EZ,fill:"forwards"})}catch{hk?.remove();DS_kopfReset(DS_kopf())}let h2=document.querySelector(".links header h1");if(!hd&&h2&&h2.textContent!==t0)try{h2.animate([{opacity:0,transform:`translate3d(${dir*24}px,0,0)`},{opacity:1,transform:"none"}],{duration:Math.min(300,dauer),easing:DS_EZ})}catch{}setTimeout(()=>{k.remove();hk?.remove();let hd3=DS_kopf();if(hd3){hd3.getAnimations?.().forEach((x)=>x.cancel());DS_kopfReset(hd3)}document.querySelector(".links")?.classList.remove("ds-clip");if(neu){neu.classList.remove("ds-zieht");neu.getAnimations?.().forEach((x)=>x.cancel());neu.style.transition="";neu.style.transform="";neu.style.willChange=""}},dauer+40)})};var DF_VERSION="v288",DP_KEY="doku-fix-dienstplan",
 DP_lesen=()=>{try{let x=JSON.parse(TRESOR.getItem(DP_KEY)??"{}");return x&&typeof x==="object"?x:{}}catch{return{}}},
 DP_schreiben=(x)=>{try{window.DFS?.dpVorher(x)}catch{}try{TRESOR.setItem(DP_KEY,JSON.stringify(x))}catch{}try{DP_hbLernen(x)}catch{}try{DP_em(x)}catch{}},
 DP_min=(t)=>{let m=/^(\d{1,2}):(\d{2})/.exec(t??"");return m?+m[1]*60+ +m[2]:null},

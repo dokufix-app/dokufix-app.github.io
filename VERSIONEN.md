@@ -8,7 +8,8 @@ Neue Versionen kommen oben dazu.
 
 | Version | Datum | Commit | Was sich geändert hat |
 |---|---|---|---|
-| v287 | 27.11.2026 | (dieser) | Hausaufgaben: Reiter in der Reihenfolge Alle Übungen, Vorlagen, Programm |
+| v288 | 27.11.2026 | (dieser) | Mehr › Auswertung: Krankheitsbilder (zusammengefasst und wörtlich), Fachbereich, Körperregion, Durchlauf (Fälle, Neuaufnahmen, Abschlüsse, Einheiten je Fall, Wochen bis Abschluss, Patienten über 3 Wochen ohne Einheit), Doku (Erstbefund/Verlauf, Einheiten je Woche, Vollständigkeit, Dauer) und Schmerzverlauf; Zeitraum Monat, 30/90 Tage, 1 Jahr, alles. Monatsauswertung erscheint am Monatsletzten und in den ersten 5 Tagen des Folgemonats unter Heute, bis sie geöffnet wurde; der Monat wird als Zahlen-Schnappschuss ohne Namen auf dem Gerät abgelegt. Alles wird nur auf dem Gerät gerechnet. |
+| v287 | 27.11.2026 | 1402af5 | Hausaufgaben: Reiter in der Reihenfolge Alle Übungen, Vorlagen, Programm |
 | v286 | 26.11.2026 | cb88d10 | Alle Übungen: Details öffnen und schließen ohne die ganze Liste neu aufzubauen (behebt Hänger und verzögerte Bilder auf dem iPad); Clip wird erst beim Drüberfahren geladen, nur einer gleichzeitig |
 | v285 | 26.11.2026 | a5fe694 | Alle Übungen: kein beiger Blitz mehr vor dem Clip (Startbild bleibt stehen, bis der Clip läuft; sichtbare Clips werden vorab geladen) |
 | v284 | 26.11.2026 | c6eb650 | Hausaufgaben › Alle Übungen: Kacheln zeigen das Startbild und spielen beim Drüberfahren mit Maus oder Stift den Clip Start→Ende ab (wie bei Übung hinzufügen) |
