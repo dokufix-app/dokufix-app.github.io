@@ -682,7 +682,7 @@ ${prog.filter((x) => BY[x.id]).map((x, i) => { const k = BY[x.id]; return `<div 
     const vKarten = `<div class="hy-vgrid">${alleV.map((t) => `<button type="button" class="hq-vk" ${vAkt(t)}>${mosaik(t.ids)}<b>${esc(t.n)}</b><small>${anz(t.ids.length)}${t.eig != null ? ' · eigene' : ''}</small></button>`).join('')}</div>`;
     const ans = el.__ans || 'prog';
     const regName = (r) => REG.find((x) => x[0] === r)?.[1] ?? r;
-    const tabs = `<div class="hb-tabs" role="tablist" aria-label="Ansicht">${[['prog', 'Programm' + (frei.length ? ` · ${frei.length}` : '')], ['vorl', 'Vorlagen'], ['alle', 'Alle Übungen']].map(([k2, n2]) => `<button type="button" role="tab" data-a="ans" data-v="${k2}" aria-selected="${ans === k2}">${n2}</button>`).join('')}</div>`;
+    const tabs = `<div class="hb-tabs" role="tablist" aria-label="Ansicht">${[['alle', 'Alle Übungen'], ['vorl', 'Vorlagen'], ['prog', 'Programm' + (frei.length ? ` · ${frei.length}` : '')]].map(([k2, n2]) => `<button type="button" role="tab" data-a="ans" data-v="${k2}" aria-selected="${ans === k2}">${n2}</button>`).join('')}</div>`;
     const vKey = (t) => t.eig != null ? 'e' + t.eig : 'v' + t.vi;
     let ansHtml = '';
     if (ans === 'vorl') {

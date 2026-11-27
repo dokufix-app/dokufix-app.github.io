@@ -8,7 +8,8 @@ Neue Versionen kommen oben dazu.
 
 | Version | Datum | Commit | Was sich geändert hat |
 |---|---|---|---|
-| v286 | 26.11.2026 | (dieser) | Alle Übungen: Details öffnen und schließen ohne die ganze Liste neu aufzubauen (behebt Hänger und verzögerte Bilder auf dem iPad); Clip wird erst beim Drüberfahren geladen, nur einer gleichzeitig |
+| v287 | 27.11.2026 | (dieser) | Hausaufgaben: Reiter in der Reihenfolge Alle Übungen, Vorlagen, Programm |
+| v286 | 26.11.2026 | cb88d10 | Alle Übungen: Details öffnen und schließen ohne die ganze Liste neu aufzubauen (behebt Hänger und verzögerte Bilder auf dem iPad); Clip wird erst beim Drüberfahren geladen, nur einer gleichzeitig |
 | v285 | 26.11.2026 | a5fe694 | Alle Übungen: kein beiger Blitz mehr vor dem Clip (Startbild bleibt stehen, bis der Clip läuft; sichtbare Clips werden vorab geladen) |
 | v284 | 26.11.2026 | c6eb650 | Hausaufgaben › Alle Übungen: Kacheln zeigen das Startbild und spielen beim Drüberfahren mit Maus oder Stift den Clip Start→Ende ab (wie bei Übung hinzufügen) |
 | v283 | 26.11.2026 | c3c7972 | Hausaufgaben: Standwaage (Hüfte, Rücken, Gleichgewicht; Fortgeschritten), mit Bildern und Clip |
